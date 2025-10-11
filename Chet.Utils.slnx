@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/.docs/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/Sync-Gitee.yml" />
+  </Folder>
+  <Project Path="Chet.Utils.Test/Chet.Utils.Tests.csproj" />
+  <Project Path="Chet.Utils/Chet.Utils.csproj" />
+</Solution>
