@@ -1,6 +1,31 @@
 <Solution>
   <Folder Name="/.docs/">
-    <File Path="README.md" />
+    <File Path=".docs/README.md" />
+  </Folder>
+  <Folder Name="/.docs/Extensions/">
+    <File Path=".docs/Extensions/BoolExtensions.md" />
+    <File Path=".docs/Extensions/DataTableExtensions.md" />
+    <File Path=".docs/Extensions/DateTimeExtensions.md" />
+    <File Path=".docs/Extensions/DecimalExtensions.md" />
+    <File Path=".docs/Extensions/DoubleExtensions.md" />
+    <File Path=".docs/Extensions/EnumerableExtensions.md" />
+    <File Path=".docs/Extensions/EnumExtensions.md" />
+    <File Path=".docs/Extensions/FileExtensions.md" />
+    <File Path=".docs/Extensions/FloatExtensions.md" />
+    <File Path=".docs/Extensions/IntExtensions.md" />
+    <File Path=".docs/Extensions/StreamExtensions.md" />
+    <File Path=".docs/Extensions/StringExtensions.md" />
+  </Folder>
+  <Folder Name="/.docs/Helpers/">
+    <File Path=".docs/Helpers/ApplicationHelper.md" />
+    <File Path=".docs/Helpers/DataTableHelper.md" />
+    <File Path=".docs/Helpers/FileHelper.md" />
+    <File Path=".docs/Helpers/HttpClientHelper.md" />
+    <File Path=".docs/Helpers/ReflectHelper.md" />
+    <File Path=".docs/Helpers/RegexHelper.md" />
+    <File Path=".docs/Helpers/StopwatchHelper.md" />
+    <File Path=".docs/Helpers/TaskHelper.md" />
+    <File Path=".docs/Helpers/UnitHelper.md" />
   </Folder>
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">

@@ -4,7 +4,7 @@
     /// 计量单位转换帮助类
     /// 支持长度、货币、质量、角度、进制、面积、体积、温度、速度、热能、功率、压强、力单位转换
     /// </summary>
-    public static class UnitConverter
+    public static class UnitHelper
     {
         #region 长度转换
 
