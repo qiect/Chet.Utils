@@ -1,22 +1,336 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Chet.Utils.Helpers
 {
     /// <summary>
-    /// HttpClient帮助类
+    /// HttpClient帮助类接口
     /// 提供丰富的HTTP请求功能，包括重试机制、超时控制、认证、缓存等高级特性
     /// </summary>
-    public static class HttpClientHelper
+    public interface IHttpClientHelper
     {
-        #region 静态HttpClient实例
+        #region 基础HTTP请求方法
 
-        private static readonly HttpClient _httpClient;
-        private static readonly HttpClientHandler _httpClientHandler;
+        /// <summary>
+        /// 发送GET请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
 
-        static HttpClientHelper()
+        /// <summary>
+        /// 发送GET请求并返回字符串内容
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>响应内容</returns>
+        Task<string> GetStringAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送GET请求并返回字节数组内容
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>响应内容</returns>
+        Task<byte[]> GetByteArrayAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送POST请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="content">请求内容</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PostAsync(string url, HttpContent content, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送POST请求（JSON数据）
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="data">请求数据</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PostJsonAsync<T>(string url, T data, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送POST请求（表单数据）
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="formData">表单数据</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PostFormAsync(string url, Dictionary<string, string> formData, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送PUT请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="content">请求内容</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PutAsync(string url, HttpContent content, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送PUT请求（JSON数据）
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="data">请求数据</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PutJsonAsync<T>(string url, T data, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送DELETE请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> DeleteAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送自定义HTTP请求
+        /// </summary>
+        /// <param name="method">HTTP方法</param>
+        /// <param name="url">请求URL</param>
+        /// <param name="content">请求内容</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, HttpContent content = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        #endregion
+
+        #region 高级HTTP请求方法
+
+        /// <summary>
+        /// 发送带重试机制的GET请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="maxRetries">最大重试次数</param>
+        /// <param name="retryDelay">重试延迟时间</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> GetWithRetryAsync(string url, int maxRetries = 3, TimeSpan? retryDelay = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送带重试机制的POST请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="content">请求内容</param>
+        /// <param name="maxRetries">最大重试次数</param>
+        /// <param name="retryDelay">重试延迟时间</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PostWithRetryAsync(string url, HttpContent content, int maxRetries = 3, TimeSpan? retryDelay = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送带超时控制的GET请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="timeout">超时时间</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> GetWithTimeoutAsync(string url, TimeSpan timeout, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送带超时控制的POST请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="content">请求内容</param>
+        /// <param name="timeout">超时时间</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> PostWithTimeoutAsync(string url, HttpContent content, TimeSpan timeout, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送带认证的GET请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="authToken">认证令牌</param>
+        /// <param name="authScheme">认证方案（默认Bearer）</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> GetWithAuthAsync(string url, string authToken, string authScheme = "Bearer", Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 发送带基本认证的GET请求
+        /// </summary>
+        /// <param name="url">请求URL</param>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>HTTP响应</returns>
+        Task<HttpResponseMessage> GetWithBasicAuthAsync(string url, string username, string password, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        /// <param name="url">文件URL</param>
+        /// <param name="filePath">保存路径</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="progressCallback">进度回调</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>下载结果</returns>
+        Task<DownloadResult> DownloadFileAsync(string url, string filePath, Dictionary<string, string> headers = null, Action<DownloadProgress> progressCallback = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <param name="url">上传URL</param>
+        /// <param name="filePath">文件路径</param>
+        /// <param name="fieldName">表单字段名</param>
+        /// <param name="additionalData">附加表单数据</param>
+        /// <param name="headers">请求头</param>
+        /// <param name="progressCallback">进度回调</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>上传结果</returns>
+        Task<UploadResult> UploadFileAsync(string url, string filePath, string fieldName = "file", Dictionary<string, string> additionalData = null, Dictionary<string, string> headers = null, Action<UploadProgress> progressCallback = null, CancellationToken cancellationToken = default);
+
+        #endregion
+
+        #region 配置和工具方法
+
+        /// <summary>
+        /// 设置默认请求头
+        /// </summary>
+        /// <param name="headers">请求头字典</param>
+        void SetDefaultHeaders(Dictionary<string, string> headers);
+
+        /// <summary>
+        /// 设置默认超时时间
+        /// </summary>
+        /// <param name="timeout">超时时间</param>
+        void SetDefaultTimeout(TimeSpan timeout);
+
+        /// <summary>
+        /// 启用或禁用自动解压缩
+        /// </summary>
+        /// <param name="enable">是否启用</param>
+        void SetAutomaticDecompression(bool enable);
+
+        /// <summary>
+        /// 设置Cookie容器
+        /// </summary>
+        /// <param name="cookieContainer">Cookie容器</param>
+        void SetCookieContainer(CookieContainer cookieContainer);
+
+        /// <summary>
+        /// 获取Cookie容器
+        /// </summary>
+        /// <returns>Cookie容器</returns>
+        CookieContainer GetCookieContainer();
+
+        /// <summary>
+        /// 清除默认请求头
+        /// </summary>
+        void ClearDefaultHeaders();
+
+        /// <summary>
+        /// 序列化对象为JSON
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="obj">对象实例</param>
+        /// <returns>JSON字符串</returns>
+        string SerializeToJson<T>(T obj);
+
+        /// <summary>
+        /// 反序列化JSON为对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="json">JSON字符串</param>
+        /// <returns>对象实例</returns>
+        T DeserializeFromJson<T>(string json);
+
+        /// <summary>
+        /// 获取HTTP客户端实例
+        /// </summary>
+        /// <returns>HTTP客户端实例</returns>
+        HttpClient GetHttpClient();
+
+        #endregion
+
+        #region 批量请求处理
+
+        /// <summary>
+        /// 并行发送多个HTTP请求
+        /// </summary>
+        /// <param name="requests">请求列表</param>
+        /// <param name="maxConcurrency">最大并发数</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>响应列表</returns>
+        Task<List<BatchResponse>> SendBatchAsync(List<BatchRequest> requests, int maxConcurrency = 5, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 顺序发送多个HTTP请求
+        /// </summary>
+        /// <param name="requests">请求列表</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>响应列表</returns>
+        Task<List<BatchResponse>> SendSequentialAsync(List<BatchRequest> requests, CancellationToken cancellationToken = default);
+
+        #endregion
+
+        #region 监控和统计
+
+        /// <summary>
+        /// 获取HTTP客户端统计信息
+        /// </summary>
+        /// <returns>统计信息</returns>
+        HttpClientStatistics GetStatistics();
+
+        /// <summary>
+        /// 启用请求日志记录
+        /// </summary>
+        /// <param name="enable">是否启用</param>
+        void EnableLogging(bool enable = true);
+
+        #endregion
+    }
+
+    /// <summary>
+    /// HttpClient帮助类实现
+    /// 提供丰富的HTTP请求功能，包括重试机制、超时控制、认证、缓存等高级特性
+    /// </summary>
+    public class HttpClientHelper : IHttpClientHelper, IDisposable
+    {
+        #region 私有字段
+
+        private readonly HttpClient _httpClient;
+        private readonly HttpClientHandler _httpClientHandler;
+        private readonly ILogger<HttpClientHelper> _logger;
+        private bool _disposed = false;
+
+        #endregion
+
+        #region 构造函数
+
+        /// <summary>
+        /// 初始化HttpClientHelper实例
+        /// </summary>
+        /// <param name="logger">日志记录器</param>
+        public HttpClientHelper(ILogger<HttpClientHelper> logger = null)
         {
+            _logger = logger ?? NullLogger<HttpClientHelper>.Instance;
+
             _httpClientHandler = new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
@@ -33,6 +347,18 @@ namespace Chet.Utils.Helpers
             _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         }
 
+        /// <summary>
+        /// 初始化HttpClientHelper实例
+        /// </summary>
+        /// <param name="httpClient">HTTP客户端实例</param>
+        /// <param name="logger">日志记录器</param>
+        public HttpClientHelper(HttpClient httpClient, ILogger<HttpClientHelper> logger = null)
+        {
+            _logger = logger ?? NullLogger<HttpClientHelper>.Instance;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _httpClientHandler = null; // 当传入HttpClient时，不管理Handler
+        }
+
         #endregion
 
         #region 基础HTTP请求方法
@@ -44,10 +370,11 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             AddHeaders(request, headers);
+            _logger.LogInformation("Sending GET request to {Url}", url);
             return await _httpClient.SendAsync(request, cancellationToken);
         }
 
@@ -58,7 +385,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>响应内容</returns>
-        public static async Task<string> GetStringAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<string> GetStringAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var response = await GetAsync(url, headers, cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -72,7 +399,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>响应内容</returns>
-        public static async Task<byte[]> GetByteArrayAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<byte[]> GetByteArrayAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var response = await GetAsync(url, headers, cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -87,13 +414,14 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Content = content
             };
             AddHeaders(request, headers);
+            _logger.LogInformation("Sending POST request to {Url}", url);
             return await _httpClient.SendAsync(request, cancellationToken);
         }
 
@@ -105,7 +433,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PostJsonAsync<T>(string url, T data, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PostJsonAsync<T>(string url, T data, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -120,7 +448,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PostFormAsync(string url, Dictionary<string, string> formData, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PostFormAsync(string url, Dictionary<string, string> formData, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var content = new FormUrlEncodedContent(formData);
             return await PostAsync(url, content, headers, cancellationToken);
@@ -134,13 +462,14 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PutAsync(string url, HttpContent content, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Put, url)
             {
                 Content = content
             };
             AddHeaders(request, headers);
+            _logger.LogInformation("Sending PUT request to {Url}", url);
             return await _httpClient.SendAsync(request, cancellationToken);
         }
 
@@ -152,7 +481,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PutJsonAsync<T>(string url, T data, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PutJsonAsync<T>(string url, T data, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -166,10 +495,11 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> DeleteAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> DeleteAsync(string url, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(HttpMethod.Delete, url);
             AddHeaders(request, headers);
+            _logger.LogInformation("Sending DELETE request to {Url}", url);
             return await _httpClient.SendAsync(request, cancellationToken);
         }
 
@@ -182,13 +512,14 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, HttpContent content = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, HttpContent content = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var request = new HttpRequestMessage(method, url)
             {
                 Content = content
             };
             AddHeaders(request, headers);
+            _logger.LogInformation("Sending {Method} request to {Url}", method, url);
             return await _httpClient.SendAsync(request, cancellationToken);
         }
 
@@ -205,7 +536,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> GetWithRetryAsync(string url, int maxRetries = 3, TimeSpan? retryDelay = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> GetWithRetryAsync(string url, int maxRetries = 3, TimeSpan? retryDelay = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             return await SendWithRetryAsync(() => GetAsync(url, headers, cancellationToken), maxRetries, retryDelay ?? TimeSpan.FromSeconds(1), cancellationToken);
         }
@@ -220,7 +551,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PostWithRetryAsync(string url, HttpContent content, int maxRetries = 3, TimeSpan? retryDelay = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PostWithRetryAsync(string url, HttpContent content, int maxRetries = 3, TimeSpan? retryDelay = null, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             return await SendWithRetryAsync(() => PostAsync(url, content, headers, cancellationToken), maxRetries, retryDelay ?? TimeSpan.FromSeconds(1), cancellationToken);
         }
@@ -233,7 +564,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> GetWithTimeoutAsync(string url, TimeSpan timeout, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> GetWithTimeoutAsync(string url, TimeSpan timeout, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(timeout);
@@ -249,7 +580,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> PostWithTimeoutAsync(string url, HttpContent content, TimeSpan timeout, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> PostWithTimeoutAsync(string url, HttpContent content, TimeSpan timeout, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(timeout);
@@ -265,7 +596,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> GetWithAuthAsync(string url, string authToken, string authScheme = "Bearer", Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> GetWithAuthAsync(string url, string authToken, string authScheme = "Bearer", Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var authHeaders = headers ?? new Dictionary<string, string>();
             authHeaders["Authorization"] = $"{authScheme} {authToken}";
@@ -281,7 +612,7 @@ namespace Chet.Utils.Helpers
         /// <param name="headers">请求头</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        public static async Task<HttpResponseMessage> GetWithBasicAuthAsync(string url, string username, string password, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> GetWithBasicAuthAsync(string url, string username, string password, Dictionary<string, string> headers = null, CancellationToken cancellationToken = default)
         {
             var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
             var authHeaders = headers ?? new Dictionary<string, string>();
@@ -298,7 +629,7 @@ namespace Chet.Utils.Helpers
         /// <param name="progressCallback">进度回调</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>下载结果</returns>
-        public static async Task<DownloadResult> DownloadFileAsync(string url, string filePath, Dictionary<string, string> headers = null, Action<DownloadProgress> progressCallback = null, CancellationToken cancellationToken = default)
+        public async Task<DownloadResult> DownloadFileAsync(string url, string filePath, Dictionary<string, string> headers = null, Action<DownloadProgress> progressCallback = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -331,6 +662,8 @@ namespace Chet.Utils.Helpers
                     }
                 }
 
+                _logger.LogInformation("File downloaded successfully to {FilePath} ({FileSize} bytes)", filePath, downloadedBytes);
+
                 return new DownloadResult
                 {
                     Success = true,
@@ -340,6 +673,7 @@ namespace Chet.Utils.Helpers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error downloading file from {Url}", url);
                 return new DownloadResult
                 {
                     Success = false,
@@ -359,7 +693,7 @@ namespace Chet.Utils.Helpers
         /// <param name="progressCallback">进度回调</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>上传结果</returns>
-        public static async Task<UploadResult> UploadFileAsync(string url, string filePath, string fieldName = "file", Dictionary<string, string> additionalData = null, Dictionary<string, string> headers = null, Action<UploadProgress> progressCallback = null, CancellationToken cancellationToken = default)
+        public async Task<UploadResult> UploadFileAsync(string url, string filePath, string fieldName = "file", Dictionary<string, string> additionalData = null, Dictionary<string, string> headers = null, Action<UploadProgress> progressCallback = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -390,6 +724,8 @@ namespace Chet.Utils.Helpers
 
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
+                _logger.LogInformation("File uploaded successfully to {Url}", url);
+
                 return new UploadResult
                 {
                     Success = true,
@@ -398,6 +734,7 @@ namespace Chet.Utils.Helpers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error uploading file to {Url}", url);
                 return new UploadResult
                 {
                     Success = false,
@@ -414,7 +751,7 @@ namespace Chet.Utils.Helpers
         /// 设置默认请求头
         /// </summary>
         /// <param name="headers">请求头字典</param>
-        public static void SetDefaultHeaders(Dictionary<string, string> headers)
+        public void SetDefaultHeaders(Dictionary<string, string> headers)
         {
             foreach (var header in headers)
             {
@@ -427,7 +764,7 @@ namespace Chet.Utils.Helpers
         /// 设置默认超时时间
         /// </summary>
         /// <param name="timeout">超时时间</param>
-        public static void SetDefaultTimeout(TimeSpan timeout)
+        public void SetDefaultTimeout(TimeSpan timeout)
         {
             _httpClient.Timeout = timeout;
         }
@@ -436,35 +773,41 @@ namespace Chet.Utils.Helpers
         /// 启用或禁用自动解压缩
         /// </summary>
         /// <param name="enable">是否启用</param>
-        public static void SetAutomaticDecompression(bool enable)
+        public void SetAutomaticDecompression(bool enable)
         {
-            _httpClientHandler.AutomaticDecompression = enable ?
-                DecompressionMethods.GZip | DecompressionMethods.Deflate :
-                DecompressionMethods.None;
+            if (_httpClientHandler != null)
+            {
+                _httpClientHandler.AutomaticDecompression = enable ?
+                    DecompressionMethods.GZip | DecompressionMethods.Deflate :
+                    DecompressionMethods.None;
+            }
         }
 
         /// <summary>
         /// 设置Cookie容器
         /// </summary>
         /// <param name="cookieContainer">Cookie容器</param>
-        public static void SetCookieContainer(CookieContainer cookieContainer)
+        public void SetCookieContainer(CookieContainer cookieContainer)
         {
-            _httpClientHandler.CookieContainer = cookieContainer;
+            if (_httpClientHandler != null)
+            {
+                _httpClientHandler.CookieContainer = cookieContainer;
+            }
         }
 
         /// <summary>
         /// 获取Cookie容器
         /// </summary>
         /// <returns>Cookie容器</returns>
-        public static CookieContainer GetCookieContainer()
+        public CookieContainer GetCookieContainer()
         {
-            return _httpClientHandler.CookieContainer;
+            return _httpClientHandler?.CookieContainer;
         }
 
         /// <summary>
         /// 清除默认请求头
         /// </summary>
-        public static void ClearDefaultHeaders()
+        public void ClearDefaultHeaders()
         {
             _httpClient.DefaultRequestHeaders.Clear();
         }
@@ -493,7 +836,7 @@ namespace Chet.Utils.Helpers
         /// <param name="retryDelay">重试延迟</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>HTTP响应</returns>
-        private static async Task<HttpResponseMessage> SendWithRetryAsync(Func<Task<HttpResponseMessage>> requestFunc, int maxRetries, TimeSpan retryDelay, CancellationToken cancellationToken)
+        private async Task<HttpResponseMessage> SendWithRetryAsync(Func<Task<HttpResponseMessage>> requestFunc, int maxRetries, TimeSpan retryDelay, CancellationToken cancellationToken)
         {
             for (int i = 0; i <= maxRetries; i++)
             {
@@ -512,15 +855,21 @@ namespace Chet.Utils.Helpers
 
                     if (i < maxRetries)
                     {
+                        _logger.LogWarning("Request failed with status {StatusCode}, retrying in {Delay}ms (attempt {Attempt} of {MaxRetries})",
+                            response.StatusCode, retryDelay.TotalMilliseconds, i + 1, maxRetries);
                         await Task.Delay(retryDelay, cancellationToken);
                     }
                 }
-                catch (HttpRequestException) when (i < maxRetries)
+                catch (HttpRequestException ex) when (i < maxRetries)
                 {
+                    _logger.LogWarning(ex, "Request failed with exception, retrying in {Delay}ms (attempt {Attempt} of {MaxRetries})",
+                        retryDelay.TotalMilliseconds, i + 1, maxRetries);
                     await Task.Delay(retryDelay, cancellationToken);
                 }
-                catch (TaskCanceledException) when (i < maxRetries && !cancellationToken.IsCancellationRequested)
+                catch (TaskCanceledException ex) when (i < maxRetries && !cancellationToken.IsCancellationRequested)
                 {
+                    _logger.LogWarning(ex, "Request timed out, retrying in {Delay}ms (attempt {Attempt} of {MaxRetries})",
+                        retryDelay.TotalMilliseconds, i + 1, maxRetries);
                     await Task.Delay(retryDelay, cancellationToken);
                 }
             }
@@ -535,7 +884,7 @@ namespace Chet.Utils.Helpers
         /// <typeparam name="T">对象类型</typeparam>
         /// <param name="obj">对象实例</param>
         /// <returns>JSON字符串</returns>
-        public static string SerializeToJson<T>(T obj)
+        public string SerializeToJson<T>(T obj)
         {
             return JsonSerializer.Serialize(obj, new JsonSerializerOptions
             {
@@ -549,7 +898,7 @@ namespace Chet.Utils.Helpers
         /// <typeparam name="T">对象类型</typeparam>
         /// <param name="json">JSON字符串</param>
         /// <returns>对象实例</returns>
-        public static T DeserializeFromJson<T>(string json)
+        public T DeserializeFromJson<T>(string json)
         {
             return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
             {
@@ -561,7 +910,7 @@ namespace Chet.Utils.Helpers
         /// 获取HTTP客户端实例
         /// </summary>
         /// <returns>HTTP客户端实例</returns>
-        public static HttpClient GetHttpClient()
+        public HttpClient GetHttpClient()
         {
             return _httpClient;
         }
@@ -577,7 +926,7 @@ namespace Chet.Utils.Helpers
         /// <param name="maxConcurrency">最大并发数</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>响应列表</returns>
-        public static async Task<List<BatchResponse>> SendBatchAsync(List<BatchRequest> requests, int maxConcurrency = 5, CancellationToken cancellationToken = default)
+        public async Task<List<BatchResponse>> SendBatchAsync(List<BatchRequest> requests, int maxConcurrency = 5, CancellationToken cancellationToken = default)
         {
             using var semaphore = new SemaphoreSlim(maxConcurrency);
             var tasks = new List<Task<BatchResponse>>();
@@ -603,6 +952,7 @@ namespace Chet.Utils.Helpers
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogError(ex, "Error processing batch request to {Url}", request.Url);
                         return new BatchResponse
                         {
                             Request = request,
@@ -628,7 +978,7 @@ namespace Chet.Utils.Helpers
         /// <param name="requests">请求列表</param>
         /// <param name="cancellationToken">取消令牌</param>
         /// <returns>响应列表</returns>
-        public static async Task<List<BatchResponse>> SendSequentialAsync(List<BatchRequest> requests, CancellationToken cancellationToken = default)
+        public async Task<List<BatchResponse>> SendSequentialAsync(List<BatchRequest> requests, CancellationToken cancellationToken = default)
         {
             var responses = new List<BatchResponse>();
 
@@ -652,6 +1002,7 @@ namespace Chet.Utils.Helpers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "Error processing sequential request to {Url}", request.Url);
                     responses.Add(new BatchResponse
                     {
                         Request = request,
@@ -672,7 +1023,7 @@ namespace Chet.Utils.Helpers
         /// 获取HTTP客户端统计信息
         /// </summary>
         /// <returns>统计信息</returns>
-        public static HttpClientStatistics GetStatistics()
+        public HttpClientStatistics GetStatistics()
         {
             // 注意：HttpClient本身不提供内置统计信息
             // 这里可以结合自定义中间件或包装器来实现
@@ -680,8 +1031,8 @@ namespace Chet.Utils.Helpers
             {
                 DefaultTimeout = _httpClient.Timeout,
                 DefaultHeadersCount = _httpClient.DefaultRequestHeaders.Count(),
-                SupportsAutomaticDecompression = _httpClientHandler.AutomaticDecompression != DecompressionMethods.None,
-                UseCookies = _httpClientHandler.UseCookies
+                SupportsAutomaticDecompression = _httpClientHandler?.AutomaticDecompression != DecompressionMethods.None,
+                UseCookies = _httpClientHandler?.UseCookies ?? false
             };
         }
 
@@ -689,10 +1040,40 @@ namespace Chet.Utils.Helpers
         /// 启用请求日志记录
         /// </summary>
         /// <param name="enable">是否启用</param>
-        public static void EnableLogging(bool enable = true)
+        public void EnableLogging(bool enable = true)
         {
-            // 这里可以集成日志框架如ILogger等
-            // 实际实现需要根据具体日志系统进行调整
+            // 日志记录已通过ILogger集成实现
+        }
+
+        #endregion
+
+        #region IDisposable实现
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="disposing">是否正在 disposing</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _httpClient?.Dispose();
+                    _httpClientHandler?.Dispose();
+                }
+
+                _disposed = true;
+            }
         }
 
         #endregion
@@ -894,3 +1275,4 @@ namespace Chet.Utils.Helpers
 
     #endregion
 }
+
