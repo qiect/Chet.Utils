@@ -1,8 +1,8 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Net;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Chet.Utils.Helpers
 {
@@ -343,7 +343,7 @@ namespace Chet.Utils.Helpers
             };
 
             // 设置默认请求头
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Chet.HttpClientHelper/1.0");
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "Chet.HttpClientHelper/1.2");
             _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         }
 
