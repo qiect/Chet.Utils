@@ -26,6 +26,7 @@
     <File Path=".docs/Helpers/StopwatchHelper.md" />
     <File Path=".docs/Helpers/TaskHelper.md" />
     <File Path=".docs/Helpers/UnitHelper.md" />
+    <File Path=".docs/Helpers/WebSocketHelper.md" />
   </Folder>
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">

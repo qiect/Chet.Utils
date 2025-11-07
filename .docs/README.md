@@ -29,6 +29,7 @@ Chet.Utils 是一个为日常开发提供辅助工具的库。该项目旨在简
 - **StopwatchHelper**：计时帮助类，提供常用的计时操作功能。
 - **TaskHelper**：任务帮助类，提供常用的任务操作功能。
 - **UnitHelper**：单位帮助类，提供常用的单位转换功能。
+- **WebSocketHelper**：WebSocket 帮助类，提供常用的 WebSocket 操作功能。
 
 
 ## 安装

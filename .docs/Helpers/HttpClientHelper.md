@@ -1,99 +1,542 @@
-# HttpClientHelper Àà¹¦ÄÜÎÄµµ
+# HttpClientHelper å¸®åŠ©ç±»
 
-## ¸ÅÊö
+## æ¦‚è¿°
 
-[HttpClientHelper](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L11-L894) ÊÇÒ»¸ö¾²Ì¬¹¤¾ßÀà£¬Ìá¹©ÁË·á¸»µÄ HTTP ÇëÇó¹¦ÄÜ¡£¸ÃÀà·â×°ÁË .NET µÄ `HttpClient`£¬Ìá¹©ÁË»ù´¡µÄ HTTP ÇëÇó·½·¨¡¢¸ß¼¶ÌØĞÔ£¨ÈçÖØÊÔ»úÖÆ¡¢³¬Ê±¿ØÖÆ¡¢ÈÏÖ¤µÈ£©¡¢ÎÄ¼şÉÏ´«ÏÂÔØ¡¢ÅúÁ¿ÇëÇó´¦ÀíµÈ¹¦ÄÜ£¬Ö¼ÔÚ¼ò»¯ HTTP Í¨ĞÅ²Ù×÷¡£
+HttpClientHelper æ˜¯ä¸€ä¸ªåŠŸèƒ½å¼ºå¤§çš„ HTTP å®¢æˆ·ç«¯å°è£…ç±»ï¼Œæä¾›äº†ä¸°å¯Œçš„ HTTP è¯·æ±‚æ–¹æ³•ã€é‡è¯•æœºåˆ¶ã€è¶…æ—¶æ§åˆ¶ã€è®¤è¯æ”¯æŒã€æ–‡ä»¶ä¸Šä¼ ä¸‹è½½ç­‰åŠŸèƒ½ã€‚è¯¥ç±»å®ç°äº† IHttpClientHelper æ¥å£ï¼Œæ—¨åœ¨ç®€åŒ– HTTP é€šä¿¡çš„å¤æ‚æ€§ï¼Œæé«˜å¼€å‘æ•ˆç‡å’Œä»£ç å¯ç»´æŠ¤æ€§ã€‚
 
-## Ö÷Òª¹¦ÄÜÄ£¿é
+## ä¸»è¦ç‰¹æ€§
 
-### 1. »ù´¡ HTTP ÇëÇó·½·¨
+- æ”¯æŒåŸºç¡€ HTTP æ–¹æ³•ï¼šGETã€POSTã€PUTã€DELETE ç­‰
+- æä¾›é‡è¯•æœºåˆ¶å’Œè¶…æ—¶æ§åˆ¶
+- æ”¯æŒå¤šç§è®¤è¯æ–¹å¼ï¼ˆBasic Auth ç­‰ï¼‰
+- å†…ç½® JSON åºåˆ—åŒ–å’Œååºåˆ—åŒ–
+- æ–‡ä»¶ä¸Šä¼ å’Œä¸‹è½½åŠŸèƒ½ï¼Œæ”¯æŒè¿›åº¦ç›‘æ§
+- æ‰¹é‡è¯·æ±‚å¤„ç†ï¼ˆå¹¶è¡Œå’Œé¡ºåºï¼‰
+- è‡ªå®šä¹‰è¯·æ±‚å¤´å’Œé»˜è®¤é…ç½®
+- å®Œæ•´çš„å¼‚å¸¸å¤„ç†å’Œæ—¥å¿—è®°å½•
+- IDisposable æ¥å£å®ç°ï¼Œæ”¯æŒèµ„æºé‡Šæ”¾
 
-Ìá¹©±ê×¼µÄ HTTP ÇëÇó·½·¨£¬°üÀ¨ GET¡¢POST¡¢PUT¡¢DELETE µÈ£¬Ö§³Ö¶àÖÖÊı¾İ¸ñÊ½¡£
+## ç±»å®šä¹‰
 
-**Ö÷Òª·½·¨£º**
-- [GetAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L36-L42) - ·¢ËÍ GET ÇëÇó
-- [GetStringAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L52-L57) - ·¢ËÍ GET ÇëÇó²¢·µ»Ø×Ö·û´®ÄÚÈİ
-- [GetByteArrayAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L67-L72) - ·¢ËÍ GET ÇëÇó²¢·µ»Ø×Ö½ÚÊı×éÄÚÈİ
-- [PostAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L83-L91) - ·¢ËÍ POST ÇëÇó
-- [PostJsonAsync<T>()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L101-L106) - ·¢ËÍ POST ÇëÇó£¨JSON Êı¾İ£©
-- [PostFormAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L116-L120) - ·¢ËÍ POST ÇëÇó£¨±íµ¥Êı¾İ£©
-- [PutAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L130-L138) - ·¢ËÍ PUT ÇëÇó
-- [PutJsonAsync<T>()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L148-L153) - ·¢ËÍ PUT ÇëÇó£¨JSON Êı¾İ£©
-- [DeleteAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L162-L167) - ·¢ËÍ DELETE ÇëÇó
-- [SendAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L178-L186) - ·¢ËÍ×Ô¶¨Òå HTTP ÇëÇó
+```csharp
+public class HttpClientHelper : IHttpClientHelper, IDisposable
+{
+    // å®ç° IHttpClientHelper æ¥å£çš„æ‰€æœ‰æ–¹æ³•
+    // æä¾› HTTP å®¢æˆ·ç«¯çš„å„ç§åŠŸèƒ½
+}
+```
 
-### 2. ¸ß¼¶ HTTP ÇëÇó·½·¨
+## æ¥å£å®šä¹‰
 
-Ìá¹©ÔöÇ¿¹¦ÄÜµÄ HTTP ÇëÇó·½·¨£¬°üÀ¨ÖØÊÔ»úÖÆ¡¢³¬Ê±¿ØÖÆ¡¢ÈÏÖ¤¡¢ÎÄ¼şÉÏ´«ÏÂÔØµÈ¡£
+### IHttpClientHelper æ¥å£
 
-**Ö÷Òª·½·¨£º**
-- [GetWithRetryAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L198-L202) - ·¢ËÍ´øÖØÊÔ»úÖÆµÄ GET ÇëÇó
-- [PostWithRetryAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L213-L218) - ·¢ËÍ´øÖØÊÔ»úÖÆµÄ POST ÇëÇó
-- [GetWithTimeoutAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L228-L233) - ·¢ËÍ´ø³¬Ê±¿ØÖÆµÄ GET ÇëÇó
-- [PostWithTimeoutAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L244-L249) - ·¢ËÍ´ø³¬Ê±¿ØÖÆµÄ POST ÇëÇó
-- [GetWithAuthAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L260-L265) - ·¢ËÍ´øÈÏÖ¤µÄ GET ÇëÇó
-- [GetWithBasicAuthAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L277-L282) - ·¢ËÍ´ø»ù±¾ÈÏÖ¤µÄ GET ÇëÇó
-- [DownloadFileAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L294-L344) - ÏÂÔØÎÄ¼ş
-- [UploadFileAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L356-L403) - ÉÏ´«ÎÄ¼ş
+```csharp
+public interface IHttpClientHelper : IDisposable
+{
+    // åŸºç¡€ HTTP è¯·æ±‚æ–¹æ³•
+    Task<T> GetAsync<T>(string url, Dictionary<string, string> headers = null);
+    Task<string> GetStringAsync(string url, Dictionary<string, string> headers = null);
+    Task<HttpResponseMessage> GetHttpResponseAsync(string url, Dictionary<string, string> headers = null);
+    Task<T> PostAsync<T>(string url, HttpContent content, Dictionary<string, string> headers = null);
+    Task<T> PostJsonAsync<T>(string url, object data, Dictionary<string, string> headers = null);
+    Task<T> PostFormAsync<T>(string url, Dictionary<string, string> formData, Dictionary<string, string> headers = null);
+    Task<T> PutAsync<T>(string url, HttpContent content, Dictionary<string, string> headers = null);
+    Task<T> PutJsonAsync<T>(string url, object data, Dictionary<string, string> headers = null);
+    Task<T> DeleteAsync<T>(string url, Dictionary<string, string> headers = null);
+    Task<T> SendAsync<T>(HttpRequestMessage request);
+    Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
 
-### 3. ÅäÖÃºÍ¹¤¾ß·½·¨
+    // é«˜çº§ HTTP è¯·æ±‚æ–¹æ³•
+    Task<T> GetWithRetryAsync<T>(string url, int retryCount = 3, Dictionary<string, string> headers = null);
+    Task<T> PostWithRetryAsync<T>(string url, HttpContent content, int retryCount = 3, Dictionary<string, string> headers = null);
+    Task<T> GetWithTimeoutAsync<T>(string url, TimeSpan timeout, Dictionary<string, string> headers = null);
+    Task<T> PostWithTimeoutAsync<T>(string url, HttpContent content, TimeSpan timeout, Dictionary<string, string> headers = null);
+    Task<T> GetWithAuthAsync<T>(string url, string username, string password, Dictionary<string, string> headers = null);
+    Task<T> GetWithBasicAuthAsync<T>(string url, string username, string password, Dictionary<string, string> headers = null);
 
-Ìá¹© HTTP ¿Í»§¶ËÅäÖÃºÍ³£ÓÃµÄ¹¤¾ß·½·¨¡£
+    // æ–‡ä»¶å¤„ç†æ–¹æ³•
+    Task<DownloadResult> DownloadFileAsync(string url, string savePath, Action<DownloadProgress> progressCallback = null, Dictionary<string, string> headers = null);
+    Task<UploadResult> UploadFileAsync(string url, string filePath, string fileName = null, Dictionary<string, string> headers = null);
 
-**Ö÷Òª·½·¨£º**
-- [SetDefaultHeaders()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L413-L420) - ÉèÖÃÄ¬ÈÏÇëÇóÍ·
-- [SetDefaultTimeout()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L426-L429) - ÉèÖÃÄ¬ÈÏ³¬Ê±Ê±¼ä
-- [SetAutomaticDecompression()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L435-L439) - ÆôÓÃ»ò½ûÓÃ×Ô¶¯½âÑ¹Ëõ
-- [SetCookieContainer()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L445-L448) - ÉèÖÃ Cookie ÈİÆ÷
-- [GetCookieContainer()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L454-L457) - »ñÈ¡ Cookie ÈİÆ÷
-- [ClearDefaultHeaders()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L462-L465) - Çå³ıÄ¬ÈÏÇëÇóÍ·
-- [SerializeToJson<T>()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L509-L516) - ĞòÁĞ»¯¶ÔÏóÎª JSON
-- [DeserializeFromJson<T>()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L524-L531) - ·´ĞòÁĞ»¯ JSON Îª¶ÔÏó
-- [GetHttpClient()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L537-L540) - »ñÈ¡ HTTP ¿Í»§¶ËÊµÀı
+    // é…ç½®å’Œå·¥å…·æ–¹æ³•
+    void SetDefaultHeaders(Dictionary<string, string> headers);
+    void SetDefaultTimeout(TimeSpan timeout);
+    void ClearDefaultHeaders();
+    HttpClient GetHttpClient();
+    CookieContainer GetCookieContainer();
+    void AddHeaders(HttpRequestMessage request, Dictionary<string, string> headers);
+    string SerializeToJson(object obj);
+    T DeserializeFromJson<T>(string json);
 
-### 4. ÅúÁ¿ÇëÇó´¦Àí
+    // æ‰¹é‡è¯·æ±‚å¤„ç†
+    Task<List<BatchResponse>> SendBatchAsync(List<BatchRequest> requests);
+    Task<List<BatchResponse>> SendSequentialAsync(List<BatchRequest> requests);
 
-Ìá¹©ÅúÁ¿´¦Àí HTTP ÇëÇóµÄ¹¦ÄÜ£¬Ö§³Ö²¢ĞĞºÍË³ĞòÖ´ĞĞ¡£
+    // ç›‘æ§å’Œç»Ÿè®¡
+    HttpClientStatistics GetStatistics();
+    void EnableLogging(bool enable = true);
+}
+```
 
-**Ö÷Òª·½·¨£º**
-- [SendBatchAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L551-L599) - ²¢ĞĞ·¢ËÍ¶à¸ö HTTP ÇëÇó
-- [SendSequentialAsync()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L609-L644) - Ë³Ğò·¢ËÍ¶à¸ö HTTP ÇëÇó
+## æ„é€ å‡½æ•°
 
-### 5. ¼à¿ØºÍÍ³¼Æ
+```csharp
+/// <summary>
+/// åˆå§‹åŒ– HttpClientHelper ç±»çš„æ–°å®ä¾‹
+/// </summary>
+public HttpClientHelper();
 
-Ìá¹© HTTP ¿Í»§¶ËµÄ¼à¿ØºÍÍ³¼Æ¹¦ÄÜ¡£
+/// <summary>
+/// åˆå§‹åŒ– HttpClientHelper ç±»çš„æ–°å®ä¾‹ï¼Œå¹¶æŒ‡å®šè¶…æ—¶æ—¶é—´
+/// </summary>
+/// <param name="timeoutMilliseconds">è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰</param>
+public HttpClientHelper(int timeoutMilliseconds);
 
-**Ö÷Òª·½·¨£º**
-- [GetStatistics()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L654-L666) - »ñÈ¡ HTTP ¿Í»§¶ËÍ³¼ÆĞÅÏ¢
-- [EnableLogging()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L673-L677) - ÆôÓÃÇëÇóÈÕÖ¾¼ÇÂ¼
+/// <summary>
+/// åˆå§‹åŒ– HttpClientHelper ç±»çš„æ–°å®ä¾‹ï¼Œå¹¶æŒ‡å®šè¶…æ—¶æ—¶é—´å’Œæ˜¯å¦ä½¿ç”¨é»˜è®¤å‡­è¯
+/// </summary>
+/// <param name="timeoutMilliseconds">è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰</param>
+/// <param name="useDefaultCredentials">æ˜¯å¦ä½¿ç”¨é»˜è®¤å‡­è¯</param>
+public HttpClientHelper(int timeoutMilliseconds, bool useDefaultCredentials);
 
-## Êı¾İ½á¹¹
+/// <summary>
+/// åˆå§‹åŒ– HttpClientHelper ç±»çš„æ–°å®ä¾‹ï¼Œå¹¶æŒ‡å®šé…ç½®é€‰é¡¹
+/// </summary>
+/// <param name="options">HTTP å®¢æˆ·ç«¯é…ç½®é€‰é¡¹</param>
+public HttpClientHelper(HttpClientOptions options);
+```
 
-### ½á¹ûÀà
-- [DownloadProgress](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L700-L717) - ÏÂÔØ½ø¶ÈĞÅÏ¢
-- [DownloadResult](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L722-L744) - ÏÂÔØ½á¹û
-- [UploadProgress](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L749-L766) - ÉÏ´«½ø¶ÈĞÅÏ¢
-- [UploadResult](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L771-L793) - ÉÏ´«½á¹û
-- [BatchRequest](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L798-L819) - ÅúÁ¿ÇëÇó
-- [BatchResponse](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L824-L850) - ÅúÁ¿ÏìÓ¦
-- [HttpClientStatistics](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\HttpClientHelper.cs#L855-L892) - HTTP ¿Í»§¶ËÍ³¼ÆĞÅÏ¢
+## å±æ€§
 
-## Ê¹ÓÃ³¡¾°
+è¯¥ç±»æ²¡æœ‰å…¬å…±å±æ€§ã€‚
 
-1. **Web API µ÷ÓÃ** - ¼ò»¯Óë RESTful API µÄ½»»¥
-2. **ÎÄ¼ş´«Êä** - ÊµÏÖÎÄ¼şµÄÉÏ´«ºÍÏÂÔØ¹¦ÄÜ
-3. **ÅúÁ¿´¦Àí** - ²¢ĞĞ»òË³Ğò´¦Àí¶à¸ö HTTP ÇëÇó
-4. **°²È«Í¨ĞÅ** - Ö§³Ö¸÷ÖÖÈÏÖ¤»úÖÆµÄ HTTP ÇëÇó
-5. **¿É¿¿Í¨ĞÅ** - Í¨¹ıÖØÊÔ»úÖÆÌá¸ßÇëÇó³É¹¦ÂÊ
-6. **ĞÔÄÜÓÅ»¯** - Í¨¹ıÅäÖÃÓÅ»¯ HTTP ¿Í»§¶ËĞÔÄÜ
+## æ–¹æ³•
 
-## ×¢ÒâÊÂÏî
+### åŸºç¡€ HTTP è¯·æ±‚æ–¹æ³•
 
-1. ¸ÃÀàÊ¹ÓÃ¾²Ì¬ `HttpClient` ÊµÀı£¬×ñÑ­ .NET ×î¼ÑÊµ¼ù
-2. Ä¬ÈÏÆôÓÃÁË GZip ºÍ Deflate ×Ô¶¯½âÑ¹Ëõ
-3. Ä¬ÈÏ³¬Ê±Ê±¼äÎª 30 Ãë
-4. ÖØÊÔ»úÖÆ»á±ÜÃâ¶ÔÄ³Ğ©×´Ì¬Âë£¨Èç 400¡¢401¡¢403£©½øĞĞÖØÊÔ
-5. ÎÄ¼şÉÏ´«ºÍÏÂÔØÖ§³Ö½ø¶È»Øµ÷
-6. ÅúÁ¿ÇëÇóÖ§³Ö²¢·¢¿ØÖÆ
-7. JSON ĞòÁĞ»¯/·´ĞòÁĞ»¯Ê¹ÓÃ camelCase ÃüÃû²ßÂÔ
-8. ²¿·Ö¸ß¼¶¹¦ÄÜ£¨ÈçÈÕÖ¾¼ÇÂ¼£©ĞèÒª¶îÍâÊµÏÖ
+#### GetAsync
+
+```csharp
+/// <summary>
+/// å‘é€ GET è¯·æ±‚å¹¶å°†å“åº”ååºåˆ—åŒ–ä¸ºæŒ‡å®šç±»å‹
+/// </summary>
+/// <typeparam name="T">å“åº”æ•°æ®ç±»å‹</typeparam>
+/// <param name="url">è¯·æ±‚ URL</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ååºåˆ—åŒ–åçš„å“åº”å¯¹è±¡</returns>
+public async Task<T> GetAsync<T>(string url, Dictionary<string, string> headers = null);
+```
+
+#### GetStringAsync
+
+```csharp
+/// <summary>
+/// å‘é€ GET è¯·æ±‚å¹¶è·å–å­—ç¬¦ä¸²å“åº”
+/// </summary>
+/// <param name="url">è¯·æ±‚ URL</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>å“åº”å†…å®¹å­—ç¬¦ä¸²</returns>
+public async Task<string> GetStringAsync(string url, Dictionary<string, string> headers = null);
+```
+
+#### PostJsonAsync
+
+```csharp
+/// <summary>
+/// å‘é€ POST è¯·æ±‚ï¼Œå°†å¯¹è±¡åºåˆ—åŒ–ä¸º JSON å¹¶ä½œä¸ºè¯·æ±‚ä½“
+/// </summary>
+/// <typeparam name="T">å“åº”æ•°æ®ç±»å‹</typeparam>
+/// <param name="url">è¯·æ±‚ URL</param>
+/// <param name="data">è¦åºåˆ—åŒ–çš„å¯¹è±¡</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ååºåˆ—åŒ–åçš„å“åº”å¯¹è±¡</returns>
+public async Task<T> PostJsonAsync<T>(string url, object data, Dictionary<string, string> headers = null);
+```
+
+### é«˜çº§ HTTP è¯·æ±‚æ–¹æ³•
+
+#### GetWithRetryAsync
+
+```csharp
+/// <summary>
+/// å‘é€ GET è¯·æ±‚å¹¶è‡ªåŠ¨é‡è¯•æŒ‡å®šæ¬¡æ•°
+/// </summary>
+/// <typeparam name="T">å“åº”æ•°æ®ç±»å‹</typeparam>
+/// <param name="url">è¯·æ±‚ URL</param>
+/// <param name="retryCount">é‡è¯•æ¬¡æ•°ï¼Œé»˜è®¤ä¸º 3</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ååºåˆ—åŒ–åçš„å“åº”å¯¹è±¡</returns>
+public async Task<T> GetWithRetryAsync<T>(string url, int retryCount = 3, Dictionary<string, string> headers = null);
+```
+
+#### GetWithTimeoutAsync
+
+```csharp
+/// <summary>
+/// å‘é€ GET è¯·æ±‚å¹¶è®¾ç½®ç‰¹å®šè¶…æ—¶æ—¶é—´
+/// </summary>
+/// <typeparam name="T">å“åº”æ•°æ®ç±»å‹</typeparam>
+/// <param name="url">è¯·æ±‚ URL</param>
+/// <param name="timeout">è¶…æ—¶æ—¶é—´</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ååºåˆ—åŒ–åçš„å“åº”å¯¹è±¡</returns>
+public async Task<T> GetWithTimeoutAsync<T>(string url, TimeSpan timeout, Dictionary<string, string> headers = null);
+```
+
+#### GetWithBasicAuthAsync
+
+```csharp
+/// <summary>
+/// å‘é€å¸¦æœ‰ Basic è®¤è¯çš„ GET è¯·æ±‚
+/// </summary>
+/// <typeparam name="T">å“åº”æ•°æ®ç±»å‹</typeparam>
+/// <param name="url">è¯·æ±‚ URL</param>
+/// <param name="username">ç”¨æˆ·å</param>
+/// <param name="password">å¯†ç </param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ååºåˆ—åŒ–åçš„å“åº”å¯¹è±¡</returns>
+public async Task<T> GetWithBasicAuthAsync<T>(string url, string username, string password, Dictionary<string, string> headers = null);
+```
+
+### æ–‡ä»¶å¤„ç†æ–¹æ³•
+
+#### DownloadFileAsync
+
+```csharp
+/// <summary>
+/// ä¸‹è½½æ–‡ä»¶å¹¶ä¿å­˜åˆ°æŒ‡å®šè·¯å¾„
+/// </summary>
+/// <param name="url">æ–‡ä»¶ URL</param>
+/// <param name="savePath">ä¿å­˜è·¯å¾„</param>
+/// <param name="progressCallback">è¿›åº¦å›è°ƒå‡½æ•°ï¼ˆå¯é€‰ï¼‰</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ä¸‹è½½ç»“æœ</returns>
+public async Task<DownloadResult> DownloadFileAsync(string url, string savePath, Action<DownloadProgress> progressCallback = null, Dictionary<string, string> headers = null);
+```
+
+#### UploadFileAsync
+
+```csharp
+/// <summary>
+/// ä¸Šä¼ æ–‡ä»¶åˆ°æŒ‡å®š URL
+/// </summary>
+/// <param name="url">ä¸Šä¼  URL</param>
+/// <param name="filePath">æœ¬åœ°æ–‡ä»¶è·¯å¾„</param>
+/// <param name="fileName">ä¸Šä¼ æ–‡ä»¶åï¼ˆå¯é€‰ï¼Œé»˜è®¤ä¸ºåŸæ–‡ä»¶åï¼‰</param>
+/// <param name="headers">è‡ªå®šä¹‰è¯·æ±‚å¤´ï¼ˆå¯é€‰ï¼‰</param>
+/// <returns>ä¸Šä¼ ç»“æœ</returns>
+public async Task<UploadResult> UploadFileAsync(string url, string filePath, string fileName = null, Dictionary<string, string> headers = null);
+```
+
+### é…ç½®å’Œå·¥å…·æ–¹æ³•
+
+#### SetDefaultHeaders
+
+```csharp
+/// <summary>
+/// è®¾ç½®é»˜è®¤è¯·æ±‚å¤´
+/// </summary>
+/// <param name="headers">è¯·æ±‚å¤´å­—å…¸</param>
+public void SetDefaultHeaders(Dictionary<string, string> headers);
+```
+
+#### SetDefaultTimeout
+
+```csharp
+/// <summary>
+/// è®¾ç½®é»˜è®¤è¶…æ—¶æ—¶é—´
+/// </summary>
+/// <param name="timeout">è¶…æ—¶æ—¶é—´</param>
+public void SetDefaultTimeout(TimeSpan timeout);
+```
+
+### æ‰¹é‡è¯·æ±‚å¤„ç†
+
+#### SendBatchAsync
+
+```csharp
+/// <summary>
+/// å¹¶è¡Œå‘é€æ‰¹é‡è¯·æ±‚
+/// </summary>
+/// <param name="requests">è¯·æ±‚åˆ—è¡¨</param>
+/// <returns>å“åº”åˆ—è¡¨</returns>
+public async Task<List<BatchResponse>> SendBatchAsync(List<BatchRequest> requests);
+```
+
+#### SendSequentialAsync
+
+```csharp
+/// <summary>
+/// é¡ºåºå‘é€æ‰¹é‡è¯·æ±‚
+/// </summary>
+/// <param name="requests">è¯·æ±‚åˆ—è¡¨</param>
+/// <returns>å“åº”åˆ—è¡¨</returns>
+public async Task<List<BatchResponse>> SendSequentialAsync(List<BatchRequest> requests);
+```
+
+### ç›‘æ§å’Œç»Ÿè®¡
+
+#### GetStatistics
+
+```csharp
+/// <summary>
+/// è·å– HTTP å®¢æˆ·ç«¯ç»Ÿè®¡ä¿¡æ¯
+/// </summary>
+/// <returns>ç»Ÿè®¡ä¿¡æ¯</returns>
+public HttpClientStatistics GetStatistics();
+```
+
+## æ•°æ®ç»“æ„
+
+### DownloadProgress
+
+```csharp
+/// <summary>
+/// ä¸‹è½½è¿›åº¦ä¿¡æ¯
+/// </summary>
+public class DownloadProgress
+{
+    /// <summary>
+    /// æ€»å­—èŠ‚æ•°
+    /// </summary>
+    public long TotalBytes { get; set; }
+
+    /// <summary>
+    /// å·²ä¸‹è½½å­—èŠ‚æ•°
+    /// </summary>
+    public long DownloadedBytes { get; set; }
+
+    /// <summary>
+    /// è¿›åº¦ç™¾åˆ†æ¯”
+    /// </summary>
+    public int ProgressPercentage { get; set; }
+}
+```
+
+### UploadProgress
+
+```csharp
+/// <summary>
+/// ä¸Šä¼ è¿›åº¦ä¿¡æ¯
+/// </summary>
+public class UploadProgress
+{
+    /// <summary>
+    /// æ€»å­—èŠ‚æ•°
+    /// </summary>
+    public long TotalBytes { get; set; }
+
+    /// <summary>
+    /// å·²ä¸Šä¼ å­—èŠ‚æ•°
+    /// </summary>
+    public long UploadedBytes { get; set; }
+
+    /// <summary>
+    /// è¿›åº¦ç™¾åˆ†æ¯”
+    /// </summary>
+    public int ProgressPercentage { get; set; }
+}
+```
+
+### BatchRequest
+
+```csharp
+/// <summary>
+/// æ‰¹é‡è¯·æ±‚
+/// </summary>
+public class BatchRequest
+{
+    /// <summary>
+    /// HTTP æ–¹æ³•
+    /// </summary>
+    public HttpMethod Method { get; set; }
+
+    /// <summary>
+    /// URL
+    /// </summary>
+    public string Url { get; set; }
+
+    /// <summary>
+    /// è¯·æ±‚å†…å®¹
+    /// </summary>
+    public HttpContent Content { get; set; }
+
+    /// <summary>
+    /// è¯·æ±‚å¤´
+    /// </summary>
+    public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+}
+```
+
+### BatchResponse
+
+```csharp
+/// <summary>
+/// æ‰¹é‡å“åº”
+/// </summary>
+public class BatchResponse
+{
+    /// <summary>
+    /// è¯·æ±‚
+    /// </summary>
+    public BatchRequest Request { get; set; }
+
+    /// <summary>
+    /// HTTP å“åº”
+    /// </summary>
+    public HttpResponseMessage Response { get; set; }
+
+    /// <summary>
+    /// å“åº”å†…å®¹
+    /// </summary>
+    public string Content { get; set; }
+
+    /// <summary>
+    /// æ˜¯å¦æˆåŠŸ
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// é”™è¯¯ä¿¡æ¯
+    /// </summary>
+    public string ErrorMessage { get; set; }
+}
+```
+
+## ä½¿ç”¨ç¤ºä¾‹
+
+### åŸºç¡€ GET è¯·æ±‚
+
+```csharp
+var httpClientHelper = new HttpClientHelper();
+var result = await httpClientHelper.GetAsync<UserInfo>("https://api.example.com/users/1");
+```
+
+### å¸¦ JSON æ•°æ®çš„ POST è¯·æ±‚
+
+```csharp
+var userData = new { Name = "John Doe", Email = "john@example.com" };
+var result = await httpClientHelper.PostJsonAsync<CreateUserResponse>("https://api.example.com/users", userData);
+```
+
+### å¸¦é‡è¯•æœºåˆ¶çš„è¯·æ±‚
+
+```csharp
+var result = await httpClientHelper.GetWithRetryAsync<DataModel>("https://api.example.com/data", retryCount: 5);
+```
+
+### å¸¦è®¤è¯çš„è¯·æ±‚
+
+```csharp
+var result = await httpClientHelper.GetWithBasicAuthAsync<ProtectedData>(
+    "https://api.example.com/protected", "username", "password");
+```
+
+### æ–‡ä»¶ä¸‹è½½
+
+```csharp
+var result = await httpClientHelper.DownloadFileAsync(
+    "https://example.com/file.pdf", 
+    @"C:\Downloads\file.pdf",
+    progress => Console.WriteLine($"ä¸‹è½½è¿›åº¦: {progress.ProgressPercentage}%")
+);
+```
+
+### æ‰¹é‡è¯·æ±‚
+
+```csharp
+var requests = new List<BatchRequest>
+{
+    new BatchRequest { Method = HttpMethod.Get, Url = "https://api.example.com/users/1" },
+    new BatchRequest { Method = HttpMethod.Get, Url = "https://api.example.com/products/2" }
+};
+
+var responses = await httpClientHelper.SendBatchAsync(requests);
+foreach (var response in responses)
+{
+    Console.WriteLine($"URL: {response.Request.Url}, Success: {response.Success}");
+}
+```
+
+## æœ€ä½³å®è·µ
+
+1. **å•ä¾‹æ¨¡å¼**ï¼šæ¨èåœ¨åº”ç”¨ç¨‹åºä¸­ä½¿ç”¨ HttpClientHelper çš„å•ä¾‹å®ä¾‹ï¼Œé¿å…é¢‘ç¹åˆ›å»ºå’Œé”€æ¯ HttpClient å¯¹è±¡ã€‚
+
+2. **ä½¿ç”¨ using è¯­å¥**ï¼šåœ¨ä¸å†éœ€è¦ HttpClientHelper å®ä¾‹æ—¶ï¼Œä½¿ç”¨ using è¯­å¥æˆ–æ‰‹åŠ¨è°ƒç”¨ Dispose() æ–¹æ³•é‡Šæ”¾èµ„æºã€‚
+
+```csharp
+using (var httpClientHelper = new HttpClientHelper())
+{
+    // ä½¿ç”¨ httpClientHelper å‘é€è¯·æ±‚
+}
+```
+
+3. **é…ç½®é»˜è®¤è¶…æ—¶**ï¼šæ ¹æ®å®é™…éœ€æ±‚è®¾ç½®åˆç†çš„é»˜è®¤è¶…æ—¶æ—¶é—´ã€‚
+
+```csharp
+var httpClientHelper = new HttpClientHelper();
+httpClientHelper.SetDefaultTimeout(TimeSpan.FromSeconds(30));
+```
+
+4. **å¤„ç†å¼‚å¸¸**ï¼šæ‰€æœ‰å¼‚æ­¥æ–¹æ³•éƒ½å¯èƒ½æŠ›å‡ºå¼‚å¸¸ï¼Œè¯·ç¡®ä¿åœ¨è°ƒç”¨æ—¶è¿›è¡Œé€‚å½“çš„å¼‚å¸¸å¤„ç†ã€‚
+
+```csharp
+try
+{
+    var result = await httpClientHelper.GetAsync<Data>(url);
+    // å¤„ç†ç»“æœ
+}
+catch (HttpRequestException ex)
+{
+    // å¤„ç† HTTP è¯·æ±‚å¼‚å¸¸
+}
+catch (TaskCanceledException ex)
+{
+    // å¤„ç†è¶…æ—¶å¼‚å¸¸
+}
+catch (Exception ex)
+{
+    // å¤„ç†å…¶ä»–å¼‚å¸¸
+}
+```
+
+5. **è®¾ç½®é»˜è®¤è¯·æ±‚å¤´**ï¼šä¸ºæ‰€æœ‰è¯·æ±‚è®¾ç½®é€šç”¨çš„è¯·æ±‚å¤´ï¼Œå¦‚ Content-Typeã€Accept ç­‰ã€‚
+
+```csharp
+httpClientHelper.SetDefaultHeaders(new Dictionary<string, string>
+{
+    { "Content-Type", "application/json" },
+    { "Accept", "application/json" },
+    { "User-Agent", "MyApplication/1.0" }
+});
+```
+
+## æ³¨æ„äº‹é¡¹
+
+- **çº¿ç¨‹å®‰å…¨**ï¼šHttpClientHelper å®ä¾‹æœ¬èº«ä¸æ˜¯çº¿ç¨‹å®‰å…¨çš„ã€‚åœ¨å¤šçº¿ç¨‹ç¯å¢ƒä¸­ä½¿ç”¨æ—¶ï¼Œè¯·ç¡®ä¿é€‚å½“çš„åŒæ­¥æœºåˆ¶ï¼Œæˆ–è€…ä¸ºæ¯ä¸ªçº¿ç¨‹åˆ›å»ºå•ç‹¬çš„å®ä¾‹ã€‚
+
+- **è¿æ¥æ± **ï¼šHttpClientHelper å†…éƒ¨ä½¿ç”¨çš„ HttpClient å®ä¾‹ä¼šç®¡ç†è¿æ¥æ± ï¼Œæ— éœ€æ‰‹åŠ¨ç®¡ç†è¿æ¥ã€‚
+
+- **Cookie å¤„ç†**ï¼šé»˜è®¤å¯ç”¨ Cookie å¤„ç†ï¼Œå¯ä»¥é€šè¿‡ GetCookieContainer() æ–¹æ³•è®¿é—®å’Œæ“ä½œ Cookieã€‚
+
+- **æ—¥å¿—è®°å½•**ï¼šç±»å†…éƒ¨ä½¿ç”¨ ILogger æ¥å£è¿›è¡Œæ—¥å¿—è®°å½•ï¼Œå»ºè®®åœ¨å®é™…åº”ç”¨ä¸­æä¾›åˆé€‚çš„æ—¥å¿—è®°å½•å™¨å®ç°ã€‚
+
+- **é‡è¯•ç­–ç•¥**ï¼šé‡è¯•æœºåˆ¶é€‚ç”¨äºä¸´æ—¶ç½‘ç»œé—®é¢˜ï¼Œä½†ä¸åº”è¯¥è¿‡åº¦ä¾èµ–ï¼Œåº”ç¡®ä¿ API ç«¯ç‚¹æ˜¯å¹‚ç­‰çš„ã€‚
+
+## ç‰ˆæœ¬å…¼å®¹æ€§
+
+- .NET Framework 4.6.1 åŠä»¥ä¸Šç‰ˆæœ¬
+- .NET Core 2.0 åŠä»¥ä¸Šç‰ˆæœ¬
+- .NET 5.0 åŠä»¥ä¸Šç‰ˆæœ¬
+
+## æ•…éšœæ’é™¤
+
+1. **è¯·æ±‚è¶…æ—¶**ï¼šå¦‚æœè¯·æ±‚ç»å¸¸è¶…æ—¶ï¼Œå¯ä»¥å¢åŠ é»˜è®¤è¶…æ—¶æ—¶é—´æˆ–ä¸ºç‰¹å®šè¯·æ±‚è®¾ç½®æ›´é•¿çš„è¶…æ—¶æ—¶é—´ã€‚
+
+2. **è®¤è¯å¤±è´¥**ï¼šæ£€æŸ¥ç”¨æˆ·åå’Œå¯†ç æ˜¯å¦æ­£ç¡®ï¼Œä»¥åŠè®¤è¯æ–¹å¼æ˜¯å¦ä¸ API è¦æ±‚ä¸€è‡´ã€‚
+
+3. **ç½‘ç»œè¿æ¥é—®é¢˜**ï¼šæ£€æŸ¥ç½‘ç»œè¿æ¥çŠ¶æ€ï¼Œä»¥åŠæ˜¯å¦å­˜åœ¨é˜²ç«å¢™æˆ–ä»£ç†æœåŠ¡å™¨é˜»æ­¢äº†è¯·æ±‚ã€‚
+
+4. **æœåŠ¡å™¨é”™è¯¯**ï¼šæ£€æŸ¥å“åº”çŠ¶æ€ç å’Œå“åº”å†…å®¹ï¼Œåˆ†ææœåŠ¡å™¨è¿”å›çš„é”™è¯¯ä¿¡æ¯ã€‚
+
+5. **åºåˆ—åŒ–/ååºåˆ—åŒ–é—®é¢˜**ï¼šç¡®ä¿ JSON æ•°æ®ç»“æ„ä¸ç›®æ ‡ç±»å‹åŒ¹é…ï¼Œæ£€æŸ¥æ˜¯å¦éœ€è¦è‡ªå®šä¹‰åºåˆ—åŒ–è®¾ç½®ã€‚

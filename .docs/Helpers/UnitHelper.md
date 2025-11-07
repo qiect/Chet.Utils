@@ -1,170 +1,515 @@
-# UnitHelper Àà¹¦ÄÜÎÄµµ
+# UnitHelper å¸®åŠ©ç±»
 
-## ¸ÅÊö
+## æ¦‚è¿°
 
-[UnitHelper](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L7-L837) ÊÇÒ»¸ö¾²Ì¬¹¤¾ßÀà£¬×¨ÃÅÓÃÓÚ¸÷ÖÖ¼ÆÁ¿µ¥Î»Ö®¼äµÄ×ª»»¡£¸ÃÀàÖ§³Ö³¤¶È¡¢»õ±Ò¡¢ÖÊÁ¿¡¢½Ç¶È¡¢½øÖÆ¡¢Ãæ»ı¡¢Ìå»ı¡¢ÎÂ¶È¡¢ËÙ¶È¡¢ÈÈÄÜ¡¢¹¦ÂÊ¡¢Ñ¹Ç¿¡¢Á¦µÈ¶àÖÖµ¥Î»µÄ×ª»»£¬Ìá¹©ÁËÈ«ÃæµÄµ¥Î»×ª»»¹¦ÄÜ£¬Ö¼ÔÚ¼ò»¯¿ª·¢ÖĞ³£¼ûµÄµ¥Î»»»ËãĞèÇó¡£
+`UnitHelper` æ˜¯ä¸€ä¸ªå…¨é¢çš„å•ä½è½¬æ¢å·¥å…·ç±»ï¼Œæä¾›äº†ä¸°å¯Œçš„è®¡é‡å•ä½è½¬æ¢åŠŸèƒ½ï¼Œæ”¯æŒé•¿åº¦ã€è´¨é‡ã€é¢ç§¯ã€ä½“ç§¯ã€æ¸©åº¦ã€é€Ÿåº¦ã€èƒ½é‡ã€åŠŸç‡ã€å‹å¼ºã€åŠ›ç­‰å¤šç§ç‰©ç†é‡çš„å•ä½è½¬æ¢ã€‚è¯¥ç±»ä½¿ç”¨é™æ€æ–¹æ³•è®¾è®¡ï¼Œæ— éœ€å®ä¾‹åŒ–å³å¯ç›´æ¥ä½¿ç”¨ï¼Œé€‚ç”¨äºå„ç§éœ€è¦å•ä½è½¬æ¢çš„åº”ç”¨åœºæ™¯ã€‚
 
-## Ö÷Òª¹¦ÄÜÄ£¿é
+## ä¸»è¦ç‰¹æ€§
 
-### 1. ³¤¶È×ª»»
+- æ”¯æŒ 10 ç§ä¸åŒç‰©ç†é‡çš„å•ä½è½¬æ¢
+- æä¾›å…¨é¢çš„å•ä½æšä¸¾å’Œè½¬æ¢æ–¹æ³•
+- æ”¯æŒè·å–å•ä½ç¬¦å·å’Œåç§°
+- åŒ…å«è¿›åˆ¶è½¬æ¢åŠŸèƒ½
+- æ”¯æŒè´§å¸è½¬æ¢ï¼ˆåŒ…å«å¸¸ç”¨è´§å¸ç¬¦å·ï¼‰
+- æ‰€æœ‰æ–¹æ³•å‡ä¸ºé™æ€æ–¹æ³•ï¼Œä½¿ç”¨ä¾¿æ·
 
-Ö§³Ö¹ú¼Êµ¥Î»ÖÆºÍÓ¢ÖÆ³¤¶Èµ¥Î»Ö®¼äµÄ×ª»»¡£
+## ç±»å®šä¹‰
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [LengthUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L17-L27) - ³¤¶Èµ¥Î»Ã¶¾Ù£¨ºÁÃ×¡¢ÀåÃ×¡¢Ã×¡¢Ç§Ã×¡¢Ó¢´ç¡¢Ó¢³ß¡¢Âë¡¢Ó¢Àï¡¢º£Àï£©
+```csharp
+public static class UnitHelper
+{
+    // è½¬æ¢æ–¹æ³•å’Œæšä¸¾å®šä¹‰
+}
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertLength()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L36-L63) - ³¤¶Èµ¥Î»×ª»»
+## å•ä½æšä¸¾
 
-### 2. »õ±Ò×ª»»
+### é•¿åº¦å•ä½
 
-Ö§³Ö¶àÖÖ¹ú¼ÊÖ÷Òª»õ±ÒÖ®¼äµÄ×ª»»¡£
+```csharp
+public enum LengthUnit
+{
+    Millimeter,    // æ¯«ç±³
+    Centimeter,    // å˜ç±³
+    Meter,         // ç±³
+    Kilometer,     // åƒç±³
+    Inch,          // è‹±å¯¸
+    Foot,          // è‹±å°º
+    Yard,          // ç 
+    Mile,          // è‹±é‡Œ
+    NauticalMile   // æµ·é‡Œ
+}
+```
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [CurrencyUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L74-L85) - »õ±Òµ¥Î»Ã¶¾Ù£¨ÈËÃñ±Ò¡¢ÃÀÔª¡¢Å·Ôª¡¢Ó¢°÷¡¢ÈÕÔª¡¢º«Ôª¡¢°ÄÔª¡¢¼ÓÔª¡¢ÈğÊ¿·¨ÀÉ¡¢¸Û±Ò£©
+### è´¨é‡å•ä½
 
-**Ö÷Òª·½·¨£º**
-- [ConvertCurrency()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L105-L111) - »õ±Òµ¥Î»×ª»»
-- [GetCurrencySymbol()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L118-L134) - »ñÈ¡»õ±Ò·ûºÅ
+```csharp
+public enum MassUnit
+{
+    Milligram,   // æ¯«å…‹
+    Gram,        // å…‹
+    Kilogram,    // åƒå…‹
+    Ton,         // å¨
+    Ounce,       // ç›å¸
+    Pound,       // ç£…
+    Stone        // è‹±çŸ³
+}
+```
 
-### 3. ÖÊÁ¿×ª»»
+### è§’åº¦å•ä½
 
-Ö§³Ö¹ú¼Êµ¥Î»ÖÆºÍÓ¢ÖÆÖÊÁ¿µ¥Î»Ö®¼äµÄ×ª»»¡£
+```csharp
+public enum AngleUnit
+{
+    Degree,      // åº¦
+    Radian,      // å¼§åº¦
+    Gradian      // æ¢¯åº¦
+}
+```
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [MassUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L145-L153) - ÖÊÁ¿µ¥Î»Ã¶¾Ù£¨ºÁ¿Ë¡¢¿Ë¡¢Ç§¿Ë¡¢¶Ö¡¢°»Ë¾¡¢°õ¡¢Ó¢Ê¯£©
+### è¿›åˆ¶å•ä½
 
-**Ö÷Òª·½·¨£º**
-- [ConvertMass()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L162-L189) - ÖÊÁ¿µ¥Î»×ª»»
+```csharp
+public enum NumberBase
+{
+    Binary,      // äºŒè¿›åˆ¶
+    Octal,       // å…«è¿›åˆ¶
+    Decimal,     // åè¿›åˆ¶
+    Hexadecimal  // åå…­è¿›åˆ¶
+}
+```
 
-### 4. ½Ç¶È×ª»»
+### é¢ç§¯å•ä½
 
-Ö§³Ö¶àÖÖ½Ç¶Èµ¥Î»Ö®¼äµÄ×ª»»¡£
+```csharp
+public enum AreaUnit
+{
+    SquareMeter,      // å¹³æ–¹ç±³
+    SquareKilometer,  // å¹³æ–¹å…¬é‡Œ
+    SquareCentimeter, // å¹³æ–¹å˜ç±³
+    SquareMillimeter, // å¹³æ–¹æ¯«ç±³
+    SquareInch,       // å¹³æ–¹è‹±å¯¸
+    SquareFoot,       // å¹³æ–¹è‹±å°º
+    SquareYard,       // å¹³æ–¹ç 
+    SquareMile,       // å¹³æ–¹è‹±é‡Œ
+    Acre,             // è‹±äº©
+    Hectare           // å…¬é¡·
+}
+```
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [AngleUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L200-L206) - ½Ç¶Èµ¥Î»Ã¶¾Ù£¨¶È¡¢»¡¶È¡¢°Ù·Ö¶È¡¢½Ç·Ö¡¢½ÇÃë£©
+### ä½“ç§¯å•ä½
 
-**Ö÷Òª·½·¨£º**
-- [ConvertAngle()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L215-L242) - ½Ç¶Èµ¥Î»×ª»»
+```csharp
+public enum VolumeUnit
+{
+    Liter,            // å‡
+    Milliliter,       // æ¯«å‡
+    CubicMeter,       // ç«‹æ–¹ç±³
+    CubicCentimeter,  // ç«‹æ–¹å˜ç±³
+    CubicInch,        // ç«‹æ–¹è‹±å¯¸
+    CubicFoot,        // ç«‹æ–¹è‹±å°º
+    CubicYard,        // ç«‹æ–¹ç 
+    USGallon,         // ç¾åˆ¶åŠ ä»‘
+    UKGallon          // è‹±åˆ¶åŠ ä»‘
+}
+```
 
-### 5. ½øÖÆ×ª»»
+### æ¸©åº¦å•ä½
 
-Ö§³Ö³£¼ûÊı×Ö½øÖÆÖ®¼äµÄ×ª»»¡£
+```csharp
+public enum TemperatureUnit
+{
+    Celsius,    // æ‘„æ°åº¦
+    Fahrenheit, // åæ°åº¦
+    Kelvin      // å¼€å°”æ–‡
+}
+```
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [NumberBase](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L252-L257) - Êı×Ö½øÖÆÃ¶¾Ù£¨¶ş½øÖÆ¡¢°Ë½øÖÆ¡¢Ê®½øÖÆ¡¢Ê®Áù½øÖÆ£©
+### é€Ÿåº¦å•ä½
 
-**Ö÷Òª·½·¨£º**
-- [ConvertBase()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L266-L272) - ½øÖÆ×ª»»
-- [ConvertFromDecimal()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L280-L283) - Ê®½øÖÆ×ª»»ÎªÆäËû½øÖÆ
-- [ConvertToDecimal()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L291-L294) - ÆäËû½øÖÆ×ª»»ÎªÊ®½øÖÆ
+```csharp
+public enum SpeedUnit
+{
+    MetersPerSecond,   // ç±³/ç§’
+    KilometersPerHour, // å…¬é‡Œ/å°æ—¶
+    MilesPerHour       // è‹±é‡Œ/å°æ—¶
+}
+```
 
-### 6. Ãæ»ı×ª»»
+### èƒ½é‡å•ä½
 
-Ö§³Ö¹ú¼Êµ¥Î»ÖÆºÍÓ¢ÖÆÃæ»ıµ¥Î»Ö®¼äµÄ×ª»»¡£
+```csharp
+public enum EnergyUnit
+{
+    Joule,         // ç„¦è€³
+    Kilojoule,     // åƒç„¦è€³
+    Kilocalorie,   // åƒå¡
+    KilowattHour   // åƒç“¦æ—¶
+}
+```
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [AreaUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L305-L316) - Ãæ»ıµ¥Î»Ã¶¾Ù£¨Æ½·½ºÁÃ×¡¢Æ½·½ÀåÃ×¡¢Æ½·½Ã×¡¢¹«Çê¡¢Æ½·½¹«Àï¡¢Æ½·½Ó¢´ç¡¢Æ½·½Ó¢³ß¡¢Æ½·½Âë¡¢Ó¢Ä¶¡¢Æ½·½Ó¢Àï£©
+### åŠŸç‡å•ä½
 
-**Ö÷Òª·½·¨£º**
-- [ConvertArea()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L325-L352) - Ãæ»ıµ¥Î»×ª»»
+```csharp
+public enum PowerUnit
+{
+    Watt,           // ç“¦ç‰¹
+    Kilowatt,       // åƒç“¦
+    Megawatt,       // å…†ç“¦
+    Horsepower,     // é©¬åŠ›
+    BTUPerHour      // è‹±çƒ­å•ä½/å°æ—¶
+}
+```
 
-### 7. Ìå»ı×ª»»
+### å‹å¼ºå•ä½
 
-Ö§³Ö¹ú¼Êµ¥Î»ÖÆºÍÓ¢ÖÆÌå»ıµ¥Î»Ö®¼äµÄ×ª»»¡£
+```csharp
+public enum PressureUnit
+{
+    Pascal,         // å¸•æ–¯å¡
+    Kilopascal,     // åƒå¸•
+    Megapascal,     // å…†å¸•
+    Bar,            // å·´
+    Atmosphere,     // æ ‡å‡†å¤§æ°”å‹
+    PSI,            // ç£…åŠ›/å¹³æ–¹è‹±å¯¸
+    Torr,           // æ‰˜
+    mmHg            // æ¯«ç±³æ±æŸ±
+}
+```
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [VolumeUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L363-L376) - Ìå»ıµ¥Î»Ã¶¾Ù£¨Á¢·½ºÁÃ×¡¢Á¢·½ÀåÃ×¡¢Á¢·½Ã×¡¢Éı¡¢ºÁÉı¡¢Á¢·½Ó¢´ç¡¢Á¢·½Ó¢³ß¡¢Á¢·½Âë¡¢ÃÀÖÆ¼ÓÂØ¡¢Ó¢ÖÆ¼ÓÂØ¡¢ÃÀÖÆ¿äÍÑ¡¢ÃÀÖÆÆ·ÍÑ£©
+### åŠ›å•ä½
 
-**Ö÷Òª·½·¨£º**
-- [ConvertVolume()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L385-L412) - Ìå»ıµ¥Î»×ª»»
+```csharp
+public enum ForceUnit
+{
+    Newton,        // ç‰›é¡¿
+    Kilonewton,    // åƒç‰›é¡¿
+    Dyne,          // è¾¾å› 
+    PoundForce,    // ç£…åŠ›
+    KilogramForce  // åƒå…‹åŠ›
+}
+```
 
-### 8. ÎÂ¶È×ª»»
+## è½¬æ¢æ–¹æ³•
 
-Ö§³Ö³£¼ûÎÂ¶Èµ¥Î»Ö®¼äµÄ×ª»»¡£
+### é•¿åº¦è½¬æ¢
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [TemperatureUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L423-L427) - ÎÂ¶Èµ¥Î»Ã¶¾Ù£¨ÉãÊÏ¶È¡¢»ªÊÏ¶È¡¢¿ª¶ûÎÄ£©
+```csharp
+public static double ConvertLength(double value, LengthUnit from, LengthUnit to)
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertTemperature()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L436-L461) - ÎÂ¶Èµ¥Î»×ª»»
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆLengthUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆLengthUnitæšä¸¾ï¼‰
 
-### 9. ËÙ¶È×ª»»
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
 
-Ö§³Ö³£¼ûËÙ¶Èµ¥Î»Ö®¼äµÄ×ª»»¡£
+### è´§å¸è½¬æ¢
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [SpeedUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L472-L478) - ËÙ¶Èµ¥Î»Ã¶¾Ù£¨Ã×/Ãë¡¢¹«Àï/Ğ¡Ê±¡¢Ó¢Àï/Ğ¡Ê±¡¢Ó¢³ß/Ãë¡¢½Ú£©
+```csharp
+public static double ConvertCurrency(double value, string fromCurrency, string toCurrency)
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertSpeed()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L487-L512) - ËÙ¶Èµ¥Î»×ª»»
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `fromCurrency`: æºè´§å¸ä»£ç ï¼ˆå¦‚"CNY", "USD"ç­‰ï¼‰
+- `toCurrency`: ç›®æ ‡è´§å¸ä»£ç ï¼ˆå¦‚"CNY", "USD"ç­‰ï¼‰
 
-### 10. ÈÈÄÜ×ª»»
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
 
-Ö§³Ö³£¼ûÈÈÄÜµ¥Î»Ö®¼äµÄ×ª»»¡£
+### è´¨é‡è½¬æ¢
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [EnergyUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L523-L532) - ÈÈÄÜµ¥Î»Ã¶¾Ù£¨½¹¶ú¡¢Ç§½¹¡¢¿¨Â·Àï¡¢Ç§¿¨¡¢ÍßÊ±¡¢Ç§ÍßÊ±¡¢Ó¢¹úÈÈÁ¿µ¥Î»¡¢µç×Ó·üÌØ£©
+```csharp
+public static double ConvertMass(double value, MassUnit from, MassUnit to)
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertEnergy()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L541-L568) - ÈÈÄÜµ¥Î»×ª»»
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆMassUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆMassUnitæšä¸¾ï¼‰
 
-### 11. ¹¦ÂÊ×ª»»
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
 
-Ö§³Ö³£¼û¹¦ÂÊµ¥Î»Ö®¼äµÄ×ª»»¡£
+### è§’åº¦è½¬æ¢
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [PowerUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L579-L585) - ¹¦ÂÊµ¥Î»Ã¶¾Ù£¨ÍßÌØ¡¢Ç§Íß¡¢Õ×Íß¡¢ÂíÁ¦¡¢Ó¢ÈÈµ¥Î»/Ğ¡Ê±£©
+```csharp
+public static double ConvertAngle(double value, AngleUnit from, AngleUnit to)
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertPower()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L594-L619) - ¹¦ÂÊµ¥Î»×ª»»
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆAngleUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆAngleUnitæšä¸¾ï¼‰
 
-### 12. Ñ¹Ç¿×ª»»
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
 
-Ö§³Ö³£¼ûÑ¹Ç¿µ¥Î»Ö®¼äµÄ×ª»»¡£
+### è¿›åˆ¶è½¬æ¢
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [PressureUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L630-L639) - Ñ¹Ç¿µ¥Î»Ã¶¾Ù£¨ÅÁË¹¿¨¡¢Ç§ÅÁ¡¢Õ×ÅÁ¡¢°Í¡¢±ê×¼´óÆøÑ¹¡¢°õÁ¦/Æ½·½Ó¢´ç¡¢ÍĞ¡¢ºÁÃ×¹¯Öù£©
+```csharp
+public static string ConvertBase(string value, NumberBase fromBase, NumberBase toBase)
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertPressure()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L648-L673) - Ñ¹Ç¿µ¥Î»×ª»»
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼å­—ç¬¦ä¸²
+- `fromBase`: æºè¿›åˆ¶ï¼ˆNumberBaseæšä¸¾ï¼‰
+- `toBase`: ç›®æ ‡è¿›åˆ¶ï¼ˆNumberBaseæšä¸¾ï¼‰
 
-### 13. Á¦×ª»»
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼å­—ç¬¦ä¸²
 
-Ö§³Ö³£¼ûÁ¦µ¥Î»Ö®¼äµÄ×ª»»¡£
+### é¢ç§¯è½¬æ¢
 
-**Ã¶¾ÙÀàĞÍ£º**
-- [ForceUnit](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L684-L690) - Á¦µ¥Î»Ã¶¾Ù£¨Å£¶Ù¡¢Ç§Å£¶Ù¡¢´ïÒò¡¢°õÁ¦¡¢Ç§¿ËÁ¦£©
+```csharp
+public static double ConvertArea(double value, AreaUnit from, AreaUnit to)
+```
 
-**Ö÷Òª·½·¨£º**
-- [ConvertForce()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L699-L724) - Á¦µ¥Î»×ª»»
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆAreaUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆAreaUnitæšä¸¾ï¼‰
 
-### 14. ÊµÓÃ¹¤¾ß·½·¨
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
 
-Ìá¹©µ¥Î»·ûºÅºÍÃû³Æ»ñÈ¡¹¦ÄÜ¡£
+### ä½“ç§¯è½¬æ¢
 
-**Ö÷Òª·½·¨£º**
-- [GetUnitSymbol()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L734-L781) - »ñÈ¡µ¥Î»·ûºÅ
-- [GetUnitName()](file://E:\Project\Chet\Chet.Utils\Chet.Utils\Helpers\UnitHelper.cs#L790-L835) - »ñÈ¡µ¥Î»Ãû³Æ
+```csharp
+public static double ConvertVolume(double value, VolumeUnit from, VolumeUnit to)
+```
 
-## Ê¹ÓÃ³¡¾°
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆVolumeUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆVolumeUnitæšä¸¾ï¼‰
 
-1. **¿ÆÑ§¼ÆËã** - ½øĞĞÎïÀí¡¢»¯Ñ§µÈ¿ÆÑ§¼ÆËãÊ±µÄµ¥Î»×ª»»
-2. **¹¤³ÌÓ¦ÓÃ** - ¹¤³ÌÉè¼ÆºÍ¼ÆËãÖĞµÄµ¥Î»»»Ëã
-3. **¹ú¼ÊÃ³Ò×** - ¿ç¹úÃ³Ò×ÖĞµÄ»õ±ÒºÍ¶ÈÁ¿ºâ×ª»»
-4. **½ÌÓı¹¤¾ß** - ½ÌÑ§ºÍÑ§Ï°ÖĞµÄµ¥Î»»»ËãÑİÊ¾
-5. **Êı¾İ´¦Àí** - ´¦ÀíÀ´×Ô²»Í¬¹ú¼Ò»òÏµÍ³µÄÊı¾İÊ±µÄµ¥Î»±ê×¼»¯
-6. **ÒÆ¶¯Ó¦ÓÃ** - ÎªÓÃ»§Ìá¹©±ã½İµÄµ¥Î»×ª»»¹¦ÄÜ
-7. **×ÀÃæÈí¼ş** - ¼¯³Éµ¥Î»×ª»»¹¦ÄÜµÄ¼ÆËãÆ÷»ò¹¤¾ßÈí¼ş
-8. **Web·şÎñ** - Ìá¹©µ¥Î»×ª»»API·şÎñ
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
 
-## ×¢ÒâÊÂÏî
+### æ¸©åº¦è½¬æ¢
 
-1. »õ±Ò»ãÂÊÎª¾²Ì¬Öµ£¬Êµ¼ÊÓ¦ÓÃÖĞÓ¦´ÓAPI»ñÈ¡ÊµÊ±»ãÂÊ
-2. ËùÓĞ×ª»»·½·¨Ê¹ÓÃdoubleÀàĞÍ½øĞĞ¼ÆËã£¬¿ÉÄÜ´æÔÚ¾«¶ÈÎÊÌâ
-3. ÎÂ¶È×ª»»²ÉÓÃ±ê×¼ÎïÀí¹«Ê½
-4. ½Ç¶È×ª»»Ö§³Ö»¡¶ÈºÍ¶ÈÖ®¼äµÄÏà»¥×ª»»
-5. ½øÖÆ×ª»»½öÖ§³ÖÕûÊıÀàĞÍµÄ×ª»»
-6. Ñ¹Ç¿×ª»»ÖĞTorrºÍmmHgÊÓÎªµÈĞ§µ¥Î»
-7. ²¿·Öµ¥Î»×ª»»ÏµÊıÎª½üËÆÖµ£¬¸ß¾«¶ÈÓ¦ÓÃĞèÊ¹ÓÃ¸ü¾«È·µÄÏµÊı
-8. ·½·¨²ÎÊıĞèÒªÖ¸¶¨ÕıÈ·µÄÔ´µ¥Î»ºÍÄ¿±êµ¥Î»Ã¶¾ÙÖµ
+```csharp
+public static double ConvertTemperature(double value, TemperatureUnit from, TemperatureUnit to)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆTemperatureUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆTemperatureUnitæšä¸¾ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
+
+### é€Ÿåº¦è½¬æ¢
+
+```csharp
+public static double ConvertSpeed(double value, SpeedUnit from, SpeedUnit to)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆSpeedUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆSpeedUnitæšä¸¾ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
+
+### èƒ½é‡è½¬æ¢
+
+```csharp
+public static double ConvertEnergy(double value, EnergyUnit from, EnergyUnit to)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆEnergyUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆEnergyUnitæšä¸¾ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
+
+### åŠŸç‡è½¬æ¢
+
+```csharp
+public static double ConvertPower(double value, PowerUnit from, PowerUnit to)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆPowerUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆPowerUnitæšä¸¾ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
+
+### å‹å¼ºè½¬æ¢
+
+```csharp
+public static double ConvertPressure(double value, PressureUnit from, PressureUnit to)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆPressureUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆPressureUnitæšä¸¾ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
+
+### åŠ›è½¬æ¢
+
+```csharp
+public static double ConvertForce(double value, ForceUnit from, ForceUnit to)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `value`: è¦è½¬æ¢çš„æ•°å€¼
+- `from`: æºå•ä½ï¼ˆForceUnitæšä¸¾ï¼‰
+- `to`: ç›®æ ‡å•ä½ï¼ˆForceUnitæšä¸¾ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- è½¬æ¢åçš„æ•°å€¼
+
+## å®ç”¨å·¥å…·æ–¹æ³•
+
+### è·å–è´§å¸ç¬¦å·
+
+```csharp
+public static string GetCurrencySymbol(string currencyCode)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `currencyCode`: è´§å¸ä»£ç ï¼ˆå¦‚"CNY", "USD"ç­‰ï¼‰
+
+**è¿”å›å€¼ï¼š**
+- å¯¹åº”çš„è´§å¸ç¬¦å·
+
+### è·å–å•ä½ç¬¦å·
+
+```csharp
+public static string GetUnitSymbol(Enum unit)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `unit`: å•ä½æšä¸¾å€¼
+
+**è¿”å›å€¼ï¼š**
+- å¯¹åº”çš„å•ä½ç¬¦å·
+
+### è·å–å•ä½åç§°
+
+```csharp
+public static string GetUnitName(Enum unit)
+```
+
+**å‚æ•°è¯´æ˜ï¼š**
+- `unit`: å•ä½æšä¸¾å€¼
+
+**è¿”å›å€¼ï¼š**
+- å¯¹åº”çš„å•ä½ä¸­æ–‡åç§°
+
+## ä½¿ç”¨ç¤ºä¾‹
+
+### é•¿åº¦è½¬æ¢ç¤ºä¾‹
+
+```csharp
+// å°†10ç±³è½¬æ¢ä¸ºå˜ç±³
+double result = UnitHelper.ConvertLength(10, LengthUnit.Meter, LengthUnit.Centimeter);
+Console.WriteLine($"10ç±³ = {result}å˜ç±³"); // è¾“å‡º: 10ç±³ = 1000å˜ç±³
+
+// è·å–å•ä½ç¬¦å·
+string symbol = UnitHelper.GetUnitSymbol(LengthUnit.Centimeter);
+Console.WriteLine($"å˜ç±³çš„ç¬¦å·: {symbol}"); // è¾“å‡º: å˜ç±³çš„ç¬¦å·: cm
+```
+
+### æ¸©åº¦è½¬æ¢ç¤ºä¾‹
+
+```csharp
+// å°†0æ‘„æ°åº¦è½¬æ¢ä¸ºåæ°åº¦
+double fahrenheit = UnitHelper.ConvertTemperature(0, TemperatureUnit.Celsius, TemperatureUnit.Fahrenheit);
+Console.WriteLine($"0æ‘„æ°åº¦ = {fahrenheit}åæ°åº¦"); // è¾“å‡º: 0æ‘„æ°åº¦ = 32åæ°åº¦
+```
+
+### è´§å¸è½¬æ¢ç¤ºä¾‹
+
+```csharp
+// å°†100ç¾å…ƒè½¬æ¢ä¸ºäººæ°‘å¸
+double rmb = UnitHelper.ConvertCurrency(100, "USD", "CNY");
+Console.WriteLine($"100ç¾å…ƒ = {rmb}äººæ°‘å¸"); 
+
+// è·å–ç¾å…ƒç¬¦å·
+string dollarSymbol = UnitHelper.GetCurrencySymbol("USD");
+Console.WriteLine($"ç¾å…ƒç¬¦å·: {dollarSymbol}"); // è¾“å‡º: ç¾å…ƒç¬¦å·: $
+```
+
+### è¿›åˆ¶è½¬æ¢ç¤ºä¾‹
+
+```csharp
+// å°†åè¿›åˆ¶æ•°å­—42è½¬æ¢ä¸ºäºŒè¿›åˆ¶
+string binaryValue = UnitHelper.ConvertBase("42", NumberBase.Decimal, NumberBase.Binary);
+Console.WriteLine($"åè¿›åˆ¶42çš„äºŒè¿›åˆ¶è¡¨ç¤º: {binaryValue}"); // è¾“å‡º: åè¿›åˆ¶42çš„äºŒè¿›åˆ¶è¡¨ç¤º: 101010
+```
+
+### ç»„åˆä½¿ç”¨ç¤ºä¾‹
+
+```csharp
+// è®¡ç®—çŸ©å½¢é¢ç§¯å¹¶è¿›è¡Œå•ä½è½¬æ¢
+// å·²çŸ¥é•¿10ç±³ï¼Œå®½5ç±³ï¼Œè®¡ç®—é¢ç§¯å¹¶è½¬æ¢ä¸ºå…¬é¡·
+double length = 10; // ç±³
+double width = 5;   // ç±³
+
+// è®¡ç®—å¹³æ–¹ç±³é¢ç§¯
+double areaInSquareMeters = length * width; // 50å¹³æ–¹ç±³
+
+// è½¬æ¢ä¸ºå…¬é¡·
+double areaInHectares = UnitHelper.ConvertArea(areaInSquareMeters, AreaUnit.SquareMeter, AreaUnit.Hectare);
+
+Console.WriteLine($"é¢ç§¯: {areaInSquareMeters} {UnitHelper.GetUnitSymbol(AreaUnit.SquareMeter)}");
+Console.WriteLine($"é¢ç§¯: {areaInHectares} {UnitHelper.GetUnitSymbol(AreaUnit.Hectare)}");
+```
+
+## æœ€ä½³å®è·µ
+
+1. **ç²¾åº¦å¤„ç†**ï¼šè½¬æ¢è¿‡ç¨‹ä¸­å¯èƒ½äº§ç”Ÿæµ®ç‚¹æ•°ç²¾åº¦é—®é¢˜ï¼Œå»ºè®®æ ¹æ®éœ€æ±‚ä½¿ç”¨ `Math.Round` è¿›è¡Œé€‚å½“çš„ç²¾åº¦æ§åˆ¶ã€‚
+
+2. **å¼‚å¸¸å¤„ç†**ï¼šå¯¹äºè´§å¸è½¬æ¢ç­‰å¯èƒ½å¤±è´¥çš„æ“ä½œï¼Œå»ºè®®æ·»åŠ å¼‚å¸¸å¤„ç†ã€‚
+
+3. **å•ä½ç¬¦å·æ˜¾ç¤º**ï¼šåœ¨æ˜¾ç¤ºç»“æœæ—¶ï¼Œä½¿ç”¨ `GetUnitSymbol` æ–¹æ³•è·å–æ ‡å‡†å•ä½ç¬¦å·ï¼Œæé«˜æ•°æ®å±•ç¤ºçš„ä¸“ä¸šæ€§ã€‚
+
+4. **è´§å¸æ±‡ç‡æ›´æ–°**ï¼šæ³¨æ„ `ConvertCurrency` æ–¹æ³•ä¸­çš„æ±‡ç‡ä¸ºé™æ€å€¼ï¼Œå®é™…åº”ç”¨ä¸­åº”æ ¹æ®éœ€è¦æ›´æ–°æ±‡ç‡æ•°æ®ã€‚
+
+## æ³¨æ„äº‹é¡¹
+
+1. æ‰€æœ‰è½¬æ¢æ–¹æ³•éƒ½æ¥å— `double` ç±»å‹çš„è¾“å…¥å€¼ï¼Œä½†éœ€è¦æ³¨æ„å¯èƒ½å­˜åœ¨çš„ç²¾åº¦é—®é¢˜ã€‚
+
+2. è´§å¸è½¬æ¢æ–¹æ³•ä½¿ç”¨çš„æ˜¯é¢„å®šä¹‰çš„é™æ€æ±‡ç‡ï¼Œå¯èƒ½ä¸å®æ—¶æ±‡ç‡æœ‰æ‰€å·®å¼‚ã€‚åœ¨é‡‘èåº”ç”¨ä¸­ï¼Œåº”ä½¿ç”¨å®æ—¶æ±‡ç‡æ•°æ®æºã€‚
+
+3. å¯¹äºç‰¹æ®Šå•ä½æˆ–è‡ªå®šä¹‰å•ä½ï¼Œå½“å‰ç‰ˆæœ¬ä¸æ”¯æŒç›´æ¥æ‰©å±•ï¼Œå¯ä»¥é€šè¿‡è‡ªå®šä¹‰æ–¹æ³•å®ç°é¢å¤–çš„è½¬æ¢éœ€æ±‚ã€‚
+
+4. è¿›åˆ¶è½¬æ¢ç›®å‰ä»…æ”¯æŒæ•´æ•°è½¬æ¢ï¼Œå°æ•°è½¬æ¢éœ€è¦é¢å¤–å¤„ç†ã€‚
+
+## ç‰ˆæœ¬å…¼å®¹æ€§
+
+- .NET Framework 4.0 åŠä»¥ä¸Šç‰ˆæœ¬
+- .NET Core 2.0 åŠä»¥ä¸Šç‰ˆæœ¬
+- .NET 5.0 åŠä»¥ä¸Šç‰ˆæœ¬
+
+## æ•…éšœæ’é™¤
+
+### å¸¸è§é—®é¢˜
+
+1. **è½¬æ¢ç»“æœä¸æ­£ç¡®**
+   - æ£€æŸ¥æºå•ä½å’Œç›®æ ‡å•ä½æ˜¯å¦æ­£ç¡®æŒ‡å®š
+   - ç¡®è®¤è¾“å…¥å€¼çš„å•ä½ä¸å‚æ•°ä¸­æŒ‡å®šçš„å•ä½ä¸€è‡´
+
+2. **è´§å¸è½¬æ¢å¤±è´¥**
+   - æ£€æŸ¥è´§å¸ä»£ç æ ¼å¼æ˜¯å¦æ­£ç¡®ï¼ˆå¦‚ "CNY" è€Œé "ï¿¥"ï¼‰
+   - ç¡®è®¤ç›®æ ‡è´§å¸ä»£ç æ˜¯å¦åœ¨æ”¯æŒåˆ—è¡¨ä¸­
+
+3. **è¿›åˆ¶è½¬æ¢æŠ›å‡ºå¼‚å¸¸**
+   - ç¡®ä¿è¾“å…¥å­—ç¬¦ä¸²ä¸æŒ‡å®šçš„æºè¿›åˆ¶åŒ¹é…
+   - ä¾‹å¦‚ï¼ŒäºŒè¿›åˆ¶åªèƒ½åŒ…å« '0' å’Œ '1' å­—ç¬¦
