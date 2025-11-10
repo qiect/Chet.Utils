@@ -32,6 +32,11 @@
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/Sync-Gitee.yml" />
   </Folder>
-  <Project Path="Chet.Utils.Test/Chet.Utils.Tests.csproj" />
+  <Folder Name="/Chet.Utils.Tests.Module/" />
+  <Folder Name="/Chet.Utils.Tests.Module/WebSocketHelper/">
+    <Project Path="Chet.Utils.Tests.Module/WebSocketHelper/ClientApp/ClientApp.csproj" Id="65524fe5-3a61-49d3-8cbe-6b80f9e394d3" />
+    <Project Path="Chet.Utils.Tests.Module/WebSocketHelper/ServerApp/ServerApp.csproj" Id="7af6e84f-fe94-4550-808b-3da79d5556b4" />
+  </Folder>
+  <Project Path="Chet.Utils.Tests/Chet.Utils.Tests.csproj" />
   <Project Path="Chet.Utils/Chet.Utils.csproj" />
 </Solution>

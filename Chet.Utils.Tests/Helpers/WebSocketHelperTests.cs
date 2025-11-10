@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Chet.Utils.Helpers;
 using Xunit;
 
 namespace Chet.Utils.Tests.Helpers
@@ -249,6 +250,100 @@ namespace Chet.Utils.Tests.Helpers
             // Assert
             // Should be called with null since no actual connection was made
             Assert.Null(receivedStatus);
+        }
+
+        /// <summary>
+        /// 测试循环发送和接收消息的功能
+        /// 注意：此测试模拟WebSocketHelper的消息接收机制，测试事件订阅和触发功能
+        /// </summary>
+        [Fact]
+        public async Task TestLoopSendAndReceiveMessages()
+        {
+            // Arrange
+            var webSocketHelper = new WebSocketHelper();
+            var receivedMessages = new List<string>();
+            var messageCount = 5; // 测试循环5次
+            
+            // 订阅消息接收事件
+            webSocketHelper.OnMessageReceived += (sender, message) =>
+            {
+                receivedMessages.Add(message);
+                Console.WriteLine($"Received message: {message}");
+            };
+            
+            // Act
+            // 模拟触发多次消息接收
+            // 由于我们无法直接测试WebSocket连接，我们通过直接调用事件处理程序来模拟
+            // 实际应用中，这些事件会由WebSocketHelper内部的ReceiveMessagesAsync方法触发
+            
+            // 使用反射获取消息接收事件字段
+            var onMessageReceivedField = typeof(WebSocketHelper).GetField("OnMessageReceived", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            
+            if (onMessageReceivedField != null)
+            {
+                var onMessageReceived = onMessageReceivedField.GetValue(webSocketHelper) as EventHandler<string>;
+                
+                // 模拟发送多条消息
+                for (int i = 0; i < messageCount; i++)
+                {
+                    var testMessage = $"Test message {i}";
+                    onMessageReceived?.Invoke(webSocketHelper, testMessage);
+                    await Task.Delay(10); // 短暂延迟模拟异步操作
+                }
+            }
+
+            // Assert
+            // 验证是否正确接收了所有消息
+            Assert.Equal(messageCount, receivedMessages.Count);
+            for (int i = 0; i < messageCount; i++)
+            {
+                Assert.Equal($"Test message {i}", receivedMessages[i]);
+            }
+        }
+        
+        /// <summary>
+        /// 测试WebSocketHelper在循环接收消息时的行为
+        /// 此测试通过模拟内部逻辑来验证循环接收机制
+        /// </summary>
+        [Fact]
+        public void TestReceiveMessagesLoopBehavior()
+        {
+            // 这个测试主要验证WebSocketHelper的事件系统是否能正确处理多次消息
+            // 由于我们无法直接测试异步的ReceiveMessagesAsync方法，
+            // 我们通过多次触发事件来模拟循环接收的情况
+            
+            // Arrange
+            var webSocketHelper = new WebSocketHelper();
+            var receivedMessages = new List<string>();
+            var messageCount = 10;
+            
+            // 订阅消息接收事件
+            webSocketHelper.OnMessageReceived += (sender, message) =>
+            {
+                receivedMessages.Add(message);
+            };
+            
+            // Act - 模拟多次接收消息
+            for (int i = 0; i < messageCount; i++)
+            {
+                // 直接调用事件处理程序
+                var onMessageReceivedField = typeof(WebSocketHelper).GetField("OnMessageReceived", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                
+                if (onMessageReceivedField != null)
+                {
+                    var onMessageReceived = onMessageReceivedField.GetValue(webSocketHelper) as EventHandler<string>;
+                    onMessageReceived?.Invoke(webSocketHelper, $"Loop message {i}");
+                }
+            }
+            
+            // Assert
+            Assert.Equal(messageCount, receivedMessages.Count);
+            for (int i = 0; i < messageCount; i++)
+            {
+                Assert.Equal($"Loop message {i}", receivedMessages[i]);
+            }
         }
     }
 }
