@@ -227,6 +227,13 @@ namespace Chet.Utils
             int.TryParse(value, out var result) ? result : defaultValue;
 
         /// <summary>
+        /// 字符串转 int，失败返回null。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        public static int? ToInt(this string value) =>
+            int.TryParse(value, out var result) ? result : null;
+
+        /// <summary>
         /// 字符串转 float，失败返回默认值。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
@@ -235,41 +242,11 @@ namespace Chet.Utils
             float.TryParse(value, out var result) ? result : defaultValue;
 
         /// <summary>
-        /// 字符串转 double，失败返回默认值。
+        /// 字符串转 float，失败返回null。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        /// <param name="defaultValue">转换失败时的默认值。</param>
-        public static double ToDouble(this string value, double defaultValue = 0) =>
-            double.TryParse(value, out var result) ? result : defaultValue;
-
-        /// <summary>
-        /// 字符串转 double，保留指定小数位，四舍五入，失败返回默认值。
-        /// </summary>
-        /// <param name="value">待转换的字符串。</param>
-        /// <param name="digits">保留的小数位数。</param>
-        /// <param name="defaultValue">转换失败时的默认值。</param>
-        public static double ToDoubleRound(this string value, int digits = 2, double defaultValue = 0)
-        {
-            if (double.TryParse(value, out var result))
-                return Math.Round(result, digits, MidpointRounding.AwayFromZero);
-            return defaultValue;
-        }
-
-        /// <summary>
-        /// 字符串转 double，保留指定小数位，向零取整，失败返回默认值。
-        /// </summary>
-        /// <param name="value">待转换的字符串。</param>
-        /// <param name="digits">保留的小数位数。</param>
-        /// <param name="defaultValue">转换失败时的默认值。</param>
-        public static double ToDoubleTruncate(this string value, int digits = 2, double defaultValue = 0)
-        {
-            if (double.TryParse(value, out var result))
-            {
-                double factor = Math.Pow(10, digits);
-                return Math.Truncate(result * factor) / factor;
-            }
-            return defaultValue;
-        }
+        public static float? ToFloat(this string value) =>
+            float.TryParse(value, out var result) ? result : null;
 
         /// <summary>
         /// 字符串转 float，保留指定小数位，四舍五入，失败返回默认值。
@@ -301,6 +278,65 @@ namespace Chet.Utils
         }
 
         /// <summary>
+        /// 字符串转 double，失败返回默认值。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        /// <param name="defaultValue">转换失败时的默认值。</param>
+        public static double ToDouble(this string value, double defaultValue = 0) =>
+            double.TryParse(value, out var result) ? result : defaultValue;
+
+        /// <summary>
+        /// 字符串转 double，失败返回默认值。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        public static double? ToDouble(this string value) =>
+            double.TryParse(value, out var result) ? result : null;
+
+        /// <summary>
+        /// 字符串转 double，保留指定小数位，四舍五入，失败返回默认值。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        /// <param name="digits">保留的小数位数。</param>
+        /// <param name="defaultValue">转换失败时的默认值。</param>
+        public static double ToDoubleRound(this string value, int digits = 2, double defaultValue = 0)
+        {
+            if (double.TryParse(value, out var result))
+                return Math.Round(result, digits, MidpointRounding.AwayFromZero);
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// 字符串转 double，保留指定小数位，向零取整，失败返回默认值。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        /// <param name="digits">保留的小数位数。</param>
+        /// <param name="defaultValue">转换失败时的默认值。</param>
+        public static double ToDoubleTruncate(this string value, int digits = 2, double defaultValue = 0)
+        {
+            if (double.TryParse(value, out var result))
+            {
+                double factor = Math.Pow(10, digits);
+                return Math.Truncate(result * factor) / factor;
+            }
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// 字符串转 decimal，失败返回默认值。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        /// <param name="defaultValue">转换失败时的默认值。</param>
+        public static decimal ToDecimal(this string value, decimal defaultValue = 0) =>
+            decimal.TryParse(value, out var result) ? result : defaultValue;
+
+        /// <summary>
+        /// 字符串转 decimal，失败返回null。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        public static decimal? ToDecimal(this string value) =>
+            decimal.TryParse(value, out var result) ? result : null;
+
+        /// <summary>
         /// 保留数值型字符串的小数位（默认两位），非数值型原样返回。
         /// </summary>
         /// <param name="value">待处理的字符串。</param>
@@ -313,20 +349,19 @@ namespace Chet.Utils
         }
 
         /// <summary>
-        /// 字符串转 decimal，失败返回默认值。
-        /// </summary>
-        /// <param name="value">待转换的字符串。</param>
-        /// <param name="defaultValue">转换失败时的默认值。</param>
-        public static decimal ToDecimal(this string value, decimal defaultValue = 0) =>
-            decimal.TryParse(value, out var result) ? result : defaultValue;
-
-        /// <summary>
         /// 字符串转 bool，失败返回默认值。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
         /// <param name="defaultValue">转换失败时的默认值。</param>
         public static bool ToBool(this string value, bool defaultValue = false) =>
             bool.TryParse(value, out var result) ? result : defaultValue;
+
+        /// <summary>
+        /// 字符串转 bool，失败返回null。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        public static bool? ToBool(this string value) =>
+            bool.TryParse(value, out var result) ? result : null;
 
         /// <summary>
         /// 字符串转 Guid，失败返回默认值。
@@ -337,12 +372,26 @@ namespace Chet.Utils
             Guid.TryParse(value, out var result) ? result : (defaultValue ?? Guid.Empty);
 
         /// <summary>
+        /// 字符串转 Guid，失败返回null。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        public static Guid? ToGuid(this string value) =>
+            Guid.TryParse(value, out var result) ? result : null;
+
+        /// <summary>
         /// 字符串转 DateTime，失败返回默认值。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
         /// <param name="defaultValue">转换失败时的默认值。</param>
         public static DateTime ToDateTime(this string value, DateTime? defaultValue = null) =>
             DateTime.TryParse(value, out var result) ? result : (defaultValue ?? DateTime.MinValue);
+
+        /// <summary>
+        /// 字符串转 DateTime，失败返回默认值。
+        /// </summary>
+        /// <param name="value">待转换的字符串。</param>
+        public static DateTime? ToDateTime(this string value) =>
+            DateTime.TryParse(value, out var result) ? result : null;
 
         #endregion
 
