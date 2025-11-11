@@ -5,23 +5,15 @@ using System.Text.Json;
 using System.Collections.Concurrent;
 using Chet.Utils.Helpers;
 
-namespace ServerApp
+namespace Chet.Utils.Tests.Module.ServerApp
 {
     class Program
     {
         private static WebSocketServerHelper? _server;
+        // 存储客户端信息
         private static ConcurrentDictionary<string, ClientInfo> _connectedClients = new ConcurrentDictionary<string, ClientInfo>();
         private static int _messageCount = 0;
         private static bool _isRunning = true;
-
-        // 旧字段（保留以避免编译警告）
-        private static WebSocketServerHelper? _serverHelper;
-        private static Thread? _serverThread;
-        private static bool _keepRunning = true;
-
-        // 存储客户端信息
-        private static Dictionary<string, ClientInfo> _clients = new Dictionary<string, ClientInfo>();
-        private static int _messageCounter = 0;
 
         static async Task Main(string[] args)
         {
@@ -46,7 +38,7 @@ namespace ServerApp
             {
                 LogInfo("正在启动WebSocket服务器...");
                 var port = 8080;
-                await _server.StartServerAsync(new[] { $"http://localhost:{port}/" });
+                await _server.StartServerAsync($"http://localhost:{port}/");
                 LogInfo($"服务器已启动，监听: http://localhost:{port}/");
             }
             catch (Exception ex)

@@ -3,7 +3,7 @@ using System.Net.WebSockets;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace ClientApp
+namespace Chet.Utils.Tests.Module.ClientApp
 {
     class Program
     {
