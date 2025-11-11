@@ -38,7 +38,7 @@ namespace Chet.Utils.Tests.Module.ServerApp
             {
                 LogInfo("正在启动WebSocket服务器...");
                 var port = 8080;
-                await _server.StartServerAsync($"http://localhost:{port}/");
+                Task.Run(async () => await _server.StartServerAsync($"http://localhost:{port}/"));
                 LogInfo($"服务器已启动，监听: http://localhost:{port}/");
             }
             catch (Exception ex)
@@ -123,13 +123,13 @@ namespace Chet.Utils.Tests.Module.ServerApp
                     // 从事件参数中获取客户端ID和消息内容
                     string clientId = e.ClientId;
                     string messageContent = e.Message; // 假设e有Message属性包含实际消息内容
-                    
+
                     // 如果没有Message属性，则尝试使用e.ToString()
                     if (string.IsNullOrEmpty(messageContent))
                     {
                         messageContent = e.ToString();
                     }
-                    
+
                     LogInfo($"收到消息: {messageContent}, 客户端ID: {clientId}");
 
                     // 确保客户端ID有效且不为WebSocketServerHelper
