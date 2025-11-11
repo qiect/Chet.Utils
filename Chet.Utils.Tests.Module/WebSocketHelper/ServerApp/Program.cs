@@ -175,12 +175,9 @@ namespace Chet.Utils.Tests.Module.ServerApp
                     break;
 
                 case ConsoleKey.S:
-                    _isRunning = false;
-                    LogInfo("准备停止服务器...");
-                    break;
-
                 case ConsoleKey.Escape:
                     _isRunning = false;
+                    BroadcastServerShutdownMessage();
                     LogInfo("准备停止服务器并退出...");
                     break;
 
