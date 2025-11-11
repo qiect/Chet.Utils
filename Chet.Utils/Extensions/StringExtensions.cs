@@ -230,7 +230,7 @@ namespace Chet.Utils
         /// 字符串转 int，失败返回null。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static int? ToInt(this string value) =>
+        public static int? ToIntOrNull(this string value) =>
             int.TryParse(value, out var result) ? result : null;
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Chet.Utils
         /// 字符串转 float，失败返回null。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static float? ToFloat(this string value) =>
+        public static float? ToFloatOrNull(this string value) =>
             float.TryParse(value, out var result) ? result : null;
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace Chet.Utils
         /// 字符串转 double，失败返回默认值。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static double? ToDouble(this string value) =>
+        public static double? ToDoubleOrNull(this string value) =>
             double.TryParse(value, out var result) ? result : null;
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace Chet.Utils
         /// 字符串转 decimal，失败返回null。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static decimal? ToDecimal(this string value) =>
+        public static decimal? ToDecimalOrNull(this string value) =>
             decimal.TryParse(value, out var result) ? result : null;
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace Chet.Utils
         /// 字符串转 bool，失败返回null。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static bool? ToBool(this string value) =>
+        public static bool? ToBoolOrNull(this string value) =>
             bool.TryParse(value, out var result) ? result : null;
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace Chet.Utils
         /// 字符串转 Guid，失败返回null。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static Guid? ToGuid(this string value) =>
+        public static Guid? ToGuidOrNull(this string value) =>
             Guid.TryParse(value, out var result) ? result : null;
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace Chet.Utils
         /// 字符串转 DateTime，失败返回默认值。
         /// </summary>
         /// <param name="value">待转换的字符串。</param>
-        public static DateTime? ToDateTime(this string value) =>
+        public static DateTime? ToDateTimeOrNull(this string value) =>
             DateTime.TryParse(value, out var result) ? result : null;
 
         #endregion

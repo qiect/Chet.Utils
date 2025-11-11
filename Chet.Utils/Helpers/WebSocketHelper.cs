@@ -1,8 +1,7 @@
-using System;
+using System.Collections.Concurrent;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using System.Net;
-using System.Collections.Concurrent;
 namespace Chet.Utils.Helpers
 {
     /// <summary>
@@ -56,7 +55,7 @@ namespace Chet.Utils.Helpers
         /// 重连延迟时间（毫秒）
         /// </summary>
         private readonly int _reconnectDelay;
-        
+
         /// <summary>
         /// 标志位，表示是否是主动断开连接
         /// 用于避免在DisconnectAsync和ReceiveMessagesAsync之间重复触发OnDisconnected事件
@@ -153,7 +152,7 @@ namespace Chet.Utils.Helpers
 
                 // 重置断开连接状态标志
                 ResetDisconnectionState();
-                
+
                 _webSocket = new ClientWebSocket();
                 _state = WebSocketState.Connecting;
             }
@@ -293,29 +292,29 @@ namespace Chet.Utils.Helpers
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
                         // 当接收到服务器的关闭消息时，确保只触发一次断开连接事件
-                            var closeStatus = result.CloseStatus ?? WebSocketCloseStatus.NormalClosure;
-                            try
+                        var closeStatus = result.CloseStatus ?? WebSocketCloseStatus.NormalClosure;
+                        try
+                        {
+                            // 确认关闭
+                            if (_webSocket.State != WebSocketState.Closed && _webSocket.State != WebSocketState.Aborted)
                             {
-                                // 确认关闭
-                                if (_webSocket.State != WebSocketState.Closed && _webSocket.State != WebSocketState.Aborted)
-                                {
-                                    await _webSocket.CloseAsync(closeStatus, result.CloseStatusDescription ?? "Server closed", CancellationToken.None);
-                                }
+                                await _webSocket.CloseAsync(closeStatus, result.CloseStatusDescription ?? "Server closed", CancellationToken.None);
                             }
-                            catch (Exception ex)
+                        }
+                        catch (Exception ex)
+                        {
+                            OnError?.Invoke(this, ex);
+                        }
+                        finally
+                        {
+                            Cleanup();
+                            // 确保只触发一次断开连接事件
+                            if (!_hasDisconnected)
                             {
-                                OnError?.Invoke(this, ex);
+                                _hasDisconnected = true;
+                                OnDisconnected?.Invoke(this, closeStatus);
                             }
-                            finally
-                            {
-                                Cleanup();
-                                // 确保只触发一次断开连接事件
-                                if (!_hasDisconnected)
-                                {
-                                    _hasDisconnected = true;
-                                    OnDisconnected?.Invoke(this, closeStatus);
-                                }
-                            }
+                        }
                         break;
                     }
 
@@ -410,7 +409,7 @@ namespace Chet.Utils.Helpers
             _webSocket = null;
             _state = WebSocketState.Closed;
         }
-        
+
         /// <summary>
         /// 重置断开连接状态标志，在重新连接前调用
         /// </summary>
@@ -474,7 +473,7 @@ namespace Chet.Utils.Helpers
         /// 心跳检测间隔（毫秒）
         /// </summary>
         private readonly int _heartbeatInterval;
-        
+
         /// <summary>
         /// 默认服务器端口
         /// </summary>
@@ -578,7 +577,7 @@ namespace Chet.Utils.Helpers
             _clientInfos = new ConcurrentDictionary<string, ClientInfo>();
             _cts = new CancellationTokenSource();
         }
-        
+
         /// <summary>
         /// 初始化WebSocketServerHelper实例
         /// </summary>
@@ -612,7 +611,7 @@ namespace Chet.Utils.Helpers
             try
             {
                 _httpListener = new HttpListener();
-                
+
                 foreach (var prefix in prefixes)
                 {
                     _httpListener.Prefixes.Add(prefix);
@@ -620,7 +619,7 @@ namespace Chet.Utils.Helpers
 
                 _httpListener.Start();
                 _isRunning = true;
-                
+
                 // 触发服务器启动事件
                 OnServerStarted?.Invoke(this, EventArgs.Empty);
 
@@ -722,7 +721,7 @@ namespace Chet.Utils.Helpers
             {
                 var buffer = Encoding.UTF8.GetBytes(message);
                 await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, _cts.Token);
-                
+
                 // 触发消息发送事件
                 OnMessageSent?.Invoke(this, new MessageSentEventArgs(clientId, message));
             }
@@ -755,7 +754,7 @@ namespace Chet.Utils.Helpers
             try
             {
                 await webSocket.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Binary, true, _cts.Token);
-                
+
                 // 触发消息发送事件
                 OnMessageSent?.Invoke(this, new MessageSentEventArgs(clientId, "[Binary Data]", true));
             }
@@ -786,7 +785,7 @@ namespace Chet.Utils.Helpers
         public async Task BroadcastMessageAsync(string message, string excludeClientId)
         {
             var tasks = new List<Task>();
-            
+
             foreach (var clientId in _connectedClients.Keys)
             {
                 if (clientId == excludeClientId)
@@ -831,7 +830,7 @@ namespace Chet.Utils.Helpers
             {
                 // 移除客户端信息
                 _clientInfos.TryRemove(clientId, out _);
-                
+
                 // 触发客户端断开连接事件
                 OnClientDisconnected?.Invoke(this, new ClientDisconnectedEventArgs(clientId, closeStatus, statusDescription));
             }
@@ -879,7 +878,7 @@ namespace Chet.Utils.Helpers
                     try
                     {
                         var context = await _httpListener.GetContextAsync();
-                        
+
                         // 检查是否是WebSocket请求
                         if (context.Request.IsWebSocketRequest)
                         {
@@ -1002,7 +1001,7 @@ namespace Chet.Utils.Helpers
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
                         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        
+
                         // 触发消息接收事件
                         OnMessageReceived?.Invoke(this, new MessageReceivedEventArgs(clientId, message));
                     }
@@ -1020,7 +1019,7 @@ namespace Chet.Utils.Helpers
                             // 处理其他二进制消息
                             var binaryData = new byte[result.Count];
                             Array.Copy(buffer, 0, binaryData, 0, result.Count);
-                            
+
                             // 触发二进制消息接收事件
                             OnMessageReceived?.Invoke(this, new MessageReceivedEventArgs(clientId, binaryData));
                         }
@@ -1049,7 +1048,7 @@ namespace Chet.Utils.Helpers
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     await Task.Delay(_heartbeatInterval, cancellationToken);
-                    
+
                     // 检查客户端心跳
                     CheckClientHeartbeats();
                 }

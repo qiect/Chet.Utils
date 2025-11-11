@@ -37,6 +37,7 @@ Chet.Utils 是一个为日常开发提供辅助工具的库。该项目旨在简
 Install-Package Chet.Utils
 
 
-## 功能更新
+## 版本更新
 ### v1.4.0
 - 添加WebSocket帮助类，包括Client端和Server端；WebSocket客户端帮助类，提供WebSocket连接管理、消息发送、心跳检测等功能，WebSocket服务端帮助类，提供WebSocket服务器功能、连接管理、消息广播等。
+- StringExtensions类扩展了部分方法。
