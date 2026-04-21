@@ -1,910 +1,1150 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
-namespace Chet.Utils.Helpers
+namespace Chet.Utils.Helpers;
+
+/// <summary>
+/// 计时器帮助类，提供便捷的性能测量和计时功能。
+/// </summary>
+/// <remarks>
+/// <para>本类提供以下功能模块：</para>
+/// <list type="bullet">
+///   <item><description>基础计时：执行操作并测量耗时</description></item>
+///   <item><description>统计计时：多次执行并计算统计信息</description></item>
+///   <item><description>高精度计时：纳秒级计时支持</description></item>
+///   <item><description>条件计时：条件执行的计时</description></item>
+///   <item><description>范围计时：使用 using 语句的计时</description></item>
+///   <item><description>基准测试：性能基准测试工具</description></item>
+///   <item><description>格式化输出：友好的时间格式化</description></item>
+/// </list>
+/// </remarks>
+public static class StopwatchHelper
 {
+    #region 基础计时方法
+
     /// <summary>
-    /// 计时器帮助类，提供便捷的性能测量和计时功能
+    /// 执行操作并返回耗时（毫秒）。
     /// </summary>
-    public static class StopwatchHelper
+    /// <param name="action">要执行的操作。</param>
+    /// <returns>执行耗时（毫秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// long elapsedMs = StopwatchHelper.Time(() =>
+    /// {
+    ///     // 执行一些操作
+    ///     Thread.Sleep(100);
+    /// });
+    /// Console.WriteLine($"耗时: {elapsedMs} 毫秒");
+    /// </code>
+    /// </example>
+    public static long Time(Action action)
     {
-        #region 基础计时方法
+        ArgumentNullException.ThrowIfNull(action);
 
-        /// <summary>
-        /// 执行操作并返回耗时
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>执行耗时（毫秒）</returns>
-        public static long Time(Action action)
+        var stopwatch = Stopwatch.StartNew();
+        action();
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+    /// <summary>
+    /// 执行操作并返回耗时（毫秒）。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <param name="iterations">执行次数。</param>
+    /// <returns>执行耗时（毫秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    public static long Time(Action action, int iterations)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
         {
-            var stopwatch = Stopwatch.StartNew();
             action();
-            stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
         }
 
-        /// <summary>
-        /// 执行操作并返回耗时（高精度）
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>执行耗时（时间戳）</returns>
-        public static TimeSpan TimePrecise(Action action)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            action();
-            stopwatch.Stop();
-            return stopwatch.Elapsed;
-        }
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
 
-        /// <summary>
-        /// 异步执行操作并返回耗时
-        /// </summary>
-        /// <param name="action">要执行的异步操作</param>
-        /// <returns>执行耗时（毫秒）</returns>
-        public static async Task<long> TimeAsync(Func<Task> action)
+    /// <summary>
+    /// 执行异步操作并返回耗时（毫秒）。
+    /// </summary>
+    /// <param name="action">要执行的异步操作。</param>
+    /// <returns>执行耗时（毫秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// long elapsedMs = await StopwatchHelper.TimeAsync(async () =>
+    /// {
+    ///     await Task.Delay(100);
+    /// });
+    /// Console.WriteLine($"耗时: {elapsedMs} 毫秒");
+    /// </code>
+    /// </example>
+    public static async Task<long> TimeAsync(Func<Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        var stopwatch = Stopwatch.StartNew();
+        await action();
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+    /// <summary>
+    /// 执行异步操作并返回耗时（毫秒）。
+    /// </summary>
+    /// <param name="action">要执行的异步操作。</param>
+    /// <param name="iterations">执行次数。</param>
+    /// <returns>执行耗时（毫秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    public static async Task<long> TimeAsync(Func<Task> action, int iterations)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
         {
-            var stopwatch = Stopwatch.StartNew();
             await action();
-            stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
         }
 
-        /// <summary>
-        /// 异步执行操作并返回耗时（高精度）
-        /// </summary>
-        /// <param name="action">要执行的异步操作</param>
-        /// <returns>执行耗时（时间戳）</returns>
-        public static async Task<TimeSpan> TimePreciseAsync(Func<Task> action)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            await action();
-            stopwatch.Stop();
-            return stopwatch.Elapsed;
-        }
-
-        /// <summary>
-        /// 创建并启动一个新的计时器
-        /// </summary>
-        /// <returns>已启动的计时器实例</returns>
-        public static Stopwatch StartNew()
-        {
-            return Stopwatch.StartNew();
-        }
-
-        #endregion
-
-        #region 多次执行测量
-
-        /// <summary>
-        /// 多次执行操作并返回平均耗时
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="iterations">执行次数</param>
-        /// <returns>平均执行耗时（毫秒）</returns>
-        public static double TimeAverage(Action action, int iterations)
-        {
-            if (iterations <= 0)
-                throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
-
-            var totalElapsed = 0L;
-            for (int i = 0; i < iterations; i++)
-            {
-                totalElapsed += Time(action);
-            }
-            return (double)totalElapsed / iterations;
-        }
-
-        /// <summary>
-        /// 多次执行操作并返回详细统计信息
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="iterations">执行次数</param>
-        /// <returns>执行时间统计信息</returns>
-        public static TimingStatistics TimeStatistics(Action action, int iterations)
-        {
-            if (iterations <= 0)
-                throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
-
-            var times = new List<long>(iterations);
-            for (int i = 0; i < iterations; i++)
-            {
-                times.Add(Time(action));
-            }
-
-            return CalculateStatistics(times);
-        }
-
-        /// <summary>
-        /// 异步多次执行操作并返回平均耗时
-        /// </summary>
-        /// <param name="action">要执行的异步操作</param>
-        /// <param name="iterations">执行次数</param>
-        /// <returns>平均执行耗时（毫秒）</returns>
-        public static async Task<double> TimeAverageAsync(Func<Task> action, int iterations)
-        {
-            if (iterations <= 0)
-                throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
-
-            var totalElapsed = 0L;
-            for (int i = 0; i < iterations; i++)
-            {
-                totalElapsed += await TimeAsync(action);
-            }
-            return (double)totalElapsed / iterations;
-        }
-
-        /// <summary>
-        /// 异步多次执行操作并返回详细统计信息
-        /// </summary>
-        /// <param name="action">要执行的异步操作</param>
-        /// <param name="iterations">执行次数</param>
-        /// <returns>执行时间统计信息</returns>
-        public static async Task<TimingStatistics> TimeStatisticsAsync(Func<Task> action, int iterations)
-        {
-            if (iterations <= 0)
-                throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
-
-            var times = new List<long>(iterations);
-            for (int i = 0; i < iterations; i++)
-            {
-                times.Add(await TimeAsync(action));
-            }
-
-            return CalculateStatistics(times);
-        }
-
-        /// <summary>
-        /// 并发执行操作并测量总耗时
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="concurrentCount">并发数</param>
-        /// <returns>并发执行总耗时（毫秒）</returns>
-        public static long TimeConcurrent(Action action, int concurrentCount)
-        {
-            if (concurrentCount <= 0)
-                throw new ArgumentException("并发数必须大于0", nameof(concurrentCount));
-
-            var tasks = new Task[concurrentCount];
-            var stopwatch = Stopwatch.StartNew();
-
-            for (int i = 0; i < concurrentCount; i++)
-            {
-                tasks[i] = Task.Run(action);
-            }
-
-            Task.WaitAll(tasks);
-            stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
-        }
-
-        /// <summary>
-        /// 并发执行异步操作并测量总耗时
-        /// </summary>
-        /// <param name="action">要执行的异步操作</param>
-        /// <param name="concurrentCount">并发数</param>
-        /// <returns>并发执行总耗时（毫秒）</returns>
-        public static async Task<long> TimeConcurrentAsync(Func<Task> action, int concurrentCount)
-        {
-            if (concurrentCount <= 0)
-                throw new ArgumentException("并发数必须大于0", nameof(concurrentCount));
-
-            var tasks = new Task[concurrentCount];
-            var stopwatch = Stopwatch.StartNew();
-
-            for (int i = 0; i < concurrentCount; i++)
-            {
-                tasks[i] = action();
-            }
-
-            await Task.WhenAll(tasks);
-            stopwatch.Stop();
-            return stopwatch.ElapsedMilliseconds;
-        }
-
-        /// <summary>
-        /// 比较两个操作的性能
-        /// </summary>
-        /// <param name="action1">第一个操作</param>
-        /// <param name="action2">第二个操作</param>
-        /// <param name="iterations">每项操作的执行次数</param>
-        /// <returns>性能比较结果</returns>
-        public static PerformanceComparison Compare(Action action1, Action action2, int iterations)
-        {
-            var stats1 = TimeStatistics(action1, iterations);
-            var stats2 = TimeStatistics(action2, iterations);
-
-            return new PerformanceComparison
-            {
-                FirstOperationStats = stats1,
-                SecondOperationStats = stats2,
-                IsFirstFaster = stats1.Average < stats2.Average,
-                PerformanceRatio = stats1.Average / stats2.Average
-            };
-        }
-
-        /// <summary>
-        /// 异步比较两个操作的性能
-        /// </summary>
-        /// <param name="action1">第一个异步操作</param>
-        /// <param name="action2">第二个异步操作</param>
-        /// <param name="iterations">每项操作的执行次数</param>
-        /// <returns>性能比较结果</returns>
-        public static async Task<PerformanceComparison> CompareAsync(Func<Task> action1, Func<Task> action2, int iterations)
-        {
-            var stats1 = await TimeStatisticsAsync(action1, iterations);
-            var stats2 = await TimeStatisticsAsync(action2, iterations);
-
-            return new PerformanceComparison
-            {
-                FirstOperationStats = stats1,
-                SecondOperationStats = stats2,
-                IsFirstFaster = stats1.Average < stats2.Average,
-                PerformanceRatio = stats1.Average / stats2.Average
-            };
-        }
-
-        /// <summary>
-        /// 计算执行时间统计数据
-        /// </summary>
-        /// <param name="times">执行时间集合</param>
-        /// <returns>统计信息</returns>
-        private static TimingStatistics CalculateStatistics(List<long> times)
-        {
-            if (times == null || times.Count == 0)
-                throw new ArgumentException("时间集合不能为空", nameof(times));
-
-            long min = long.MaxValue, max = long.MinValue, sum = 0;
-            foreach (var time in times)
-            {
-                if (time < min) min = time;
-                if (time > max) max = time;
-                sum += time;
-            }
-
-            double average = (double)sum / times.Count;
-            double variance = 0;
-            foreach (var time in times)
-            {
-                variance += Math.Pow(time - average, 2);
-            }
-            variance /= times.Count;
-            double stdDev = Math.Sqrt(variance);
-
-            return new TimingStatistics
-            {
-                Count = times.Count,
-                Min = min,
-                Max = max,
-                Average = average,
-                Sum = sum,
-                StandardDeviation = stdDev
-            };
-        }
-
-        #endregion
-
-        #region 高精度计时
-
-        /// <summary>
-        /// 获取高精度时间戳
-        /// </summary>
-        /// <returns>高精度时间戳</returns>
-        public static long GetTimestamp()
-        {
-            return Stopwatch.GetTimestamp();
-        }
-
-        /// <summary>
-        /// 将时间戳转换为时间间隔
-        /// </summary>
-        /// <param name="timestamp">时间戳</param>
-        /// <returns>时间间隔</returns>
-        public static TimeSpan TimestampToTimeSpan(long timestamp)
-        {
-            return TimeSpan.FromTicks(timestamp * TimeSpan.TicksPerSecond / Stopwatch.Frequency);
-        }
-
-        /// <summary>
-        /// 获取计时器频率
-        /// </summary>
-        /// <returns>计时器频率</returns>
-        public static long GetFrequency()
-        {
-            return Stopwatch.Frequency;
-        }
-
-        /// <summary>
-        /// 检查计时器是否基于高性能计数器
-        /// </summary>
-        /// <returns>是否基于高性能计数器</returns>
-        public static bool IsHighResolution()
-        {
-            return Stopwatch.IsHighResolution;
-        }
-
-        /// <summary>
-        /// 使用高精度计时器执行操作
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>执行耗时（纳秒）</returns>
-        public static long TimeHighPrecision(Action action)
-        {
-            var start = GetTimestamp();
-            action();
-            var end = GetTimestamp();
-
-            return (long)((end - start) * 1_000_000_000.0 / Stopwatch.Frequency);
-        }
-
-        /// <summary>
-        /// 高精度多次执行操作并返回平均耗时
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="iterations">执行次数</param>
-        /// <returns>平均执行耗时（纳秒）</returns>
-        public static double TimeAverageHighPrecision(Action action, int iterations)
-        {
-            if (iterations <= 0)
-                throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
-
-            var totalElapsed = 0L;
-            for (int i = 0; i < iterations; i++)
-            {
-                totalElapsed += TimeHighPrecision(action);
-            }
-            return (double)totalElapsed / iterations;
-        }
-
-        /// <summary>
-        /// 测量操作的CPU周期数
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>CPU周期数</returns>
-        public static long MeasureCpuCycles(Action action)
-        {
-            // 注意：此方法在不同平台上可能不可用
-            var start = GetTimestamp();
-            action();
-            var end = GetTimestamp();
-
-            return end - start;
-        }
-
-        /// <summary>
-        /// 创建高精度计时器
-        /// </summary>
-        /// <returns>新的高精度计时器</returns>
-        public static HighPrecisionTimer CreateHighPrecisionTimer()
-        {
-            return new HighPrecisionTimer();
-        }
-
-        /// <summary>
-        /// 使用自定义计时器执行操作
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>计时结果</returns>
-        public static CustomTimingResult TimeWithCustomTimer(Action action)
-        {
-            var timer = new CustomStopwatch();
-            var result = timer.Time(action);
-            return result;
-        }
-
-        #endregion
-
-        #region 条件计时与跟踪
-
-        /// <summary>
-        /// 条件性执行计时（仅在满足条件时计时）
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="condition">计时条件</param>
-        /// <returns>执行耗时（毫秒），如果不满足条件则返回-1</returns>
-        public static long TimeIf(Action action, Func<bool> condition)
-        {
-            if (condition())
-            {
-                return Time(action);
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// 条件性执行计时并输出到控制台
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="operationName">操作名称</param>
-        /// <param name="thresholdMs">阈值（毫秒），仅当超过此时间时才输出</param>
-        public static void TimeAndTrace(Action action, string operationName, long thresholdMs = 0)
-        {
-            var elapsed = Time(action);
-            if (elapsed >= thresholdMs)
-            {
-                Console.WriteLine($"{operationName} 耗时: {elapsed} ms");
-            }
-        }
-
-        /// <summary>
-        /// 计时并记录到日志（模拟实现）
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="operationName">操作名称</param>
-        /// <param name="logAction">日志记录动作</param>
-        public static void TimeAndLog(Action action, string operationName, Action<string> logAction)
-        {
-            var elapsed = Time(action);
-            logAction?.Invoke($"{operationName} executed in {elapsed} ms");
-        }
-
-        /// <summary>
-        /// 分段计时器，用于测量多个阶段的执行时间
-        /// </summary>
-        /// <returns>分段计时器实例</returns>
-        public static SegmentedStopwatch CreateSegmentedStopwatch()
-        {
-            return new SegmentedStopwatch();
-        }
-
-        /// <summary>
-        /// 执行操作并在超时时抛出异常
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="timeoutMs">超时时间（毫秒）</param>
-        /// <exception cref="TimeoutException">当操作超时时抛出</exception>
-        public static void TimeWithTimeout(Action action, int timeoutMs)
-        {
-            var task = Task.Run(action);
-            if (!task.Wait(timeoutMs))
-            {
-                throw new TimeoutException($"操作在 {timeoutMs} ms 内未完成");
-            }
-        }
-
-        /// <summary>
-        /// 异步执行操作并在超时时抛出异常
-        /// </summary>
-        /// <param name="action">要执行的异步操作</param>
-        /// <param name="timeoutMs">超时时间（毫秒）</param>
-        /// <exception cref="TimeoutException">当操作超时时抛出</exception>
-        public static async Task TimeWithTimeoutAsync(Func<Task> action, int timeoutMs)
-        {
-            var cts = new CancellationTokenSource(timeoutMs);
-            try
-            {
-                var task = action();
-                await task.WaitAsync(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                throw new TimeoutException($"操作在 {timeoutMs} ms 内未完成");
-            }
-        }
-
-        /// <summary>
-        /// 计时并重试操作直到成功或达到最大尝试次数
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <param name="maxAttempts">最大尝试次数</param>
-        /// <param name="retryIntervalMs">重试间隔（毫秒）</param>
-        /// <returns>执行结果信息</returns>
-        public static RetryResult TimeWithRetry(Action action, int maxAttempts, int retryIntervalMs = 1000)
-        {
-            var results = new List<long>();
-            Exception lastException = null;
-
-            for (int attempt = 1; attempt <= maxAttempts; attempt++)
-            {
-                try
-                {
-                    var elapsed = Time(action);
-                    results.Add(elapsed);
-                    return new RetryResult
-                    {
-                        Succeeded = true,
-                        Attempts = attempt,
-                        ExecutionTimes = results,
-                        TotalTime = results.Sum()
-                    };
-                }
-                catch (Exception ex)
-                {
-                    lastException = ex;
-                    results.Add(-1); // -1表示失败
-
-                    if (attempt < maxAttempts && retryIntervalMs > 0)
-                    {
-                        Task.Delay(retryIntervalMs).Wait();
-                    }
-                }
-            }
-
-            return new RetryResult
-            {
-                Succeeded = false,
-                Attempts = maxAttempts,
-                ExecutionTimes = results,
-                TotalTime = 0,
-                LastException = lastException
-            };
-        }
-
-        /// <summary>
-        /// 测量操作的内存分配（近似）
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>计时结果和内存使用信息</returns>
-        public static MemoryTimingResult TimeWithMemoryTracking(Action action)
-        {
-            var gcCountBefore = GC.CollectionCount(0);
-            var memoryBefore = GC.GetTotalMemory(false);
-
-            var elapsed = TimePrecise(action);
-
-            var memoryAfter = GC.GetTotalMemory(false);
-            var gcCountAfter = GC.CollectionCount(0);
-
-            return new MemoryTimingResult
-            {
-                Elapsed = elapsed,
-                MemoryAllocated = memoryAfter - memoryBefore,
-                GarbageCollections = gcCountAfter - gcCountBefore
-            };
-        }
-
-        #endregion
-    }
-
-    #region 辅助类和数据结构
-
-    /// <summary>
-    /// 计时统计信息
-    /// </summary>
-    public class TimingStatistics
-    {
-        /// <summary>
-        /// 执行次数
-        /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// 最短执行时间（毫秒）
-        /// </summary>
-        public long Min { get; set; }
-
-        /// <summary>
-        /// 最长执行时间（毫秒）
-        /// </summary>
-        public long Max { get; set; }
-
-        /// <summary>
-        /// 平均执行时间（毫秒）
-        /// </summary>
-        public double Average { get; set; }
-
-        /// <summary>
-        /// 总执行时间（毫秒）
-        /// </summary>
-        public long Sum { get; set; }
-
-        /// <summary>
-        /// 标准差
-        /// </summary>
-        public double StandardDeviation { get; set; }
-
-        /// <summary>
-        /// 格式化输出统计信息
-        /// </summary>
-        /// <returns>格式化的统计信息字符串</returns>
-        public override string ToString()
-        {
-            return $"Count: {Count}, Min: {Min}ms, Max: {Max}ms, Average: {Average:F2}ms, StdDev: {StandardDeviation:F2}ms";
-        }
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
     }
 
     /// <summary>
-    /// 性能比较结果
+    /// 执行操作并返回详细计时结果。
     /// </summary>
-    public class PerformanceComparison
+    /// <param name="action">要执行的操作。</param>
+    /// <returns>计时结果。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var result = StopwatchHelper.TimeDetailed(() =>
+    /// {
+    ///     Thread.Sleep(100);
+    /// });
+    /// Console.WriteLine($"耗时: {result.TotalMilliseconds} 毫秒");
+    /// Console.WriteLine($"耗时: {result.TotalMicroseconds} 微秒");
+    /// </code>
+    /// </example>
+    public static TimeSpan TimeDetailed(Action action)
     {
-        /// <summary>
-        /// 第一个操作的统计信息
-        /// </summary>
-        public TimingStatistics FirstOperationStats { get; set; }
+        ArgumentNullException.ThrowIfNull(action);
 
-        /// <summary>
-        /// 第二个操作的统计信息
-        /// </summary>
-        public TimingStatistics SecondOperationStats { get; set; }
-
-        /// <summary>
-        /// 第一个操作是否更快
-        /// </summary>
-        public bool IsFirstFaster { get; set; }
-
-        /// <summary>
-        /// 性能比率（第一个操作时间/第二个操作时间）
-        /// </summary>
-        public double PerformanceRatio { get; set; }
-
-        /// <summary>
-        /// 格式化输出比较结果
-        /// </summary>
-        /// <returns>格式化的比较结果字符串</returns>
-        public string ToFormattedString()
-        {
-            var fasterOp = IsFirstFaster ? "第一个" : "第二个";
-            var ratio = IsFirstFaster ? PerformanceRatio : 1 / PerformanceRatio;
-            return $"第一个操作平均耗时: {FirstOperationStats.Average:F2}ms\n" +
-                   $"第二个操作平均耗时: {SecondOperationStats.Average:F2}ms\n" +
-                   $"{fasterOp}操作快 {ratio:F2} 倍";
-        }
+        var stopwatch = Stopwatch.StartNew();
+        action();
+        stopwatch.Stop();
+        return stopwatch.Elapsed;
     }
 
     /// <summary>
-    /// 自定义计时器
+    /// 执行异步操作并返回详细计时结果。
     /// </summary>
-    public class CustomStopwatch
+    /// <param name="action">要执行的异步操作。</param>
+    /// <returns>计时结果。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    public static async Task<TimeSpan> TimeDetailedAsync(Func<Task> action)
     {
-        private readonly Stopwatch _stopwatch;
+        ArgumentNullException.ThrowIfNull(action);
 
-        public CustomStopwatch()
+        var stopwatch = Stopwatch.StartNew();
+        await action();
+        stopwatch.Stop();
+        return stopwatch.Elapsed;
+    }
+
+    /// <summary>
+    /// 执行带返回值的操作并返回结果和耗时。
+    /// </summary>
+    /// <typeparam name="T">返回值类型。</typeparam>
+    /// <param name="func">要执行的操作。</param>
+    /// <returns>执行结果和耗时。</returns>
+    /// <exception cref="ArgumentNullException">func 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var (result, elapsedMs) = StopwatchHelper.Time(() => ComputeSum(1, 100));
+    /// Console.WriteLine($"结果: {result}, 耗时: {elapsedMs} 毫秒");
+    /// </code>
+    /// </example>
+    public static (T Result, long ElapsedMilliseconds) Time<T>(Func<T> func)
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        var stopwatch = Stopwatch.StartNew();
+        var result = func();
+        stopwatch.Stop();
+        return (result, stopwatch.ElapsedMilliseconds);
+    }
+
+    /// <summary>
+    /// 执行带返回值的异步操作并返回结果和耗时。
+    /// </summary>
+    /// <typeparam name="T">返回值类型。</typeparam>
+    /// <param name="func">要执行的异步操作。</param>
+    /// <returns>执行结果和耗时。</returns>
+    /// <exception cref="ArgumentNullException">func 为 null 时抛出。</exception>
+    public static async Task<(T Result, long ElapsedMilliseconds)> TimeAsync<T>(Func<Task<T>> func)
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        var stopwatch = Stopwatch.StartNew();
+        var result = await func();
+        stopwatch.Stop();
+        return (result, stopwatch.ElapsedMilliseconds);
+    }
+
+    #endregion
+
+    #region 统计计时方法
+
+    /// <summary>
+    /// 多次执行操作并返回详细统计信息。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <param name="iterations">执行次数。</param>
+    /// <returns>执行时间统计信息。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var stats = StopwatchHelper.TimeStatistics(() =>
+    /// {
+    ///     Thread.Sleep(10);
+    /// }, 100);
+    /// Console.WriteLine($"平均: {stats.AverageMilliseconds} 毫秒");
+    /// Console.WriteLine($"最小: {stats.MinMilliseconds} 毫秒");
+    /// Console.WriteLine($"最大: {stats.MaxMilliseconds} 毫秒");
+    /// </code>
+    /// </example>
+    public static TimingStatistics TimeStatistics(Action action, int iterations)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        var times = new List<long>(iterations);
+
+        for (int i = 0; i < iterations; i++)
         {
-            _stopwatch = new Stopwatch();
+            times.Add(Time(action));
         }
 
-        /// <summary>
-        /// 执行操作并返回计时结果
-        /// </summary>
-        /// <param name="action">要执行的操作</param>
-        /// <returns>计时结果</returns>
-        public CustomTimingResult Time(Action action)
+        return CalculateStatistics(times);
+    }
+
+    /// <summary>
+    /// 多次执行异步操作并返回详细统计信息。
+    /// </summary>
+    /// <param name="action">要执行的异步操作。</param>
+    /// <param name="iterations">执行次数。</param>
+    /// <returns>执行时间统计信息。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    public static async Task<TimingStatistics> TimeStatisticsAsync(Func<Task> action, int iterations)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        var times = new List<long>(iterations);
+
+        for (int i = 0; i < iterations; i++)
         {
-            _stopwatch.Restart();
+            times.Add(await TimeAsync(action));
+        }
+
+        return CalculateStatistics(times);
+    }
+
+    /// <summary>
+    /// 多次执行操作并返回每次的耗时列表。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <param name="iterations">执行次数。</param>
+    /// <returns>每次执行的耗时列表（毫秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    public static List<long> TimeEach(Action action, int iterations)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        var times = new List<long>(iterations);
+
+        for (int i = 0; i < iterations; i++)
+        {
+            times.Add(Time(action));
+        }
+
+        return times;
+    }
+
+    /// <summary>
+    /// 多次执行异步操作并返回每次的耗时列表。
+    /// </summary>
+    /// <param name="action">要执行的异步操作。</param>
+    /// <param name="iterations">执行次数。</param>
+    /// <returns>每次执行的耗时列表（毫秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    public static async Task<List<long>> TimeEachAsync(Func<Task> action, int iterations)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        var times = new List<long>(iterations);
+
+        for (int i = 0; i < iterations; i++)
+        {
+            times.Add(await TimeAsync(action));
+        }
+
+        return times;
+    }
+
+    /// <summary>
+    /// 计算统计信息。
+    /// </summary>
+    /// <param name="times">时间列表（毫秒）。</param>
+    /// <returns>统计信息。</returns>
+    /// <exception cref="ArgumentNullException">times 为 null 时抛出。</exception>
+    public static TimingStatistics CalculateStatistics(IEnumerable<long> times)
+    {
+        ArgumentNullException.ThrowIfNull(times);
+
+        var timesList = times.ToList();
+
+        if (timesList.Count == 0)
+        {
+            return new TimingStatistics();
+        }
+
+        timesList.Sort();
+
+        var sum = timesList.Sum();
+        var average = (double)sum / timesList.Count;
+
+        double sumOfSquares = 0;
+        foreach (var time in timesList)
+        {
+            sumOfSquares += Math.Pow(time - average, 2);
+        }
+
+        var stdDev = Math.Sqrt(sumOfSquares / timesList.Count);
+
+        int medianIndex = timesList.Count / 2;
+        var median = timesList.Count % 2 == 0
+            ? (timesList[medianIndex - 1] + timesList[medianIndex]) / 2.0
+            : timesList[medianIndex];
+
+        return new TimingStatistics
+        {
+            Count = timesList.Count,
+            TotalMilliseconds = sum,
+            AverageMilliseconds = average,
+            MinMilliseconds = timesList[0],
+            MaxMilliseconds = timesList[^1],
+            MedianMilliseconds = median,
+            StandardDeviation = stdDev,
+            P90Milliseconds = GetPercentile(timesList, 90),
+            P95Milliseconds = GetPercentile(timesList, 95),
+            P99Milliseconds = GetPercentile(timesList, 99)
+        };
+    }
+
+    /// <summary>
+    /// 获取百分位数。
+    /// </summary>
+    private static double GetPercentile(List<long> sortedTimes, double percentile)
+    {
+        if (sortedTimes.Count == 0) return 0;
+        if (sortedTimes.Count == 1) return sortedTimes[0];
+
+        var index = (percentile / 100) * (sortedTimes.Count - 1);
+        var lowerIndex = (int)Math.Floor(index);
+        var upperIndex = (int)Math.Ceiling(index);
+
+        if (lowerIndex == upperIndex)
+        {
+            return sortedTimes[lowerIndex];
+        }
+
+        var weight = index - lowerIndex;
+        return sortedTimes[lowerIndex] * (1 - weight) + sortedTimes[upperIndex] * weight;
+    }
+
+    #endregion
+
+    #region 高精度计时方法
+
+    /// <summary>
+    /// 执行操作并返回高精度耗时（Ticks）。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <returns>执行耗时（Ticks）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// long ticks = StopwatchHelper.TimeHighPrecision(() =>
+    /// {
+    ///     // 高精度操作
+    /// });
+    /// Console.WriteLine($"耗时: {ticks} Ticks");
+    /// </code>
+    /// </example>
+    public static long TimeHighPrecision(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        var stopwatch = Stopwatch.StartNew();
+        action();
+        stopwatch.Stop();
+        return stopwatch.ElapsedTicks;
+    }
+
+    /// <summary>
+    /// 执行操作并返回纳秒级耗时。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <returns>执行耗时（纳秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    public static double TimeNanoseconds(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        var stopwatch = Stopwatch.StartNew();
+        action();
+        stopwatch.Stop();
+
+        return stopwatch.ElapsedTicks * (1_000_000_000.0 / Stopwatch.Frequency);
+    }
+
+    /// <summary>
+    /// 执行操作并返回微秒级耗时。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <returns>执行耗时（微秒）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    public static double TimeMicroseconds(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        var stopwatch = Stopwatch.StartNew();
+        action();
+        stopwatch.Stop();
+
+        return stopwatch.ElapsedTicks * (1_000_000.0 / Stopwatch.Frequency);
+    }
+
+    /// <summary>
+    /// 获取计时器频率（每秒 Tick 数）。
+    /// </summary>
+    /// <returns>计时器频率。</returns>
+    public static long GetFrequency()
+    {
+        return Stopwatch.Frequency;
+    }
+
+    /// <summary>
+    /// 检查计时器是否为高精度。
+    /// </summary>
+    /// <returns>是否为高精度计时器。</returns>
+    public static bool IsHighResolution()
+    {
+        return Stopwatch.IsHighResolution;
+    }
+
+    /// <summary>
+    /// 获取时间戳（Ticks）。
+    /// </summary>
+    /// <returns>当前时间戳。</returns>
+    public static long GetTimestamp()
+    {
+        return Stopwatch.GetTimestamp();
+    }
+
+    /// <summary>
+    /// 计算两个时间戳之间的时间间隔。
+    /// </summary>
+    /// <param name="startTimestamp">开始时间戳。</param>
+    /// <param name="endTimestamp">结束时间戳。</param>
+    /// <returns>时间间隔。</returns>
+    public static TimeSpan GetElapsedTime(long startTimestamp, long endTimestamp)
+    {
+        return Stopwatch.GetElapsedTime(startTimestamp, endTimestamp);
+    }
+
+    /// <summary>
+    /// 计算从指定时间戳到现在的时间间隔。
+    /// </summary>
+    /// <param name="startTimestamp">开始时间戳。</param>
+    /// <returns>时间间隔。</returns>
+    public static TimeSpan GetElapsedTime(long startTimestamp)
+    {
+        return Stopwatch.GetElapsedTime(startTimestamp);
+    }
+
+    #endregion
+
+    #region 条件计时方法
+
+    /// <summary>
+    /// 条件执行计时：仅当条件为 true 时执行并计时。
+    /// </summary>
+    /// <param name="condition">执行条件。</param>
+    /// <param name="action">要执行的操作。</param>
+    /// <returns>执行耗时（毫秒），如果条件为 false 则返回 -1。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// bool shouldRun = true;
+    /// long elapsedMs = StopwatchHelper.TimeIf(shouldRun, () =>
+    /// {
+    ///     Thread.Sleep(100);
+    /// });
+    /// Console.WriteLine($"耗时: {elapsedMs} 毫秒");
+    /// </code>
+    /// </example>
+    public static long TimeIf(bool condition, Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (!condition) return -1;
+        return Time(action);
+    }
+
+    /// <summary>
+    /// 条件执行异步计时：仅当条件为 true 时执行并计时。
+    /// </summary>
+    /// <param name="condition">执行条件。</param>
+    /// <param name="action">要执行的异步操作。</param>
+    /// <returns>执行耗时（毫秒），如果条件为 false 则返回 -1。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    public static async Task<long> TimeIfAsync(bool condition, Func<Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (!condition) return -1;
+        return await TimeAsync(action);
+    }
+
+    /// <summary>
+    /// 超时执行：如果超时则返回 null。
+    /// </summary>
+    /// <typeparam name="T">返回值类型。</typeparam>
+    /// <param name="func">要执行的操作。</param>
+    /// <param name="timeoutMilliseconds">超时时间（毫秒）。</param>
+    /// <returns>执行结果和耗时，如果超时则返回 null。</returns>
+    /// <exception cref="ArgumentNullException">func 为 null 时抛出。</exception>
+    public static (T? Result, long ElapsedMilliseconds)? TimeWithTimeout<T>(Func<T> func, long timeoutMilliseconds)
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        if (timeoutMilliseconds <= 0)
+            throw new ArgumentException("超时时间必须大于0", nameof(timeoutMilliseconds));
+
+        var stopwatch = Stopwatch.StartNew();
+        var task = Task.Run(() => func());
+
+        if (task.Wait((int)timeoutMilliseconds))
+        {
+            stopwatch.Stop();
+            return (task.Result, stopwatch.ElapsedMilliseconds);
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 重试执行：失败时重试指定次数。
+    /// </summary>
+    /// <param name="action">要执行的操作。</param>
+    /// <param name="maxRetries">最大重试次数。</param>
+    /// <param name="retryDelayMilliseconds">重试延迟（毫秒）。</param>
+    /// <returns>执行结果（是否成功、耗时、重试次数）。</returns>
+    /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
+    public static (bool Success, long ElapsedMilliseconds, int RetryCount) TimeWithRetry(
+        Action action,
+        int maxRetries = 3,
+        int retryDelayMilliseconds = 100)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (maxRetries < 0)
+            throw new ArgumentException("最大重试次数不能为负数", nameof(maxRetries));
+
+        var stopwatch = Stopwatch.StartNew();
+        int retryCount = 0;
+        bool success = false;
+        Exception? lastException = null;
+
+        while (retryCount <= maxRetries)
+        {
             try
             {
                 action();
-                _stopwatch.Stop();
-                return new CustomTimingResult
-                {
-                    Success = true,
-                    Elapsed = _stopwatch.Elapsed,
-                    ElapsedMilliseconds = _stopwatch.ElapsedMilliseconds
-                };
+                success = true;
+                break;
             }
             catch (Exception ex)
             {
-                _stopwatch.Stop();
-                return new CustomTimingResult
+                lastException = ex;
+                retryCount++;
+
+                if (retryCount <= maxRetries && retryDelayMilliseconds > 0)
                 {
-                    Success = false,
-                    Elapsed = _stopwatch.Elapsed,
-                    ElapsedMilliseconds = _stopwatch.ElapsedMilliseconds,
-                    Exception = ex
-                };
-            }
-        }
-    }
-
-    /// <summary>
-    /// 自定义计时结果
-    /// </summary>
-    public class CustomTimingResult
-    {
-        /// <summary>
-        /// 是否成功执行
-        /// </summary>
-        public bool Success { get; set; }
-
-        /// <summary>
-        /// 执行耗时
-        /// </summary>
-        public TimeSpan Elapsed { get; set; }
-
-        /// <summary>
-        /// 执行耗时（毫秒）
-        /// </summary>
-        public long ElapsedMilliseconds { get; set; }
-
-        /// <summary>
-        /// 异常信息（如果有）
-        /// </summary>
-        public Exception Exception { get; set; }
-    }
-
-    /// <summary>
-    /// 分段计时器
-    /// </summary>
-    public class SegmentedStopwatch
-    {
-        private readonly Stopwatch _stopwatch;
-        private readonly List<TimeSegment> _segments;
-        private bool _isRunning;
-        private long _lastSegmentStart;
-
-        public SegmentedStopwatch()
-        {
-            _stopwatch = new Stopwatch();
-            _segments = new List<TimeSegment>();
-        }
-
-        /// <summary>
-        /// 开始计时
-        /// </summary>
-        public void Start()
-        {
-            _stopwatch.Start();
-            _isRunning = true;
-            _lastSegmentStart = 0;
-            _segments.Clear();
-        }
-
-        /// <summary>
-        /// 记录一个时间段
-        /// </summary>
-        /// <param name="name">时间段名称</param>
-        public void Segment(string name)
-        {
-            if (!_isRunning)
-                throw new InvalidOperationException("计时器未运行");
-
-            var currentTime = _stopwatch.ElapsedMilliseconds;
-            var segmentTime = currentTime - _lastSegmentStart;
-
-            _segments.Add(new TimeSegment
-            {
-                Name = name,
-                Duration = segmentTime
-            });
-
-            _lastSegmentStart = currentTime;
-        }
-
-        /// <summary>
-        /// 停止计时
-        /// </summary>
-        public void Stop()
-        {
-            _stopwatch.Stop();
-            _isRunning = false;
-        }
-
-        /// <summary>
-        /// 获取所有时间段
-        /// </summary>
-        /// <returns>时间段列表</returns>
-        public List<TimeSegment> GetSegments()
-        {
-            return new List<TimeSegment>(_segments);
-        }
-
-        /// <summary>
-        /// 获取总计时间
-        /// </summary>
-        /// <returns>总计时间</returns>
-        public long GetTotalTime()
-        {
-            return _stopwatch.ElapsedMilliseconds;
-        }
-    }
-
-    /// <summary>
-    /// 时间段
-    /// </summary>
-    public class TimeSegment
-    {
-        /// <summary>
-        /// 段名称
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// 持续时间（毫秒）
-        /// </summary>
-        public long Duration { get; set; }
-    }
-
-    /// <summary>
-    /// 高精度计时器
-    /// </summary>
-    public class HighPrecisionTimer
-    {
-        private long _startTimestamp;
-        private long _endTimestamp;
-        private bool _isRunning;
-
-        /// <summary>
-        /// 开始计时
-        /// </summary>
-        public void Start()
-        {
-            _startTimestamp = Stopwatch.GetTimestamp();
-            _isRunning = true;
-        }
-
-        /// <summary>
-        /// 停止计时
-        /// </summary>
-        public void Stop()
-        {
-            if (_isRunning)
-            {
-                _endTimestamp = Stopwatch.GetTimestamp();
-                _isRunning = false;
+                    Thread.Sleep(retryDelayMilliseconds);
+                }
             }
         }
 
-        /// <summary>
-        /// 获取经过的时间（纳秒）
-        /// </summary>
-        /// <returns>经过的时间（纳秒）</returns>
-        public long GetElapsedNanoseconds()
-        {
-            var end = _isRunning ? Stopwatch.GetTimestamp() : _endTimestamp;
-            return (long)((end - _startTimestamp) * 1_000_000_000.0 / Stopwatch.Frequency);
-        }
+        stopwatch.Stop();
 
-        /// <summary>
-        /// 获取经过的时间
-        /// </summary>
-        /// <returns>经过的时间</returns>
-        public TimeSpan GetElapsedTime()
-        {
-            var end = _isRunning ? Stopwatch.GetTimestamp() : _endTimestamp;
-            return TimeSpan.FromTicks((long)((end - _startTimestamp) * TimeSpan.TicksPerSecond / Stopwatch.Frequency));
-        }
+        return (success, stopwatch.ElapsedMilliseconds, Math.Max(0, retryCount - 1));
+    }
+
+    #endregion
+
+    #region 范围计时方法
+
+    /// <summary>
+    /// 创建一个范围计时器，使用 using 语句自动计时。
+    /// </summary>
+    /// <param name="action">计时结束后的回调操作。</param>
+    /// <returns>范围计时器。</returns>
+    /// <example>
+    /// <code>
+    /// using (var timer = StopwatchHelper.StartScope(elapsed => 
+    /// {
+    ///     Console.WriteLine($"耗时: {elapsed.TotalMilliseconds} 毫秒");
+    /// }))
+    /// {
+    ///     // 执行一些操作
+    ///     Thread.Sleep(100);
+    /// }
+    /// </code>
+    /// </example>
+    public static ScopeTimer StartScope(Action<TimeSpan> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        return new ScopeTimer(action);
     }
 
     /// <summary>
-    /// 重试结果
+    /// 创建一个范围计时器，使用 using 语句自动计时并输出到控制台。
     /// </summary>
-    public class RetryResult
+    /// <param name="label">计时标签。</param>
+    /// <returns>范围计时器。</returns>
+    /// <example>
+    /// <code>
+    /// using (StopwatchHelper.StartScope("数据库查询"))
+    /// {
+    ///     // 执行数据库查询
+    /// }
+    /// // 输出: [数据库查询] 耗时: 123.45 毫秒
+    /// </code>
+    /// </example>
+    public static ScopeTimer StartScope(string label)
     {
-        /// <summary>
-        /// 是否成功
-        /// </summary>
-        public bool Succeeded { get; set; }
+        ArgumentException.ThrowIfNullOrEmpty(label);
 
-        /// <summary>
-        /// 尝试次数
-        /// </summary>
-        public int Attempts { get; set; }
-
-        /// <summary>
-        /// 每次执行时间（毫秒），失败时为-1
-        /// </summary>
-        public List<long> ExecutionTimes { get; set; }
-
-        /// <summary>
-        /// 总时间（毫秒）
-        /// </summary>
-        public long TotalTime { get; set; }
-
-        /// <summary>
-        /// 最后一次异常（如果有）
-        /// </summary>
-        public Exception LastException { get; set; }
+        return new ScopeTimer(elapsed =>
+        {
+            Console.WriteLine($"[{label}] 耗时: {FormatTime(elapsed)}");
+        });
     }
 
     /// <summary>
-    /// 内存计时结果
+    /// 创建一个范围计时器，使用 using 语句自动计时。
     /// </summary>
-    public class MemoryTimingResult
+    /// <returns>范围计时器。</returns>
+    /// <example>
+    /// <code>
+    /// using (var timer = StopwatchHelper.StartScope())
+    /// {
+    ///     // 执行一些操作
+    /// }
+    /// Console.WriteLine($"耗时: {timer.ElapsedMilliseconds} 毫秒");
+    /// </code>
+    /// </example>
+    public static ScopeTimer StartScope()
     {
-        /// <summary>
-        /// 执行耗时
-        /// </summary>
-        public TimeSpan Elapsed { get; set; }
+        return new ScopeTimer();
+    }
 
-        /// <summary>
-        /// 内存分配量（字节）
-        /// </summary>
-        public long MemoryAllocated { get; set; }
+    #endregion
 
-        /// <summary>
-        /// 垃圾回收次数
-        /// </summary>
-        public int GarbageCollections { get; set; }
+    #region 基准测试方法
+
+    /// <summary>
+    /// 执行基准测试。
+    /// </summary>
+    /// <param name="name">测试名称。</param>
+    /// <param name="action">要测试的操作。</param>
+    /// <param name="iterations">迭代次数。</param>
+    /// <param name="warmupIterations">预热次数。</param>
+    /// <returns>基准测试结果。</returns>
+    /// <exception cref="ArgumentNullException">name 或 action 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var result = StopwatchHelper.Benchmark("List.Add", () =>
+    /// {
+    ///     var list = new List&lt;int&gt;();
+    ///     list.Add(1);
+    /// }, iterations: 10000, warmupIterations: 100);
+    /// Console.WriteLine(result);
+    /// </code>
+    /// </example>
+    public static BenchmarkResult Benchmark(
+        string name,
+        Action action,
+        int iterations = 1000,
+        int warmupIterations = 10)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        if (warmupIterations < 0)
+            throw new ArgumentException("预热次数不能为负数", nameof(warmupIterations));
+
+        for (int i = 0; i < warmupIterations; i++)
+        {
+            action();
+        }
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var stats = TimeStatistics(action, iterations);
+
+        return new BenchmarkResult
+        {
+            Name = name,
+            Iterations = iterations,
+            Statistics = stats
+        };
+    }
+
+    /// <summary>
+    /// 执行异步基准测试。
+    /// </summary>
+    /// <param name="name">测试名称。</param>
+    /// <param name="action">要测试的异步操作。</param>
+    /// <param name="iterations">迭代次数。</param>
+    /// <param name="warmupIterations">预热次数。</param>
+    /// <returns>基准测试结果。</returns>
+    /// <exception cref="ArgumentNullException">name 或 action 为 null 时抛出。</exception>
+    public static async Task<BenchmarkResult> BenchmarkAsync(
+        string name,
+        Func<Task> action,
+        int iterations = 1000,
+        int warmupIterations = 10)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        ArgumentNullException.ThrowIfNull(action);
+
+        if (iterations <= 0)
+            throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
+
+        if (warmupIterations < 0)
+            throw new ArgumentException("预热次数不能为负数", nameof(warmupIterations));
+
+        for (int i = 0; i < warmupIterations; i++)
+        {
+            await action();
+        }
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var stats = await TimeStatisticsAsync(action, iterations);
+
+        return new BenchmarkResult
+        {
+            Name = name,
+            Iterations = iterations,
+            Statistics = stats
+        };
+    }
+
+    /// <summary>
+    /// 比较两个方法的性能。
+    /// </summary>
+    /// <param name="name1">第一个方法名称。</param>
+    /// <param name="action1">第一个方法。</param>
+    /// <param name="name2">第二个方法名称。</param>
+    /// <param name="action2">第二个方法。</param>
+    /// <param name="iterations">迭代次数。</param>
+    /// <returns>比较结果。</returns>
+    /// <exception cref="ArgumentNullException">任何参数为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var comparison = StopwatchHelper.Compare(
+    ///     "StringBuilder", () =>
+    ///     {
+    ///         var sb = new StringBuilder();
+    ///         for (int i = 0; i &lt; 100; i++) sb.Append(i);
+    ///     },
+    ///     "StringConcat", () =>
+    ///     {
+    ///         var s = "";
+    ///         for (int i = 0; i &lt; 100; i++) s += i;
+    ///     },
+    ///     iterations: 10000
+    /// );
+    /// Console.WriteLine(comparison);
+    /// </code>
+    /// </example>
+    public static BenchmarkComparison Compare(
+        string name1,
+        Action action1,
+        string name2,
+        Action action2,
+        int iterations = 1000)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(name1);
+        ArgumentException.ThrowIfNullOrEmpty(name2);
+        ArgumentNullException.ThrowIfNull(action1);
+        ArgumentNullException.ThrowIfNull(action2);
+
+        var result1 = Benchmark(name1, action1, iterations);
+        var result2 = Benchmark(name2, action2, iterations);
+
+        return new BenchmarkComparison
+        {
+            Result1 = result1,
+            Result2 = result2
+        };
+    }
+
+    #endregion
+
+    #region 格式化方法
+
+    /// <summary>
+    /// 格式化时间间隔为友好字符串。
+    /// </summary>
+    /// <param name="elapsed">时间间隔。</param>
+    /// <returns>格式化后的字符串。</returns>
+    /// <example>
+    /// <code>
+    /// var formatted = StopwatchHelper.FormatTime(TimeSpan.FromMilliseconds(1234.56));
+    /// // 输出: "1.23 秒"
+    /// </code>
+    /// </example>
+    public static string FormatTime(TimeSpan elapsed)
+    {
+        if (elapsed.TotalSeconds < 1)
+        {
+            if (elapsed.TotalMilliseconds < 1)
+            {
+                if (elapsed.TotalMicroseconds < 1)
+                {
+                    return $"{elapsed.TotalNanoseconds:F2} 纳秒";
+                }
+                return $"{elapsed.TotalMicroseconds:F2} 微秒";
+            }
+            return $"{elapsed.TotalMilliseconds:F2} 毫秒";
+        }
+
+        if (elapsed.TotalMinutes < 1)
+        {
+            return $"{elapsed.TotalSeconds:F2} 秒";
+        }
+
+        if (elapsed.TotalHours < 1)
+        {
+            return $"{elapsed.TotalMinutes:F2} 分钟";
+        }
+
+        return $"{elapsed.TotalHours:F2} 小时";
+    }
+
+    /// <summary>
+    /// 格式化毫秒数为友好字符串。
+    /// </summary>
+    /// <param name="milliseconds">毫秒数。</param>
+    /// <returns>格式化后的字符串。</returns>
+    public static string FormatTime(long milliseconds)
+    {
+        return FormatTime(TimeSpan.FromMilliseconds(milliseconds));
+    }
+
+    /// <summary>
+    /// 格式化毫秒数为友好字符串。
+    /// </summary>
+    /// <param name="milliseconds">毫秒数。</param>
+    /// <returns>格式化后的字符串。</returns>
+    public static string FormatTime(double milliseconds)
+    {
+        return FormatTime(TimeSpan.FromMilliseconds(milliseconds));
+    }
+
+    /// <summary>
+    /// 格式化统计信息为友好字符串。
+    /// </summary>
+    /// <param name="stats">统计信息。</param>
+    /// <returns>格式化后的字符串。</returns>
+    /// <exception cref="ArgumentNullException">stats 为 null 时抛出。</exception>
+    public static string FormatStatistics(TimingStatistics stats)
+    {
+        ArgumentNullException.ThrowIfNull(stats);
+
+        if (stats.Count == 0)
+        {
+            return "无数据";
+        }
+
+        return $@"执行次数: {stats.Count}
+总耗时: {FormatTime(stats.TotalMilliseconds)}
+平均耗时: {FormatTime(stats.AverageMilliseconds)}
+最小耗时: {FormatTime(stats.MinMilliseconds)}
+最大耗时: {FormatTime(stats.MaxMilliseconds)}
+中位数: {FormatTime(stats.MedianMilliseconds)}
+标准差: {FormatTime(stats.StandardDeviation)}
+P90: {FormatTime(stats.P90Milliseconds)}
+P95: {FormatTime(stats.P95Milliseconds)}
+P99: {FormatTime(stats.P99Milliseconds)}";
     }
 
     #endregion
 }
+
+#region 辅助类定义
+
+/// <summary>
+/// 计时统计信息。
+/// </summary>
+public class TimingStatistics
+{
+    /// <summary>
+    /// 执行次数。
+    /// </summary>
+    public int Count { get; init; }
+
+    /// <summary>
+    /// 总耗时（毫秒）。
+    /// </summary>
+    public long TotalMilliseconds { get; init; }
+
+    /// <summary>
+    /// 平均耗时（毫秒）。
+    /// </summary>
+    public double AverageMilliseconds { get; init; }
+
+    /// <summary>
+    /// 最小耗时（毫秒）。
+    /// </summary>
+    public long MinMilliseconds { get; init; }
+
+    /// <summary>
+    /// 最大耗时（毫秒）。
+    /// </summary>
+    public long MaxMilliseconds { get; init; }
+
+    /// <summary>
+    /// 中位数（毫秒）。
+    /// </summary>
+    public double MedianMilliseconds { get; init; }
+
+    /// <summary>
+    /// 标准差（毫秒）。
+    /// </summary>
+    public double StandardDeviation { get; init; }
+
+    /// <summary>
+    /// P90 百分位数（毫秒）。
+    /// </summary>
+    public double P90Milliseconds { get; init; }
+
+    /// <summary>
+    /// P95 百分位数（毫秒）。
+    /// </summary>
+    public double P95Milliseconds { get; init; }
+
+    /// <summary>
+    /// P99 百分位数（毫秒）。
+    /// </summary>
+    public double P99Milliseconds { get; init; }
+
+    /// <summary>
+    /// 返回统计信息的字符串表示。
+    /// </summary>
+    public override string ToString()
+    {
+        return StopwatchHelper.FormatStatistics(this);
+    }
+}
+
+/// <summary>
+/// 范围计时器。
+/// </summary>
+public sealed class ScopeTimer : IDisposable
+{
+    private readonly Stopwatch _stopwatch;
+    private readonly Action<TimeSpan>? _action;
+    private bool _disposed;
+
+    /// <summary>
+    /// 初始化范围计时器。
+    /// </summary>
+    public ScopeTimer()
+    {
+        _stopwatch = Stopwatch.StartNew();
+    }
+
+    /// <summary>
+    /// 初始化范围计时器。
+    /// </summary>
+    /// <param name="action">计时结束后的回调操作。</param>
+    public ScopeTimer(Action<TimeSpan> action) : this()
+    {
+        _action = action;
+    }
+
+    /// <summary>
+    /// 获取已耗时（毫秒）。
+    /// </summary>
+    public long ElapsedMilliseconds => _stopwatch.ElapsedMilliseconds;
+
+    /// <summary>
+    /// 获取已耗时。
+    /// </summary>
+    public TimeSpan Elapsed => _stopwatch.Elapsed;
+
+    /// <summary>
+    /// 获取已耗时（Ticks）。
+    /// </summary>
+    public long ElapsedTicks => _stopwatch.ElapsedTicks;
+
+    /// <summary>
+    /// 停止计时。
+    /// </summary>
+    public void Stop()
+    {
+        _stopwatch.Stop();
+    }
+
+    /// <summary>
+    /// 重新开始计时。
+    /// </summary>
+    public void Restart()
+    {
+        _stopwatch.Restart();
+    }
+
+    /// <summary>
+    /// 释放资源。
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
+
+        _stopwatch.Stop();
+        _action?.Invoke(_stopwatch.Elapsed);
+        _disposed = true;
+    }
+}
+
+/// <summary>
+/// 基准测试结果。
+/// </summary>
+public class BenchmarkResult
+{
+    /// <summary>
+    /// 测试名称。
+    /// </summary>
+    public string Name { get; init; } = string.Empty;
+
+    /// <summary>
+    /// 迭代次数。
+    /// </summary>
+    public int Iterations { get; init; }
+
+    /// <summary>
+    /// 统计信息。
+    /// </summary>
+    public TimingStatistics Statistics { get; init; } = new();
+
+    /// <summary>
+    /// 每秒操作数。
+    /// </summary>
+    public double OperationsPerSecond => Statistics.AverageMilliseconds > 0
+        ? 1000.0 / Statistics.AverageMilliseconds
+        : 0;
+
+    /// <summary>
+    /// 返回结果的字符串表示。
+    /// </summary>
+    public override string ToString()
+    {
+        return $@"=== {Name} ===
+迭代次数: {Iterations}
+{Statistics}
+每秒操作数: {OperationsPerSecond:F2} ops/s";
+    }
+}
+
+/// <summary>
+/// 基准测试比较结果。
+/// </summary>
+public class BenchmarkComparison
+{
+    /// <summary>
+    /// 第一个方法的结果。
+    /// </summary>
+    public BenchmarkResult Result1 { get; init; } = new();
+
+    /// <summary>
+    /// 第二个方法的结果。
+    /// </summary>
+    public BenchmarkResult Result2 { get; init; } = new();
+
+    /// <summary>
+    /// 性能比率（Result2 / Result1）。
+    /// </summary>
+    public double SpeedRatio => Result1.Statistics.AverageMilliseconds > 0
+        ? Result2.Statistics.AverageMilliseconds / Result1.Statistics.AverageMilliseconds
+        : 0;
+
+    /// <summary>
+    /// 返回比较结果的字符串表示。
+    /// </summary>
+    public override string ToString()
+    {
+        var faster = SpeedRatio > 1 ? Result1.Name : Result2.Name;
+        var ratio = SpeedRatio > 1 ? SpeedRatio : 1 / SpeedRatio;
+
+        return $@"{Result1}
+{Result2}
+
+{faster} 快 {ratio:F2}x";
+    }
+}
+
+#endregion

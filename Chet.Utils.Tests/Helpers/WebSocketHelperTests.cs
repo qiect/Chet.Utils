@@ -1,8 +1,5 @@
-using System;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Chet.Utils.Helpers;
 using Xunit;
 
@@ -10,340 +7,846 @@ namespace Chet.Utils.Tests.Helpers
 {
     public class WebSocketHelperTests
     {
-        /// <summary>
-        /// 测试WebSocketHelper构造函数是否正确初始化属性
-        /// </summary>
+        #region 构造函数测试
+
         [Fact]
         public void Constructor_InitializesProperties()
         {
-            // Arrange
             int heartbeatInterval = 10000;
             int maxReconnectAttempts = 3;
             int reconnectDelay = 2000;
 
-            // Act
             var webSocketHelper = new WebSocketHelper(heartbeatInterval, maxReconnectAttempts, reconnectDelay);
 
-            // Assert
             Assert.NotNull(webSocketHelper);
-            // Note: We can't directly assert on private fields, but we can test behavior
         }
 
-        /// <summary>
-        /// 测试WebSocketHelper默认构造函数
-        /// </summary>
         [Fact]
         public void Constructor_WithDefaultParameters_InitializesWithDefaults()
         {
-            // Act
             var webSocketHelper = new WebSocketHelper();
 
-            // Assert
             Assert.NotNull(webSocketHelper);
         }
 
-        /// <summary>
-        /// 测试连接状态属性在初始时为None
-        /// </summary>
+        [Fact]
+        public void Constructor_WithCustomParameters_InitializesCorrectly()
+        {
+            var webSocketHelper = new WebSocketHelper(
+                heartbeatInterval: 5000,
+                maxReconnectAttempts: 10,
+                reconnectDelay: 3000,
+                receiveBufferSize: 8192,
+                sendBufferSize: 8192,
+                connectionTimeout: TimeSpan.FromSeconds(60));
+
+            Assert.NotNull(webSocketHelper);
+            Assert.True(webSocketHelper.AutoReconnect);
+            Assert.True(webSocketHelper.EnableMessageQueue);
+        }
+
+        #endregion
+
+        #region 属性测试
+
         [Fact]
         public void State_WhenInitialized_IsNone()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
 
-            // Act
             var state = webSocketHelper.State;
 
-            // Assert
             Assert.Equal(WebSocketState.None, state);
         }
 
-        /// <summary>
-        /// 测试IsConnected属性在初始时为false
-        /// </summary>
         [Fact]
         public void IsConnected_WhenInitialized_IsFalse()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
 
-            // Act
             var isConnected = webSocketHelper.IsConnected;
 
-            // Assert
             Assert.False(isConnected);
         }
 
-        /// <summary>
-        /// 测试SendMessageAsync在未连接时抛出异常
-        /// </summary>
+        [Fact]
+        public void ConnectedUri_WhenInitialized_IsNull()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            Assert.Null(webSocketHelper.ConnectedUri);
+        }
+
+        [Fact]
+        public void QueuedMessageCount_WhenInitialized_IsZero()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            Assert.Equal(0, webSocketHelper.QueuedMessageCount);
+        }
+
+        [Fact]
+        public void AutoReconnect_DefaultValue_IsTrue()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            Assert.True(webSocketHelper.AutoReconnect);
+        }
+
+        [Fact]
+        public void EnableMessageQueue_DefaultValue_IsTrue()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            Assert.True(webSocketHelper.EnableMessageQueue);
+        }
+
+        #endregion
+
+        #region 发送消息异常测试
+
         [Fact]
         public async Task SendMessageAsync_WhenNotConnected_ThrowsInvalidOperationException()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
+            webSocketHelper.EnableMessageQueue = false;
             string message = "Test message";
 
-            // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 webSocketHelper.SendMessageAsync(message));
         }
 
-        /// <summary>
-        /// 测试SendBinaryAsync在未连接时抛出异常
-        /// </summary>
+        [Fact]
+        public async Task SendMessageAsync_WhenNotConnectedAndQueueEnabled_QueuesMessage()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            webSocketHelper.EnableMessageQueue = true;
+            string message = "Test message";
+
+            await webSocketHelper.SendMessageAsync(message);
+
+            Assert.Equal(1, webSocketHelper.QueuedMessageCount);
+        }
+
+        [Fact]
+        public async Task SendMessageAsync_WithNullMessage_ThrowsArgumentNullException()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                webSocketHelper.SendMessageAsync(null));
+        }
+
         [Fact]
         public async Task SendBinaryAsync_WhenNotConnected_ThrowsInvalidOperationException()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
             byte[] data = Encoding.UTF8.GetBytes("Test data");
 
-            // Act & Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 webSocketHelper.SendBinaryAsync(data));
         }
 
-        /// <summary>
-        /// 测试SendPingAsync在未连接时抛出异常
-        /// </summary>
         [Fact]
-        public async Task SendPingAsync_WhenNotConnected_ThrowsInvalidOperationException()
+        public async Task SendBinaryAsync_WithNullData_ThrowsArgumentNullException()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
 
-            // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                webSocketHelper.SendPingAsync());
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                webSocketHelper.SendBinaryAsync(null));
         }
 
-        /// <summary>
-        /// 测试连接事件是否正确触发
-        /// </summary>
         [Fact]
-        public async Task ConnectAsync_RaisesOnConnectedEvent()
+        public async Task SendMessagesAsync_WithNullMessages_ThrowsArgumentNullException()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
-            bool eventRaised = false;
-            webSocketHelper.OnConnected += (sender, args) => eventRaised = true;
 
-            // 使用一个无效的URI来测试事件系统，因为实际连接需要WebSocket服务器
-            var uri = new Uri("ws://invalid-localhost:12345");
-
-            // Act
-            try
-            {
-                await webSocketHelper.ConnectAsync(uri, new CancellationToken(true)); // Already cancelled token
-            }
-            catch (OperationCanceledException)
-            {
-                // 忽略取消异常
-            }
-
-            // Assert
-            // Note: 由于使用了已取消的令牌，ConnectAsync会立即返回，但我们验证事件系统是否工作
-            Assert.False(eventRaised); // 不应该触发连接成功事件
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                webSocketHelper.SendMessagesAsync(null));
         }
 
-        /// <summary>
-        /// 测试错误事件是否正确触发
-        /// </summary>
+        #endregion
+
+        #region 事件测试
+
         [Fact]
-        public async Task ConnectAsync_WithInvalidUri_RaisesOnErrorEvent()
+        public void OnConnected_EventCanBeSubscribed()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
-            Exception raisedException = null;
-            webSocketHelper.OnError += (sender, exception) => raisedException = exception;
+            WebSocketConnectedEventArgs receivedArgs = null;
 
-            var uri = new Uri("ws://invalid-localhost:12345");
+            webSocketHelper.OnConnected += (sender, args) => receivedArgs = args;
 
-            // Act
-            try
-            {
-                await webSocketHelper.ConnectAsync(uri, new CancellationToken(true)); // Already cancelled token
-            }
-            catch (OperationCanceledException)
-            {
-                // 忽略取消异常
-            }
-
-            // Assert
-            // With cancelled token, we might not get an error event
-        }
-
-        /// <summary>
-        /// 测试消息接收事件是否能正确触发
-        /// </summary>
-        [Fact]
-        public void OnMessageReceived_EventSubscription_Works()
-        {
-            // Arrange
-            var webSocketHelper = new WebSocketHelper();
-            string receivedMessage = null;
-            webSocketHelper.OnMessageReceived += (sender, message) => receivedMessage = message;
-
-            // Act
-            // 模拟触发事件（在实际中这会由内部逻辑触发）
-            var handler = webSocketHelper.GetType()
-                .GetField("OnMessageReceived",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)
-                ?.GetValue(webSocketHelper) as EventHandler<string>;
-
-            // Assert
             Assert.NotNull(webSocketHelper);
-            // We can't easily trigger the event without actually receiving a message
         }
 
-        /// <summary>
-        /// 测试Dispose方法是否正确清理资源
-        /// </summary>
+        [Fact]
+        public void OnDisconnected_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketDisconnectedEventArgs receivedArgs = null;
+
+            webSocketHelper.OnDisconnected += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        [Fact]
+        public void OnMessageReceived_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketMessageReceivedEventArgs receivedArgs = null;
+
+            webSocketHelper.OnMessageReceived += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        [Fact]
+        public void OnBinaryReceived_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketBinaryReceivedEventArgs receivedArgs = null;
+
+            webSocketHelper.OnBinaryReceived += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        [Fact]
+        public void OnError_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketErrorEventArgs receivedArgs = null;
+
+            webSocketHelper.OnError += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        [Fact]
+        public void OnHeartbeat_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketHeartbeatEventArgs receivedArgs = null;
+
+            webSocketHelper.OnHeartbeat += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        [Fact]
+        public void OnReconnecting_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketReconnectingEventArgs receivedArgs = null;
+
+            webSocketHelper.OnReconnecting += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        [Fact]
+        public void OnMessageSent_EventCanBeSubscribed()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            WebSocketMessageSentEventArgs receivedArgs = null;
+
+            webSocketHelper.OnMessageSent += (sender, args) => receivedArgs = args;
+
+            Assert.NotNull(webSocketHelper);
+        }
+
+        #endregion
+
+        #region 连接测试
+
+        [Fact]
+        public async Task ConnectAsync_WithNullUri_ThrowsArgumentNullException()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                webSocketHelper.ConnectAsync(null));
+        }
+
+        [Fact]
+        public async Task ConnectAsync_WithCancelledToken_DoesNotConnect()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+
+            var uri = new Uri("ws://localhost:12345");
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+                webSocketHelper.ConnectAsync(uri, cts.Token));
+        }
+
+        [Fact]
+        public async Task DisconnectAsync_WhenNotConnected_DoesNotThrow()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            var exception = await Record.ExceptionAsync(() =>
+                webSocketHelper.DisconnectAsync());
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task DisconnectAsync_CalledMultipleTimes_DoesNotThrow()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            await webSocketHelper.DisconnectAsync();
+            await webSocketHelper.DisconnectAsync();
+            await webSocketHelper.DisconnectAsync();
+        }
+
+        [Fact]
+        public async Task ReconnectAsync_WithoutPreviousConnection_ThrowsInvalidOperationException()
+        {
+            var webSocketHelper = new WebSocketHelper();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                webSocketHelper.ReconnectAsync());
+        }
+
+        #endregion
+
+        #region 消息队列测试
+
+        [Fact]
+        public void ClearMessageQueue_ClearsAllMessages()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            webSocketHelper.EnableMessageQueue = true;
+
+            webSocketHelper.SendMessageAsync("message1").Wait();
+            webSocketHelper.SendMessageAsync("message2").Wait();
+            Assert.Equal(2, webSocketHelper.QueuedMessageCount);
+
+            webSocketHelper.ClearMessageQueue();
+
+            Assert.Equal(0, webSocketHelper.QueuedMessageCount);
+        }
+
+        #endregion
+
+        #region Dispose测试
+
         [Fact]
         public void Dispose_ClearsResources()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
 
-            // Act
             webSocketHelper.Dispose();
 
-            // Assert
-            // After dispose, we can't easily check private state without reflection
             Assert.NotNull(webSocketHelper);
         }
 
-        /// <summary>
-        /// 测试心跳事件是否能正确触发
-        /// </summary>
         [Fact]
-        public void OnHeartbeat_EventSubscription_Works()
+        public void Dispose_CalledMultipleTimes_DoesNotThrow()
         {
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
-            bool heartbeatReceived = false;
-            webSocketHelper.OnHeartbeat += (sender, args) => heartbeatReceived = true;
 
-            // Act
-            // Similar to message received, we can't easily trigger without internal access
-
-            // Assert
-            Assert.False(heartbeatReceived);
+            webSocketHelper.Dispose();
+            webSocketHelper.Dispose();
+            webSocketHelper.Dispose();
         }
 
-        /// <summary>
-        /// 测试断开连接事件是否能正确触发
-        /// </summary>
+        #endregion
+
+        #region WebSocketServerHelper 测试
+
         [Fact]
-        public async Task DisconnectAsync_RaisesOnDisconnectedEvent()
+        public void WebSocketServerHelper_Constructor_InitializesProperties()
         {
-            // Arrange
-            var webSocketHelper = new WebSocketHelper();
-            WebSocketCloseStatus? receivedStatus = null;
-            webSocketHelper.OnDisconnected += (sender, status) => receivedStatus = status;
+            var server = new WebSocketServerHelper(heartbeatIntervalSec: 30);
 
-            // Act
-            await webSocketHelper.DisconnectAsync();
-
-            // Assert
-            // Should be called with null since no actual connection was made
-            Assert.Null(receivedStatus);
+            Assert.NotNull(server);
+            Assert.False(server.IsRunning);
+            Assert.Equal(0, server.ConnectedClientCount);
         }
 
-        /// <summary>
-        /// 测试循环发送和接收消息的功能
-        /// 注意：此测试模拟WebSocketHelper的消息接收机制，测试事件订阅和触发功能
-        /// </summary>
         [Fact]
-        public async Task TestLoopSendAndReceiveMessages()
+        public void WebSocketServerHelper_Constructor_WithPort_InitializesProperties()
         {
-            // Arrange
-            var webSocketHelper = new WebSocketHelper();
-            var receivedMessages = new List<string>();
-            var messageCount = 5; // 测试循环5次
-            
-            // 订阅消息接收事件
-            webSocketHelper.OnMessageReceived += (sender, message) =>
+            var server = new WebSocketServerHelper(8080, heartbeatIntervalSec: 30);
+
+            Assert.NotNull(server);
+            Assert.False(server.IsRunning);
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_ConnectedClientIds_ReturnsEmptyWhenNoClients()
+        {
+            var server = new WebSocketServerHelper();
+
+            var clientIds = server.ConnectedClientIds;
+
+            Assert.Empty(clientIds);
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_GroupNames_ReturnsEmptyWhenNoGroups()
+        {
+            var server = new WebSocketServerHelper();
+
+            var groupNames = server.GroupNames;
+
+            Assert.Empty(groupNames);
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_StopServer_WhenNotRunning_DoesNotThrow()
+        {
+            var server = new WebSocketServerHelper();
+
+            var exception = Record.Exception(() => server.StopServer());
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_StopServer_CalledMultipleTimes_DoesNotThrow()
+        {
+            var server = new WebSocketServerHelper();
+
+            server.StopServer();
+            server.StopServer();
+            server.StopServer();
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_GetClientInfo_WhenClientNotExists_ReturnsNull()
+        {
+            var server = new WebSocketServerHelper();
+
+            var clientInfo = server.GetClientInfo("non-existent-id");
+
+            Assert.Null(clientInfo);
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_StartServerAsync_WithNullPrefixes_ThrowsArgumentException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                server.StartServerAsync((IEnumerable<string>)null));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_StartServerAsync_WithEmptyPrefixes_ThrowsArgumentException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                server.StartServerAsync(new List<string>()));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_StartServerAsync_WithInvalidPrefix_ThrowsException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAnyAsync<Exception>(() =>
+                server.StartServerAsync("invalid-prefix"));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendMessageToClient_WithNullClientId_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                server.SendMessageToClientAsync(null, "test message"));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendMessageToClient_WithEmptyClientId_ThrowsArgumentException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                server.SendMessageToClientAsync("", "test message"));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendMessageToClient_WithNullMessage_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                server.SendMessageToClientAsync("client-id", null));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendMessageToClient_WhenClientNotExists_ThrowsArgumentException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                server.SendMessageToClientAsync("non-existent-id", "test message"));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendBinaryToClient_WithNullClientId_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+            byte[] data = Encoding.UTF8.GetBytes("test data");
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                server.SendBinaryToClientAsync(null, data));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendBinaryToClient_WithNullData_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                server.SendBinaryToClientAsync("client-id", null));
+        }
+
+        [Fact]
+        public async Task WebSocketServerHelper_SendBinaryToClient_WhenClientNotExists_ThrowsArgumentException()
+        {
+            var server = new WebSocketServerHelper();
+            byte[] data = Encoding.UTF8.GetBytes("test data");
+
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                server.SendBinaryToClientAsync("non-existent-id", data));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_AddClientToGroup_WithNullClientId_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.AddClientToGroup(null, "test-group"));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_AddClientToGroup_WithNullGroupName_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.AddClientToGroup("client-id", null));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_RemoveClientFromGroup_WithNullClientId_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.RemoveClientFromGroup(null, "test-group"));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_RemoveClientFromGroup_WithNullGroupName_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.RemoveClientFromGroup("client-id", null));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_GetClientsInGroup_WithNullGroupName_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.GetClientsInGroup(null));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_GetClientsInGroup_WhenGroupNotExists_ReturnsEmpty()
+        {
+            var server = new WebSocketServerHelper();
+
+            var clients = server.GetClientsInGroup("non-existent-group");
+
+            Assert.Empty(clients);
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_DisconnectClient_WithNullClientId_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.DisconnectClient(null));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_DisconnectClient_WhenClientNotExists_DoesNotThrow()
+        {
+            var server = new WebSocketServerHelper();
+
+            server.DisconnectClient("non-existent-id");
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_SetClientCustomInfo_WithNullClientId_ThrowsArgumentNullException()
+        {
+            var server = new WebSocketServerHelper();
+
+            Assert.Throws<ArgumentNullException>(() => server.SetClientCustomInfo(null, new { Name = "Test" }));
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_Dispose_ClearsResources()
+        {
+            var server = new WebSocketServerHelper();
+
+            server.Dispose();
+
+            Assert.NotNull(server);
+        }
+
+        [Fact]
+        public void WebSocketServerHelper_Dispose_CalledMultipleTimes_DoesNotThrow()
+        {
+            var server = new WebSocketServerHelper();
+
+            server.Dispose();
+            server.Dispose();
+            server.Dispose();
+        }
+
+        #endregion
+
+        #region 事件参数类测试
+
+        [Fact]
+        public void WebSocketConnectedEventArgs_Properties_WorkCorrectly()
+        {
+            var uri = new Uri("ws://localhost:8080");
+            var eventArgs = new WebSocketConnectedEventArgs(uri);
+
+            Assert.Equal(uri, eventArgs.Uri);
+            Assert.True(eventArgs.ConnectedTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketDisconnectedEventArgs_Properties_WorkCorrectly()
+        {
+            var eventArgs = new WebSocketDisconnectedEventArgs(
+                WebSocketCloseStatus.NormalClosure,
+                "Test closure");
+
+            Assert.Equal(WebSocketCloseStatus.NormalClosure, eventArgs.CloseStatus);
+            Assert.Equal("Test closure", eventArgs.StatusDescription);
+            Assert.True(eventArgs.DisconnectedTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketMessageReceivedEventArgs_Properties_WorkCorrectly()
+        {
+            var message = "test message";
+            var eventArgs = new WebSocketMessageReceivedEventArgs(message);
+
+            Assert.Equal(message, eventArgs.Message);
+            Assert.True(eventArgs.ReceivedTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketBinaryReceivedEventArgs_Properties_WorkCorrectly()
+        {
+            var data = Encoding.UTF8.GetBytes("test data");
+            var eventArgs = new WebSocketBinaryReceivedEventArgs(data);
+
+            Assert.Equal(data, eventArgs.Data);
+            Assert.True(eventArgs.ReceivedTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketErrorEventArgs_Properties_WorkCorrectly()
+        {
+            var exception = new InvalidOperationException("Test error");
+            var eventArgs = new WebSocketErrorEventArgs("test-id", exception);
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.Equal(exception, eventArgs.Exception);
+            Assert.True(eventArgs.ErrorTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketHeartbeatEventArgs_Properties_WorkCorrectly()
+        {
+            var heartbeatTime = DateTime.Now;
+            var eventArgs = new WebSocketHeartbeatEventArgs(true, heartbeatTime, "test message");
+
+            Assert.True(eventArgs.IsSuccess);
+            Assert.Equal(heartbeatTime, eventArgs.HeartbeatTime);
+            Assert.Equal("test message", eventArgs.ErrorMessage);
+        }
+
+        [Fact]
+        public void WebSocketReconnectingEventArgs_Properties_WorkCorrectly()
+        {
+            var eventArgs = new WebSocketReconnectingEventArgs(3, 5);
+
+            Assert.Equal(3, eventArgs.Attempt);
+            Assert.Equal(5, eventArgs.MaxAttempts);
+            Assert.True(eventArgs.ReconnectingTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketMessageSentEventArgs_Properties_WorkCorrectly()
+        {
+            var eventArgs = new WebSocketMessageSentEventArgs("test message", false);
+
+            Assert.Equal("test message", eventArgs.Message);
+            Assert.False(eventArgs.IsBinary);
+            Assert.True(eventArgs.SentTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void WebSocketMessageSentEventArgs_BinaryMessage_WorkCorrectly()
+        {
+            var eventArgs = new WebSocketMessageSentEventArgs("[Binary Data]", true);
+
+            Assert.Equal("[Binary Data]", eventArgs.Message);
+            Assert.True(eventArgs.IsBinary);
+        }
+
+        [Fact]
+        public void ClientConnectedEventArgs_Properties_WorkCorrectly()
+        {
+            var clientInfo = new ClientInfo();
+            var eventArgs = new ClientConnectedEventArgs(clientInfo);
+
+            Assert.Equal(clientInfo, eventArgs.ClientInfo);
+        }
+
+        [Fact]
+        public void ClientDisconnectedEventArgs_Properties_WorkCorrectly()
+        {
+            var eventArgs = new ClientDisconnectedEventArgs(
+                "test-id",
+                WebSocketCloseStatus.NormalClosure,
+                "Test closure");
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.Equal(WebSocketCloseStatus.NormalClosure, eventArgs.CloseStatus);
+            Assert.Equal("Test closure", eventArgs.StatusDescription);
+        }
+
+        [Fact]
+        public void MessageReceivedEventArgs_TextMessage_Properties_WorkCorrectly()
+        {
+            var eventArgs = new MessageReceivedEventArgs("test-id", "test message");
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.Equal("test message", eventArgs.Message);
+            Assert.False(eventArgs.IsBinary);
+            Assert.True(eventArgs.ReceivedTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void MessageReceivedEventArgs_BinaryMessage_Properties_WorkCorrectly()
+        {
+            var data = Encoding.UTF8.GetBytes("test data");
+            var eventArgs = new MessageReceivedEventArgs("test-id", data);
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.Equal(data, eventArgs.BinaryData);
+            Assert.True(eventArgs.IsBinary);
+        }
+
+        [Fact]
+        public void MessageSentEventArgs_Properties_WorkCorrectly()
+        {
+            var eventArgs = new MessageSentEventArgs("test-id", "test message");
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.Equal("test message", eventArgs.Message);
+            Assert.False(eventArgs.IsBinary);
+            Assert.True(eventArgs.SentTime <= DateTime.Now);
+        }
+
+        [Fact]
+        public void MessageSentEventArgs_BinaryMessage_WorkCorrectly()
+        {
+            var eventArgs = new MessageSentEventArgs("test-id", "[Binary Data]", true);
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.True(eventArgs.IsBinary);
+        }
+
+        [Fact]
+        public void HeartbeatEventArgs_Properties_WorkCorrectly()
+        {
+            var eventArgs = new HeartbeatEventArgs("test-id", true, "test message");
+
+            Assert.Equal("test-id", eventArgs.ClientId);
+            Assert.True(eventArgs.IsNormal);
+            Assert.Equal("test message", eventArgs.Message);
+            Assert.True(eventArgs.HeartbeatTime <= DateTime.Now);
+        }
+
+        #endregion
+
+        #region ClientInfo 测试
+
+        [Fact]
+        public void ClientInfo_ConnectionDuration_WorksCorrectly()
+        {
+            var clientInfo = new ClientInfo();
+            Assert.True(clientInfo.ConnectionDuration >= TimeSpan.Zero);
+        }
+
+        [Fact]
+        public void ClientInfo_CustomInfo_CanBeSetAndRetrieved()
+        {
+            var customData = new { Name = "Test", Age = 25 };
+            var clientInfo = new ClientInfo
             {
-                receivedMessages.Add(message);
-                Console.WriteLine($"Received message: {message}");
+                CustomInfo = customData
             };
-            
-            // Act
-            // 模拟触发多次消息接收
-            // 由于我们无法直接测试WebSocket连接，我们通过直接调用事件处理程序来模拟
-            // 实际应用中，这些事件会由WebSocketHelper内部的ReceiveMessagesAsync方法触发
-            
-            // 使用反射获取消息接收事件字段
-            var onMessageReceivedField = typeof(WebSocketHelper).GetField("OnMessageReceived", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            
-            if (onMessageReceivedField != null)
-            {
-                var onMessageReceived = onMessageReceivedField.GetValue(webSocketHelper) as EventHandler<string>;
-                
-                // 模拟发送多条消息
-                for (int i = 0; i < messageCount; i++)
-                {
-                    var testMessage = $"Test message {i}";
-                    onMessageReceived?.Invoke(webSocketHelper, testMessage);
-                    await Task.Delay(10); // 短暂延迟模拟异步操作
-                }
-            }
 
-            // Assert
-            // 验证是否正确接收了所有消息
-            Assert.Equal(messageCount, receivedMessages.Count);
-            for (int i = 0; i < messageCount; i++)
-            {
-                Assert.Equal($"Test message {i}", receivedMessages[i]);
-            }
+            Assert.Equal(customData, clientInfo.CustomInfo);
         }
-        
-        /// <summary>
-        /// 测试WebSocketHelper在循环接收消息时的行为
-        /// 此测试通过模拟内部逻辑来验证循环接收机制
-        /// </summary>
+
+        #endregion
+
+        #region 并发测试
+
         [Fact]
-        public void TestReceiveMessagesLoopBehavior()
+        public async Task WebSocketHelper_ConcurrentDispose_DoesNotThrow()
         {
-            // 这个测试主要验证WebSocketHelper的事件系统是否能正确处理多次消息
-            // 由于我们无法直接测试异步的ReceiveMessagesAsync方法，
-            // 我们通过多次触发事件来模拟循环接收的情况
-            
-            // Arrange
             var webSocketHelper = new WebSocketHelper();
-            var receivedMessages = new List<string>();
-            var messageCount = 10;
-            
-            // 订阅消息接收事件
-            webSocketHelper.OnMessageReceived += (sender, message) =>
-            {
-                receivedMessages.Add(message);
-            };
-            
-            // Act - 模拟多次接收消息
-            for (int i = 0; i < messageCount; i++)
-            {
-                // 直接调用事件处理程序
-                var onMessageReceivedField = typeof(WebSocketHelper).GetField("OnMessageReceived", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                
-                if (onMessageReceivedField != null)
-                {
-                    var onMessageReceived = onMessageReceivedField.GetValue(webSocketHelper) as EventHandler<string>;
-                    onMessageReceived?.Invoke(webSocketHelper, $"Loop message {i}");
-                }
-            }
-            
-            // Assert
-            Assert.Equal(messageCount, receivedMessages.Count);
-            for (int i = 0; i < messageCount; i++)
-            {
-                Assert.Equal($"Loop message {i}", receivedMessages[i]);
-            }
+
+            var tasks = Enumerable.Range(0, 10)
+                .Select(_ => Task.Run(() => webSocketHelper.Dispose()));
+
+            await Task.WhenAll(tasks);
         }
+
+        [Fact]
+        public void WebSocketServerHelper_ConcurrentStop_DoesNotThrow()
+        {
+            var server = new WebSocketServerHelper();
+
+            Parallel.For(0, 10, _ => server.StopServer());
+        }
+
+        [Fact]
+        public void WebSocketHelper_ConcurrentMessageQueue_DoesNotThrow()
+        {
+            var webSocketHelper = new WebSocketHelper();
+            webSocketHelper.EnableMessageQueue = true;
+
+            Parallel.For(0, 100, i =>
+            {
+                webSocketHelper.SendMessageAsync($"message-{i}").Wait();
+            });
+
+            Assert.Equal(100, webSocketHelper.QueuedMessageCount);
+        }
+
+        #endregion
     }
 }

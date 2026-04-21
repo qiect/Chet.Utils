@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 
 namespace Chet.Utils.Tests.Extensions
 {
@@ -165,7 +165,7 @@ namespace Chet.Utils.Tests.Extensions
         public void ToQuarter_March_ReturnsQ1()
         {
             DateTime dt = new DateTime(2024, 3, 1);
-            Assert.Equal("Q1", dt.ToQuarter());
+            Assert.Equal("Q1", dt.ToQuarterString());
         }
 
         [Fact]

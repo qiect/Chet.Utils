@@ -2,7 +2,7 @@
 
 ## 概述
 
-HttpClientHelper 是一个功能强大、灵活且易于使用的 HTTP 客户端封装类，提供了丰富的 HTTP 请求方法、重试机制、超时控制、多种认证方式、拦截器、文件上传下载、批量请求处理等功能。该类实现了 `IHttpClientHelper` 接口，旨在简化 HTTP 通信的复杂性，提高开发效率和代码可维护性。
+[HttpClientHelper](../../Chet.Utils/Helpers/HttpClientHelper.cs) 是一个 HTTP 客户端封装类，为 HTTP 通信提供了丰富的功能，包括完整的 HTTP 方法支持、泛型返回类型、灵活的重试策略、多种认证方式、请求/响应拦截器、文件传输、批量请求处理、统计监控、Cookie 管理、SSL/TLS 配置、代理支持等，旨在简化 HTTP 通信的复杂性，提高开发效率和代码可维护性。
 
 ## 主要特性
 

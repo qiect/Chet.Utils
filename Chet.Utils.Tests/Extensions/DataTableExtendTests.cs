@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Xunit;
 
 namespace Chet.Utils.Tests.Extensions
@@ -196,7 +196,7 @@ namespace Chet.Utils.Tests.Extensions
             var dt = new DataTable();
             dt.Columns.Add("A");
             Exception ex1 = Record.Exception(() => dtNull.AddRow(1, 2));
-            Exception ex2 = Record.Exception(() => dt.AddRow(null));
+            Exception ex2 = Record.Exception(() => dt.AddRow((object[])null));
             Assert.Null(ex1);
             Assert.Null(ex2);
         }

@@ -1,0 +1,1163 @@
+# DoubleExtensions 功能文档
+
+## 概述
+
+[DoubleExtensions](../../Chet.Utils/Extensions/DoubleExtensions.cs) 是一个静态扩展类，为 `double` 类型提供了丰富的扩展方法，涵盖数值判断、转换、运算、格式化等功能，旨在简化 double 类型的数学运算和格式化处理，特别适合科学计算、工程计算等场景。
+
+## 主要功能模块
+
+### 1. 基础判断
+
+提供 double 数值状态相关的数据判断方法。
+
+#### IsZero
+判断 double 是否为零。
+
+```csharp
+public static bool IsZero(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为零返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 0d;
+double value2 = 123.45d;
+
+bool result1 = value1.IsZero(); // true
+bool result2 = value2.IsZero(); // false
+```
+
+#### IsPositive
+判断 double 是否为正数。
+
+```csharp
+public static bool IsPositive(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值大于零返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 123.45d;
+double value2 = -123.45d;
+
+bool result1 = value1.IsPositive(); // true
+bool result2 = value2.IsPositive(); // false
+```
+
+#### IsNegative
+判断 double 是否为负数。
+
+```csharp
+public static bool IsNegative(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值小于零返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = -123.45d;
+double value2 = 123.45d;
+
+bool result1 = value1.IsNegative(); // true
+bool result2 = value2.IsNegative(); // false
+```
+
+#### IsInteger
+判断 double 是否为整数（无小数部分）。
+
+```csharp
+public static bool IsInteger(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为整数返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 123d;
+double value2 = 123.45d;
+
+bool result1 = value1.IsInteger(); // true
+bool result2 = value2.IsInteger(); // false
+```
+
+#### IsEven
+判断 double 是否为偶数（仅整数时有效）。
+
+```csharp
+public static bool IsEven(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果是偶数返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 4d;
+double value2 = 5d;
+double value3 = 4.5d;
+
+bool result1 = value1.IsEven(); // true
+bool result2 = value2.IsEven(); // false
+bool result3 = value3.IsEven(); // false（非整数）
+```
+
+#### IsOdd
+判断 double 是否为奇数（仅整数时有效）。
+
+```csharp
+public static bool IsOdd(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果是奇数返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 5d;
+double value2 = 4d;
+double value3 = 5.5d;
+
+bool result1 = value1.IsOdd(); // true
+bool result2 = value2.IsOdd(); // false
+bool result3 = value3.IsOdd(); // false（非整数）
+```
+
+### 2. 特殊值判断
+
+提供 double 特殊值（NaN、无穷大）相关的判断方法。
+
+#### IsNaN
+判断 double 是否为 NaN（非数字）。
+
+```csharp
+public static bool IsNaN(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为 NaN 返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = double.NaN;
+double value2 = 123.45d;
+
+bool result1 = value1.IsNaN(); // true
+bool result2 = value2.IsNaN(); // false
+```
+
+#### IsInfinity
+判断 double 是否为无穷大（正无穷或负无穷）。
+
+```csharp
+public static bool IsInfinity(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为无穷大返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = double.PositiveInfinity;
+double value2 = 123.45d;
+
+bool result1 = value1.IsInfinity(); // true
+bool result2 = value2.IsInfinity(); // false
+```
+
+#### IsPositiveInfinity
+判断 double 是否为正无穷。
+
+```csharp
+public static bool IsPositiveInfinity(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为正无穷返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = double.PositiveInfinity;
+double value2 = double.NegativeInfinity;
+
+bool result1 = value1.IsPositiveInfinity(); // true
+bool result2 = value2.IsPositiveInfinity(); // false
+```
+
+#### IsNegativeInfinity
+判断 double 是否为负无穷。
+
+```csharp
+public static bool IsNegativeInfinity(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为负无穷返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = double.NegativeInfinity;
+double value2 = double.PositiveInfinity;
+
+bool result1 = value1.IsNegativeInfinity(); // true
+bool result2 = value2.IsNegativeInfinity(); // false
+```
+
+#### IsValid
+判断 double 是否为有效数值（非 NaN 且非无穷大）。
+
+```csharp
+public static bool IsValid(this double value)
+```
+
+**参数：**
+- `value`: 待判断的 double
+
+**返回值：**
+- 如果值为有效数值返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 123.45d;
+double value2 = double.NaN;
+double value3 = double.PositiveInfinity;
+
+bool result1 = value1.IsValid(); // true
+bool result2 = value2.IsValid(); // false
+bool result3 = value3.IsValid(); // false
+```
+
+### 3. 范围判断
+
+提供数值范围相关的判断和约束功能。
+
+#### IsBetween
+判断 double 是否在指定范围内（包含边界）。
+
+```csharp
+public static bool IsBetween(this double value, double min, double max)
+```
+
+**参数：**
+- `value`: 待判断的 double
+- `min`: 最小值
+- `max`: 最大值
+
+**返回值：**
+- 如果值在范围内返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value = 50d;
+
+bool result1 = value.IsBetween(0d, 100d); // true
+bool result2 = value.IsBetween(60d, 100d); // false
+```
+
+#### IsInRange
+判断 double 是否在指定范围内（包含边界）。
+
+```csharp
+public static bool IsInRange(this double value, double min, double max)
+```
+
+**参数：**
+- `value`: 待判断的 double
+- `min`: 最小值
+- `max`: 最大值
+
+**返回值：**
+- 如果值在范围内返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value = 50d;
+bool result = value.IsInRange(0d, 100d); // true
+```
+
+#### Clamp
+将 double 限制在指定范围内，超出则取边界值。
+
+```csharp
+public static double Clamp(this double value, double min, double max)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `min`: 最小值
+- `max`: 最大值
+
+**返回值：**
+- 限制后的值
+
+**示例：**
+```csharp
+double value1 = 150d;
+double value2 = 50d;
+double value3 = -10d;
+
+double result1 = value1.Clamp(0d, 100d); // 100
+double result2 = value2.Clamp(0d, 100d); // 50
+double result3 = value3.Clamp(0d, 100d); // 0
+```
+
+### 4. 类型转换
+
+提供 double 与其他数值类型之间的转换。
+
+#### ToInt
+将 double 转换为 int，四舍五入。
+
+```csharp
+public static int ToInt(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 转换后的 int 值
+
+**示例：**
+```csharp
+double value1 = 123.4d;
+double value2 = 123.5d;
+
+int result1 = value1.ToInt(); // 123
+int result2 = value2.ToInt(); // 124
+```
+
+#### ToLong
+将 double 转换为 long，四舍五入。
+
+```csharp
+public static long ToLong(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 转换后的 long 值
+
+**示例：**
+```csharp
+double value = 123456789.5d;
+long result = value.ToLong(); // 123456790
+```
+
+#### ToDecimal
+将 double 转换为 decimal。
+
+```csharp
+public static decimal ToDecimal(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 转换后的 decimal 值
+
+**示例：**
+```csharp
+double value = 123.45d;
+decimal result = value.ToDecimal(); // 123.45m
+```
+
+#### ToFloat
+将 double 转换为 float。
+
+```csharp
+public static float ToFloat(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 转换后的 float 值
+
+**示例：**
+```csharp
+double value = 123.45d;
+float result = value.ToFloat(); // 123.45f
+```
+
+#### ToBool
+将 double 转换为 bool（非零为 true）。
+
+```csharp
+public static bool ToBool(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 如果值非零返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 0d;
+double value2 = 123.45d;
+
+bool result1 = value1.ToBool(); // false
+bool result2 = value2.ToBool(); // true
+```
+
+### 5. 数学运算
+
+提供数值约束和数学计算功能。
+
+#### Round
+将 double 四舍五入到指定小数位。
+
+```csharp
+public static double Round(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 四舍五入后的值
+
+**示例：**
+```csharp
+double value = 123.4567d;
+
+double result1 = value.Round(); // 123.46
+double result2 = value.Round(3); // 123.457
+```
+
+#### Truncate
+将 double 截断到指定小数位（向零取整）。
+
+```csharp
+public static double Truncate(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 截断后的值
+
+**示例：**
+```csharp
+double value = 123.4567d;
+
+double result1 = value.Truncate(); // 123.45
+double result2 = value.Truncate(3); // 123.456
+```
+
+#### Abs
+获取 double 的绝对值。
+
+```csharp
+public static double Abs(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 绝对值
+
+**示例：**
+```csharp
+double value1 = -123.45d;
+double value2 = 123.45d;
+
+double result1 = value1.Abs(); // 123.45
+double result2 = value2.Abs(); // 123.45
+```
+
+#### Pow
+计算 double 的幂次方。
+
+```csharp
+public static double Pow(this double value, double power)
+```
+
+**参数：**
+- `value`: 底数
+- `power`: 指数
+
+**返回值：**
+- 计算结果
+
+**示例：**
+```csharp
+double value = 2d;
+
+double result1 = value.Pow(3); // 8
+double result2 = value.Pow(10); // 1024
+```
+
+#### Sqrt
+计算 double 的平方根。
+
+```csharp
+public static double Sqrt(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 平方根
+
+**示例：**
+```csharp
+double value = 16d;
+double result = value.Sqrt(); // 4
+```
+
+#### Ceiling
+向上取整（天花板函数）。
+
+```csharp
+public static double Ceiling(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 向上取整后的值
+
+**示例：**
+```csharp
+double value1 = 123.1d;
+double value2 = 123.9d;
+
+double result1 = value1.Ceiling(); // 124
+double result2 = value2.Ceiling(); // 124
+```
+
+#### Floor
+向下取整（地板函数）。
+
+```csharp
+public static double Floor(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 向下取整后的值
+
+**示例：**
+```csharp
+double value1 = 123.1d;
+double value2 = 123.9d;
+
+double result1 = value1.Floor(); // 123
+double result2 = value2.Floor(); // 123
+```
+
+#### Sign
+计算 double 的符号。
+
+```csharp
+public static int Sign(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 如果值为正返回 1，为零返回 0，为负返回 -1
+
+**示例：**
+```csharp
+double value1 = 123.45d;
+double value2 = 0d;
+double value3 = -123.45d;
+
+int result1 = value1.Sign(); // 1
+int result2 = value2.Sign(); // 0
+int result3 = value3.Sign(); // -1
+```
+
+#### Log (自然对数)
+计算 double 的自然对数。
+
+```csharp
+public static double Log(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 自然对数值
+
+**示例：**
+```csharp
+double value = Math.E;
+double result = value.Log(); // 1
+```
+
+#### Log (指定底数)
+计算 double 的指定底数的对数。
+
+```csharp
+public static double Log(this double value, double newBase)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `newBase`: 对数的底数
+
+**返回值：**
+- 对数值
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Log(10); // 2
+```
+
+#### Log10
+计算 double 的以 10 为底的对数。
+
+```csharp
+public static double Log10(this double value)
+```
+
+**参数：**
+- `value`: 待处理的 double
+
+**返回值：**
+- 以 10 为底的对数值
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Log10(); // 2
+```
+
+#### Exp
+计算 e 的指定次幂。
+
+```csharp
+public static double Exp(this double value)
+```
+
+**参数：**
+- `value`: 指数
+
+**返回值：**
+- e 的 value 次幂
+
+**示例：**
+```csharp
+double value = 1d;
+double result = value.Exp(); // 2.71828182845905 (e)
+```
+
+#### Sin
+计算 double 的正弦值。
+
+```csharp
+public static double Sin(this double value)
+```
+
+**参数：**
+- `value`: 弧度值
+
+**返回值：**
+- 正弦值
+
+**示例：**
+```csharp
+double value = Math.PI / 2;
+double result = value.Sin(); // 1
+```
+
+#### Cos
+计算 double 的余弦值。
+
+```csharp
+public static double Cos(this double value)
+```
+
+**参数：**
+- `value`: 弧度值
+
+**返回值：**
+- 余弦值
+
+**示例：**
+```csharp
+double value = 0;
+double result = value.Cos(); // 1
+```
+
+#### Tan
+计算 double 的正切值。
+
+```csharp
+public static double Tan(this double value)
+```
+
+**参数：**
+- `value`: 弧度值
+
+**返回值：**
+- 正切值
+
+**示例：**
+```csharp
+double value = Math.PI / 4;
+double result = value.Tan(); // 1
+```
+
+### 6. 四则运算
+
+提供安全的四则运算方法。
+
+#### Add
+double 加法。
+
+```csharp
+public static double Add(this double value, double other)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+
+**返回值：**
+- 两数之和
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Add(50d); // 150
+```
+
+#### Subtract
+double 减法。
+
+```csharp
+public static double Subtract(this double value, double other)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+
+**返回值：**
+- 两数之差
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Subtract(30d); // 70
+```
+
+#### Multiply
+double 乘法。
+
+```csharp
+public static double Multiply(this double value, double other)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+
+**返回值：**
+- 两数之积
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Multiply(1.5d); // 150
+```
+
+#### DivideSafe
+double 除法，除数为零时返回指定默认值。
+
+```csharp
+public static double DivideSafe(this double value, double other, double defaultValue = 0d)
+```
+
+**参数：**
+- `value`: 被除数
+- `other`: 除数
+- `defaultValue`: 除数为零时的默认返回值，默认为 0
+
+**返回值：**
+- 两数之商，或默认值
+
+**示例：**
+```csharp
+double value = 100d;
+
+double result1 = value.DivideSafe(4d); // 25
+double result2 = value.DivideSafe(0d); // 0
+```
+
+#### Mod
+double 求余。
+
+```csharp
+public static double Mod(this double value, double other)
+```
+
+**参数：**
+- `value`: 被除数
+- `other`: 除数
+
+**返回值：**
+- 余数，除数为零时返回 0
+
+**示例：**
+```csharp
+double value = 10d;
+double result = value.Mod(3d); // 1
+```
+
+### 7. 比较运算
+
+提供数值比较相关的方法。
+
+#### Max
+获取两个 double 中的较大值。
+
+```csharp
+public static double Max(this double value, double other)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+
+**返回值：**
+- 较大的值
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Max(200d); // 200
+```
+
+#### Min
+获取两个 double 中的较小值。
+
+```csharp
+public static double Min(this double value, double other)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+
+**返回值：**
+- 较小的值
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.Min(200d); // 100
+```
+
+#### AbsDiff
+计算两个 double 的绝对差值。
+
+```csharp
+public static double AbsDiff(this double value, double other)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+
+**返回值：**
+- 绝对差值
+
+**示例：**
+```csharp
+double value = 100d;
+double result = value.AbsDiff(130d); // 30
+```
+
+#### EqualsTolerance
+判断两个 double 是否在指定精度范围内相等。
+
+```csharp
+public static bool EqualsTolerance(this double value, double other, double tolerance = 0.0001d)
+```
+
+**参数：**
+- `value`: 第一个值
+- `other`: 第二个值
+- `tolerance`: 容差，默认为 0.0001
+
+**返回值：**
+- 如果差值小于容差返回 true；否则返回 false
+
+**示例：**
+```csharp
+double value1 = 1.00001d;
+double value2 = 1.00002d;
+
+bool result = value1.EqualsTolerance(value2, 0.0001d); // true
+```
+
+### 8. 格式化输出
+
+提供将数值格式化为字符串的功能。
+
+#### ToFixedString
+将 double 转换为固定小数位字符串。
+
+```csharp
+public static string ToFixedString(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 格式化后的字符串
+
+**示例：**
+```csharp
+double value = 123.4567d;
+
+string result1 = value.ToFixedString(); // "123.46"
+string result2 = value.ToFixedString(3); // "123.457"
+```
+
+#### ToCurrencyString
+将 double 转换为货币格式字符串。
+
+```csharp
+public static string ToCurrencyString(this double value, string culture = "zh-CN")
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `culture`: 区域信息，默认为 "zh-CN"
+
+**返回值：**
+- 货币格式字符串
+
+**示例：**
+```csharp
+double value = 1234.56d;
+
+string result1 = value.ToCurrencyString(); // "￥1,234.56"
+string result2 = value.ToCurrencyString("en-US"); // "$1,234.56"
+```
+
+#### ToPercentString
+将 double 转换为百分比字符串。
+
+```csharp
+public static string ToPercentString(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double（如 0.1234 表示 12.34%）
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 百分比字符串
+
+**示例：**
+```csharp
+double value = 0.1234d;
+string result = value.ToPercentString(); // "12.34%"
+```
+
+#### ToScientificString
+将 double 转换为科学计数法字符串。
+
+```csharp
+public static string ToScientificString(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 科学计数法字符串
+
+**示例：**
+```csharp
+double value = 1234567.89d;
+string result = value.ToScientificString(); // "1.23E+006"
+```
+
+#### ToFriendlyString
+将 double 转换为友好字符串（如 "1.23万"、"1.23亿"）。
+
+```csharp
+public static string ToFriendlyString(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 友好格式字符串
+
+**示例：**
+```csharp
+double value1 = 12345d;
+double value2 = 123456789d;
+
+string result1 = value1.ToFriendlyString(); // "1.23万"
+string result2 = value2.ToFriendlyString(); // "1.23亿"
+```
+
+#### ToThousandsString
+将 double 转换为带千分位的字符串。
+
+```csharp
+public static string ToThousandsString(this double value, int digits = 2)
+```
+
+**参数：**
+- `value`: 待处理的 double
+- `digits`: 保留的小数位数，默认为 2
+
+**返回值：**
+- 带千分位的字符串
+
+**示例：**
+```csharp
+double value = 1234567.89d;
+string result = value.ToThousandsString(); // "1,234,567.89"
+```
+
+### 9. 进制转换
+
+提供将数值转换为不同进制字符串的功能。
+
+#### ToHexString
+将 double 的整数部分转换为十六进制字符串。
+
+```csharp
+public static string ToHexString(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 十六进制字符串
+
+**示例：**
+```csharp
+double value = 255d;
+string result = value.ToHexString(); // "FF"
+```
+
+#### ToBinaryString
+将 double 的整数部分转换为二进制字符串。
+
+```csharp
+public static string ToBinaryString(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 二进制字符串
+
+**示例：**
+```csharp
+double value = 10d;
+string result = value.ToBinaryString(); // "1010"
+```
+
+#### ToOctalString
+将 double 的整数部分转换为八进制字符串。
+
+```csharp
+public static string ToOctalString(this double value)
+```
+
+**参数：**
+- `value`: 待转换的 double
+
+**返回值：**
+- 八进制字符串
+
+**示例：**
+```csharp
+double value = 64d;
+string result = value.ToOctalString(); // "100"
+```
+
+## 使用场景
+
+1. **科学计算** - 处理物理、化学、工程等领域的数值计算
+2. **数据展示** - 数值格式化显示，如货币、百分比、科学计数等格式
+3. **数据验证** - 数值范围检查和状态判断
+4. **数学运算** - 高级数学运算（三角函数、对数、指数等）
+5. **图形处理** - 坐标计算、角度转换等
+6. **类型转换** - double 与其他数值类型的安全转换
+7. **业务逻辑** - 数值状态判断（如正负、奇偶、整数等）
+8. **用户界面** - 提供友好的数值表示形式
+
+## 注意事项
+
+1. 所有方法都是扩展方法，需要通过 `double` 实例调用
+2. 四舍五入方法使用 `MidpointRounding.AwayFromZero` 策略，符合传统数学习惯
+3. double 类型存在精度问题，对于需要高精度的金融计算建议使用 decimal
+4. 除法运算提供安全版本 `DivideSafe()`，避免除零异常
+5. 进制转换方法仅处理整数部分，小数部分会被忽略
+6. 三角函数方法使用弧度制，不是角度制
+7. 特殊值判断方法（IsNaN、IsInfinity）用于处理计算结果异常情况
+8. 类型转换方法在转换前会进行四舍五入处理

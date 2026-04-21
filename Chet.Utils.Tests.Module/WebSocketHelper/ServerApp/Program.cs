@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Text.Json;
@@ -158,7 +158,7 @@ namespace Chet.Utils.Tests.Module.ServerApp
             // 错误事件
             _server.OnError += (sender, e) =>
             {
-                LogError("服务器错误", e.ToString(), "WebSocket错误");
+                LogError("服务器错误", e.Exception?.Message ?? "未知错误", e.Exception?.GetType().Name);
             };
         }
 

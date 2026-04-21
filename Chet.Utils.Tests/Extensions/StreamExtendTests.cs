@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Xunit;
 
 namespace Chet.Utils.Tests.Extensions
@@ -57,7 +57,7 @@ namespace Chet.Utils.Tests.Extensions
             {
                 using var ms = new MemoryStream(Encoding.UTF8.GetBytes("filetest"));
                 ms.SaveToFile(tempFile);
-                using var fs = tempFile.ToStream();
+                using var fs = tempFile.OpenAsStream();
                 Assert.True(fs.CanRead);
                 Assert.Equal("filetest", fs.ToText());
             }

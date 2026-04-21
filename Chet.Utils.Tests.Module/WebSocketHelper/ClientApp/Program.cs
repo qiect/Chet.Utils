@@ -76,27 +76,27 @@ namespace Chet.Utils.Tests.Module.ClientApp
                 SendClientInfo();
             };
 
-            _webSocketHelper.OnDisconnected += (sender, closeStatus) =>
+            _webSocketHelper.OnDisconnected += (sender, e) =>
             {
-                LogEvent("连接断开", $"与服务器断开连接，关闭状态: {closeStatus}");
+                LogEvent("连接断开", $"与服务器断开连接，关闭状态: {e.CloseStatus}, 描述: {e.StatusDescription}");
             };
 
-            _webSocketHelper.OnMessageReceived += (sender, message) =>
+            _webSocketHelper.OnMessageReceived += (sender, e) =>
             {
                 // 尝试解析JSON消息
-                if (TryParseJsonMessage(message, out var jsonMessage))
+                if (TryParseJsonMessage(e.Message, out var jsonMessage))
                 {
                     LogEvent("接收消息", $"类型: {jsonMessage.Type}, 内容: {jsonMessage.Content}");
                 }
                 else
                 {
-                    LogEvent("接收消息", message);
+                    LogEvent("接收消息", e.Message);
                 }
             };
 
-            _webSocketHelper.OnError += (sender, exception) =>
+            _webSocketHelper.OnError += (sender, e) =>
             {
-                LogError("发生错误", exception.Message, exception.GetType().Name);
+                LogError("发生错误", e.Exception.Message, e.Exception.GetType().Name);
             };
 
             _webSocketHelper.OnHeartbeat += (sender, e) =>
