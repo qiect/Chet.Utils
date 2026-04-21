@@ -9,6 +9,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/qiect/Chet.Utils</RepositoryUrl>
 		<Description>a c# utility library. C#工具包。提供丰富的扩展方法和帮助类，扩展类包含Bool、String、Int、Float、Double、Decimal、Enum、DataTable、DateTime、File、Stream、Enumerable等，帮助类包含HttpClientHelper、FileHelper、WebSocketHelper、RegexHelper、TaskHelper、UnitHelper、StopwatchHelper、ReflectHelper、ApplicationHelper、DataTableHelper等。</Description>
 		<Version>1.5.0</Version>
 		<Product />

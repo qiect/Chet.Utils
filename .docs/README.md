@@ -63,7 +63,7 @@ dotnet add package Chet.Utils
 ### PackageReference
 
 ```xml
-<PackageReference Include="Chet.Utils" Version="1.4.0" />
+<PackageReference Include="Chet.Utils" Version="1.5.0" />
 ```
 
 ## 快速开始
@@ -71,7 +71,7 @@ dotnet add package Chet.Utils
 ### 使用扩展方法
 
 ```csharp
-using Chet.Utils.Extensions;
+using Chet.Utils;
 
 // 字符串扩展
 string email = "test@example.com";
@@ -186,5 +186,5 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 如有问题或建议，请通过以下方式联系：
 
-- 提交 [GitHub Issue](https://github.com/example/chet-utils/issues)
+- 提交 [GitHub Issue](https://github.com/qiect/Chet.Utils/issues)
 - 发送邮件至：support@example.com
