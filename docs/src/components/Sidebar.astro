@@ -1,0 +1,91 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const extensions = [
+  { name: 'BoolExtensions', slug: 'bool-extensions', target: 'bool' },
+  { name: 'DataTableExtensions', slug: 'datatable-extensions', target: 'DataTable' },
+  { name: 'DateTimeExtensions', slug: 'datetime-extensions', target: 'DateTime' },
+  { name: 'DecimalExtensions', slug: 'decimal-extensions', target: 'decimal' },
+  { name: 'DoubleExtensions', slug: 'double-extensions', target: 'double' },
+  { name: 'EnumExtensions', slug: 'enum-extensions', target: 'Enum' },
+  { name: 'EnumerableExtensions', slug: 'enumerable-extensions', target: 'IEnumerable' },
+  { name: 'FileExtensions', slug: 'file-extensions', target: 'FileInfo' },
+  { name: 'FloatExtensions', slug: 'float-extensions', target: 'float' },
+  { name: 'IntExtensions', slug: 'int-extensions', target: 'int' },
+  { name: 'StreamExtensions', slug: 'stream-extensions', target: 'Stream' },
+  { name: 'StringExtensions', slug: 'string-extensions', target: 'string' },
+];
+
+const helpers = [
+  { name: 'ApplicationHelper', slug: 'application-helper' },
+  { name: 'DataTableHelper', slug: 'datatable-helper' },
+  { name: 'DataTableMyHelper', slug: 'datatable-my-helper' },
+  { name: 'FileHelper', slug: 'file-helper' },
+  { name: 'HttpClientHelper', slug: 'httpclient-helper' },
+  { name: 'ReflectHelper', slug: 'reflect-helper' },
+  { name: 'RegexHelper', slug: 'regex-helper' },
+  { name: 'StopwatchHelper', slug: 'stopwatch-helper' },
+  { name: 'TaskHelper', slug: 'task-helper' },
+  { name: 'UnitHelper', slug: 'unit-helper' },
+  { name: 'WebSocketHelper', slug: 'websocket-helper' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<aside class="hidden lg:block w-64 shrink-0 border-r border-gray-200 dark:border-gray-800 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
+  <nav class="p-4 space-y-6">
+    <!-- Quick Links -->
+    <div>
+      <a href={`${base}getting-started`} class:list={[
+        'block px-3 py-1.5 text-sm rounded-md transition-colors',
+        currentPath === `${base}getting-started` || currentPath === `${base}getting-started/`
+          ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
+          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+      ]}>
+        快速开始
+      </a>
+    </div>
+
+    <!-- Extensions -->
+    <div>
+      <h3 class="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">扩展方法</h3>
+      <ul class="space-y-0.5">
+        {extensions.map(ext => (
+          <li>
+            <a href={`${base}extensions/${ext.slug}`}
+              class:list={[
+                'flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors',
+                currentPath === `${base}extensions/${ext.slug}` || currentPath === `${base}extensions/${ext.slug}/`
+                  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              ]}>
+              <span class="text-xs text-gray-400 dark:text-gray-500 font-mono">{ext.target}</span>
+              <span class="truncate">{ext.name.replace('Extensions', '')}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Helpers -->
+    <div>
+      <h3 class="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">帮助类</h3>
+      <ul class="space-y-0.5">
+        {helpers.map(h => (
+          <li>
+            <a href={`${base}helpers/${h.slug}`}
+              class:list={[
+                'block px-3 py-1.5 text-sm rounded-md transition-colors truncate',
+                currentPath === `${base}helpers/${h.slug}` || currentPath === `${base}helpers/${h.slug}/`
+                  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              ]}>
+              {h.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+</aside>

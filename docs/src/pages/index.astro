@@ -1,0 +1,220 @@
+---
+import HomeLayout from '../layouts/HomeLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<HomeLayout title="首页" description="Chet.Utils - 全面的 .NET 工具类库，提供丰富的扩展方法和帮助类">
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-20 w-96 h-96 bg-primary-300 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative max-w-5xl mx-auto px-4 py-20 sm:py-28 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm mb-6">
+        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+        v1.5.0 已发布
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+        Chet.Utils
+      </h1>
+      <p class="text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto mb-10">
+        全面的 .NET 工具类库，提供 <strong>500+</strong> 个扩展方法和帮助类，<br class="hidden sm:block" />
+        简化日常开发，提高编码效率
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href={base + "getting-started"} class="inline-flex items-center gap-2 bg-white text-primary-700 font-semibold px-6 py-3 rounded-lg hover:bg-primary-50 transition-colors shadow-lg">
+          快速开始
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+        </a>
+        <a href={base + "extensions/string-extensions"} class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-lg hover:bg-white/20 transition-colors border border-white/20">
+          浏览文档
+        </a>
+      </div>
+
+      <!-- Install command -->
+      <div class="mt-10 inline-block bg-gray-900/50 backdrop-blur-sm rounded-lg px-6 py-3 font-mono text-sm">
+        <span class="text-gray-400">$</span> <span class="text-green-400">dotnet</span> add package Chet.Utils
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-5xl mx-auto px-4 py-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">12</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">扩展方法类</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">11</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">帮助类</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">500+</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">方法总数</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">MIT</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">开源协议</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="bg-gray-50 dark:bg-gray-900/50 py-16">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-10">核心特性</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">高性能</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">经过优化的实现，减少不必要的内存分配</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">安全可靠</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">完善的空值检查和异常处理</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">完整文档</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">所有方法都有详细的 XML 注释和使用示例</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-2">易于使用</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">直观的 API 设计，符合 .NET 命名规范</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Extensions Section -->
+  <section class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">扩展方法</h2>
+          <p class="text-gray-500 dark:text-gray-400 mt-1">为 .NET 内置类型提供丰富的扩展方法</p>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[
+          { name: 'BoolExtensions', slug: 'bool-extensions', target: 'bool', desc: '基础判断、逻辑运算、类型转换、条件执行' },
+          { name: 'DataTableExtensions', slug: 'datatable-extensions', target: 'DataTable', desc: '数据转换、查询筛选、聚合统计、分页操作' },
+          { name: 'DateTimeExtensions', slug: 'datetime-extensions', target: 'DateTime', desc: '日期判断、格式化、计算、中文日期' },
+          { name: 'DecimalExtensions', slug: 'decimal-extensions', target: 'decimal', desc: '数值判断、数学运算、格式化、中文转换' },
+          { name: 'DoubleExtensions', slug: 'double-extensions', target: 'double', desc: '数值判断、数学运算、三角函数、进制转换' },
+          { name: 'EnumExtensions', slug: 'enum-extensions', target: 'Enum', desc: '枚举判断、转换、描述获取、标志操作' },
+          { name: 'EnumerableExtensions', slug: 'enumerable-extensions', target: 'IEnumerable', desc: '集合判断、转换、分页、统计、批量操作' },
+          { name: 'FileExtensions', slug: 'file-extensions', target: 'FileInfo', desc: '文件读写、判断、信息获取、哈希计算' },
+          { name: 'FloatExtensions', slug: 'float-extensions', target: 'float', desc: '数值判断、数学运算、格式化、进制转换' },
+          { name: 'IntExtensions', slug: 'int-extensions', target: 'int', desc: '数值判断、数学运算、中文转换、罗马数字' },
+          { name: 'StreamExtensions', slug: 'stream-extensions', target: 'Stream', desc: '流读写、转换、压缩解压、哈希计算' },
+          { name: 'StringExtensions', slug: 'string-extensions', target: 'string', desc: '空值判断、正则验证、类型转换、编码解码' },
+        ].map(ext => (
+          <a href={base + "extensions/" + ext.slug} class="group block p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xs font-mono bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded">{ext.target}</span>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{ext.name}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{ext.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Helpers Section -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-900/50">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">帮助类</h2>
+          <p class="text-gray-500 dark:text-gray-400 mt-1">提供高级功能的静态帮助类</p>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[
+          { name: 'ApplicationHelper', slug: 'application-helper', desc: '进程管理、内存优化、系统信息获取' },
+          { name: 'DataTableHelper', slug: 'datatable-helper', desc: '数据透视、数据分析、数据清洗' },
+          { name: 'DataTableMyHelper', slug: 'datatable-my-helper', desc: '缺失值填充、JSON转换、数据映射' },
+          { name: 'FileHelper', slug: 'file-helper', desc: '文件监控、临时文件管理、文件比较' },
+          { name: 'HttpClientHelper', slug: 'httpclient-helper', desc: '重试机制、超时控制、认证管理' },
+          { name: 'ReflectHelper', slug: 'reflect-helper', desc: '类型检查、属性操作、方法调用' },
+          { name: 'RegexHelper', slug: 'regex-helper', desc: '常用验证、匹配、替换、提取' },
+          { name: 'StopwatchHelper', slug: 'stopwatch-helper', desc: '高精度计时、性能统计、基准测试' },
+          { name: 'TaskHelper', slug: 'task-helper', desc: '超时控制、重试机制、并行处理' },
+          { name: 'UnitHelper', slug: 'unit-helper', desc: '长度、货币、质量、角度等单位转换' },
+          { name: 'WebSocketHelper', slug: 'websocket-helper', desc: '连接管理、消息收发、心跳检测' },
+        ].map(h => (
+          <a href={base + "helpers/" + h.slug} class="group block p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all">
+            <h3 class="font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{h.name}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{h.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Example -->
+  <section class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-10">快速示例</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+          <div class="text-xs text-gray-400 mb-3">扩展方法</div>
+          <pre class="text-sm text-gray-100"><code>using Chet.Utils;
+
+// 字符串验证
+"test@example.com".IsEmail();    // true
+"13800138000".IsMobile();        // true
+
+// 日期处理
+DateTime.Now.IsWeekend();        // bool
+DateTime.Now.ToChineseDateString();
+
+// 集合分页
+var page = list.GetPage(1, 10);
+
+// 数值格式化
+12345.ToThousandsString();       // "12,345"
+12345.ToChineseNumber();         // "一万二千三百四十五"</code></pre>
+        </div>
+        <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+          <div class="text-xs text-gray-400 mb-3">帮助类</div>
+          <pre class="text-sm text-gray-100"><code>using Chet.Utils.Helpers;
+
+// HTTP 请求
+var http = new HttpClientHelper();
+var data = await http.GetAsync&lt;string&gt;(
+    "https://api.example.com/data");
+
+// 正则验证
+RegexHelper.IsMobilePhone("13800138000");
+
+// 计时测量
+var elapsed = StopwatchHelper.Measure(() =>
+{
+    // 要测试的代码
+});
+
+// WebSocket
+var ws = new WebSocketHelper();
+await ws.ConnectAsync(new Uri("ws://localhost:8080"));</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</HomeLayout>

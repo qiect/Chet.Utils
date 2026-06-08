@@ -1,0 +1,113 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+---
+
+<DocLayout title="快速开始" description="Chet.Utils 快速开始指南">
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">快速开始</h1>
+
+    <h2 id="环境要求" class="text-xl font-semibold text-gray-900 dark:text-white mt-10 mb-4">环境要求</h2>
+    <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+      <li>.NET 8.0 或更高版本</li>
+      <li>.NET Standard 2.0（部分功能）</li>
+    </ul>
+
+    <h2 id="安装" class="text-xl font-semibold text-gray-900 dark:text-white mt-10 mb-4">安装</h2>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">NuGet 包管理器</h3>
+    <div class="not-prose bg-[#282c34] rounded-lg p-4 overflow-x-auto"><code class="text-sm text-gray-100" set:html={`Install-Package Chet.Utils`} /></div>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">.NET CLI</h3>
+    <div class="not-prose bg-[#282c34] rounded-lg p-4 overflow-x-auto"><code class="text-sm text-gray-100" set:html={`dotnet add package Chet.Utils`} /></div>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">PackageReference</h3>
+    <div class="not-prose bg-[#282c34] rounded-lg p-4 overflow-x-auto"><code class="text-sm text-gray-100" set:html={`&lt;PackageReference Include="Chet.Utils" Version="1.5.0" /&gt;`} /></div>
+
+    <h2 id="引入命名空间" class="text-xl font-semibold text-gray-900 dark:text-white mt-10 mb-4">引入命名空间</h2>
+    <div class="not-prose bg-[#282c34] rounded-lg p-4 overflow-x-auto"><pre class="text-sm text-gray-100 m-0"><code set:html={`// 扩展方法
+using Chet.Utils;
+
+// 帮助类
+using Chet.Utils.Helpers;`} /></pre></div>
+
+    <h2 id="使用扩展方法" class="text-xl font-semibold text-gray-900 dark:text-white mt-10 mb-4">使用扩展方法</h2>
+    <div class="not-prose bg-[#282c34] rounded-lg p-4 overflow-x-auto"><pre class="text-sm text-gray-100 m-0"><code set:html={`using Chet.Utils;
+
+// 字符串扩展
+string email = "test@example.com";
+bool isValid = email.IsEmail(); // true
+
+// 日期扩展
+DateTime date = DateTime.Now;
+bool isWeekend = date.IsWeekend(); // 判断是否周末
+string formatted = date.ToChineseDateString(); // "二〇二四年一月一日"
+
+// 集合扩展
+var list = new List&lt;int&gt; { 1, 2, 3, 4, 5 };
+var page = list.GetPage(1, 2); // 分页获取数据
+bool isEmpty = list.IsNullOrEmpty(); // 判断是否为空
+
+// 数值扩展
+int value = 12345;
+string thousands = value.ToThousandsString(); // "12,345"
+string chinese = value.ToChineseNumber(); // "一万二千三百四十五"`} /></pre></div>
+
+    <h2 id="使用帮助类" class="text-xl font-semibold text-gray-900 dark:text-white mt-10 mb-4">使用帮助类</h2>
+    <div class="not-prose bg-[#282c34] rounded-lg p-4 overflow-x-auto"><pre class="text-sm text-gray-100 m-0"><code set:html={`using Chet.Utils.Helpers;
+
+// HTTP 客户端
+var httpHelper = new HttpClientHelper();
+var response = await httpHelper.GetAsync&lt;string&gt;("https://api.example.com/data");
+
+// 正则表达式
+bool isPhone = RegexHelper.IsMobilePhone("13800138000");
+var emails = RegexHelper.ExtractEmails("联系邮箱: test@example.com");
+
+// 计时器
+var elapsed = StopwatchHelper.Measure(() =&gt;
+{
+    // 要测试的代码
+});
+Console.WriteLine($"执行时间: {elapsed.TotalMilliseconds}ms");
+
+// WebSocket 客户端
+var wsClient = new WebSocketHelper();
+wsClient.OnMessageReceived += (sender, e) =&gt; Console.WriteLine(e.Message);
+await wsClient.ConnectAsync(new Uri("ws://localhost:8080"));
+await wsClient.SendMessageAsync("Hello, World!");`} /></pre></div>
+
+    <h2 id="版本历史" class="text-xl font-semibold text-gray-900 dark:text-white mt-10 mb-4">版本历史</h2>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">v1.5.0（当前版本）</h3>
+    <p class="text-gray-600 dark:text-gray-300">重构所有扩展类和帮助类，使其更通用、更易用</p>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">v1.4.0</h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+      <li>添加 WebSocket 帮助类，包含客户端和服务端实现</li>
+      <li>StringExtensions 类扩展了部分方法</li>
+      <li>完善所有扩展类和帮助类的 XML 文档注释</li>
+    </ul>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">v1.3.0</h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+      <li>添加 ApplicationHelper、ReflectHelper、StopwatchHelper、TaskHelper、UnitHelper</li>
+    </ul>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">v1.2.0</h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+      <li>添加 DataTableHelper、FileHelper、RegexHelper</li>
+    </ul>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">v1.1.0</h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+      <li>添加 HttpClientHelper</li>
+      <li>完善扩展方法类</li>
+    </ul>
+
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mt-6 mb-3">v1.0.0</h3>
+    <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-300">
+      <li>基础扩展方法类（Bool、DateTime、Decimal、Double、Float、Int、String、Enumerable）</li>
+      <li>基础帮助类</li>
+    </ul>
+  </div>
+</DocLayout>
