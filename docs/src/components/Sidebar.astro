@@ -1,4 +1,6 @@
 ---
+const base = import.meta.env.BASE_URL;
+
 const extensions = [
   { name: 'BoolExtensions', slug: 'bool-extensions', target: 'bool' },
   { name: 'DataTableExtensions', slug: 'datatable-extensions', target: 'DataTable' },
@@ -35,9 +37,9 @@ const currentPath = Astro.url.pathname;
   <nav class="p-4 space-y-6">
     <!-- Quick Links -->
     <div>
-      <a href="/getting-started" class:list={[
+      <a href={`${base}getting-started`} class:list={[
         'block px-3 py-1.5 text-sm rounded-md transition-colors',
-        currentPath === '/getting-started'
+        currentPath === `${base}getting-started` || currentPath === `${base}getting-started/`
           ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
           : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
       ]}>
@@ -51,10 +53,10 @@ const currentPath = Astro.url.pathname;
       <ul class="space-y-0.5">
         {extensions.map(ext => (
           <li>
-            <a href={`/extensions/${ext.slug}`}
+            <a href={`${base}extensions/${ext.slug}`}
               class:list={[
                 'flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors',
-                currentPath === `/extensions/${ext.slug}`
+                currentPath === `${base}extensions/${ext.slug}` || currentPath === `${base}extensions/${ext.slug}/`
                   ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               ]}>
@@ -72,10 +74,10 @@ const currentPath = Astro.url.pathname;
       <ul class="space-y-0.5">
         {helpers.map(h => (
           <li>
-            <a href={`/helpers/${h.slug}`}
+            <a href={`${base}helpers/${h.slug}`}
               class:list={[
                 'block px-3 py-1.5 text-sm rounded-md transition-colors truncate',
-                currentPath === `/helpers/${h.slug}`
+                currentPath === `${base}helpers/${h.slug}` || currentPath === `${base}helpers/${h.slug}/`
                   ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               ]}>

@@ -17,8 +17,10 @@
 import { ref, onMounted } from 'vue';
 
 const isDark = ref(false);
+const mounted = ref(false);
 
 onMounted(() => {
+  mounted.value = true;
   isDark.value = document.documentElement.classList.contains('dark');
 });
 

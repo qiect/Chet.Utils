@@ -12,15 +12,16 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL;
 ---
 
 <DocLayout title={entry.data.title} description={entry.data.description}>
   <div class="max-w-4xl">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
-      <a href="/" class="hover:text-primary-600 dark:hover:text-primary-400">首页</a>
+      <a href={base} class="hover:text-primary-600 dark:hover:text-primary-400">首页</a>
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-      <a href="/#helpers" class="hover:text-primary-600 dark:hover:text-primary-400">帮助类</a>
+      <a href={base + "#helpers"} class="hover:text-primary-600 dark:hover:text-primary-400">帮助类</a>
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
       <span class="text-gray-900 dark:text-white font-medium">{entry.data.title}</span>
     </nav>

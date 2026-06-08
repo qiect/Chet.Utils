@@ -67,7 +67,7 @@ onMounted(async () => {
   // Load Pagefind at runtime (not at build time)
   if (typeof window !== 'undefined') {
     try {
-      const path = new URL('/pagefind/pagefind.js', window.location.origin).href;
+      const path = new URL(import.meta.env.BASE_URL + 'pagefind/pagefind.js', window.location.origin).href;
       pagefindSearch = await import(/* @vite-ignore */ path);
     } catch (e) {
       // Pagefind not available in dev mode

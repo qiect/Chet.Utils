@@ -26,13 +26,13 @@
           </div>
           <nav class="p-4 space-y-6">
             <div>
-              <a href="/getting-started" class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" @click="open = false">快速开始</a>
+              <a :href="base + 'getting-started'" class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" @click="open = false">快速开始</a>
             </div>
             <div>
               <h3 class="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">扩展方法</h3>
               <ul class="space-y-0.5">
                 <li v-for="ext in extensions" :key="ext.slug">
-                  <a :href="`/extensions/${ext.slug}`" class="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" @click="open = false">
+                  <a :href="base + 'extensions/' + ext.slug" class="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" @click="open = false">
                     <span class="text-xs text-gray-400 dark:text-gray-500 font-mono">{{ ext.target }}</span>
                     <span>{{ ext.name.replace('Extensions', '') }}</span>
                   </a>
@@ -43,7 +43,7 @@
               <h3 class="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">帮助类</h3>
               <ul class="space-y-0.5">
                 <li v-for="h in helpers" :key="h.slug">
-                  <a :href="`/helpers/${h.slug}`" class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md truncate" @click="open = false">
+                  <a :href="base + 'helpers/' + h.slug" class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md truncate" @click="open = false">
                     {{ h.name }}
                   </a>
                 </li>
@@ -60,6 +60,7 @@
 import { ref } from 'vue';
 
 const open = ref(false);
+const base = import.meta.env.BASE_URL;
 
 const extensions = [
   { name: 'BoolExtensions', slug: 'bool-extensions', target: 'bool' },
