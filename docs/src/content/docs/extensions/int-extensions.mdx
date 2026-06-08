@@ -1,0 +1,604 @@
+---
+title: "IntExtensions"
+description: "为 int 类型提供了丰富的扩展方法，涵盖数值判断、转换、运算、格式化等功能，旨在简化整数类型的处理操作，提高代码的可读性和便捷性，特别适用于需要进行数值计算和日常数据展示的场景。"
+---
+
+# IntExtensions 功能文档
+
+## 概述
+
+[IntExtensions](../../Chet.Utils/Extensions/IntExtensions.cs) 是一个静态扩展类，为 `int` 类型提供了丰富的扩展方法，涵盖数值判断、转换、运算、格式化等功能，旨在简化整数类型的处理操作，提高代码的可读性和便捷性，特别适用于需要进行数值计算和日常数据展示的场景。
+
+## 主要功能模块
+
+### 1. 基础判断
+
+#### IsZero
+判断 int 是否为零。
+```csharp
+public static bool IsZero(this int value)
+```
+**示例：**
+```csharp
+int value1 = 0;
+int value2 = 123;
+
+bool result1 = value1.IsZero(); // true
+bool result2 = value2.IsZero(); // false
+```
+
+#### IsPositive
+判断 int 是否为正数。
+```csharp
+public static bool IsPositive(this int value)
+```
+**示例：**
+```csharp
+int value1 = 123;
+int value2 = -123;
+
+bool result1 = value1.IsPositive(); // true
+bool result2 = value2.IsPositive(); // false
+```
+
+#### IsNegative
+判断 int 是否为负数。
+```csharp
+public static bool IsNegative(this int value)
+```
+**示例：**
+```csharp
+int value1 = -123;
+int value2 = 123;
+
+bool result1 = value1.IsNegative(); // true
+bool result2 = value2.IsNegative(); // false
+```
+
+#### IsEven
+判断 int 是否为偶数。
+```csharp
+public static bool IsEven(this int value)
+```
+**示例：**
+```csharp
+int value1 = 4;
+int value2 = 5;
+
+bool result1 = value1.IsEven(); // true
+bool result2 = value2.IsEven(); // false
+```
+
+#### IsOdd
+判断 int 是否为奇数。
+```csharp
+public static bool IsOdd(this int value)
+```
+**示例：**
+```csharp
+int value1 = 5;
+int value2 = 4;
+
+bool result1 = value1.IsOdd(); // true
+bool result2 = value2.IsOdd(); // false
+```
+
+#### IsPrime
+判断 int 是否为质数。
+```csharp
+public static bool IsPrime(this int value)
+```
+**示例：**
+```csharp
+int value1 = 7;
+int value2 = 8;
+
+bool result1 = value1.IsPrime(); // true
+bool result2 = value2.IsPrime(); // false
+```
+
+---
+
+### 2. 范围判断
+
+#### IsBetween
+判断 int 是否在指定范围内（包含边界）。
+```csharp
+public static bool IsBetween(this int value, int min, int max)
+```
+**示例：**
+```csharp
+int value = 50;
+
+bool result1 = value.IsBetween(0, 100); // true
+bool result2 = value.IsBetween(60, 100); // false
+```
+
+#### IsBetweenExclusive
+判断 int 是否在指定范围内（不包含边界）。
+```csharp
+public static bool IsBetweenExclusive(this int value, int min, int max)
+```
+
+#### Clamp
+保证 int 在指定范围内，超出则取边界值。
+```csharp
+public static int Clamp(this int value, int min, int max)
+```
+**示例：**
+```csharp
+int value1 = 150;
+int value2 = 50;
+int value3 = -10;
+
+int result1 = value1.Clamp(0, 100); // 100
+int result2 = value2.Clamp(0, 100); // 50
+int result3 = value3.Clamp(0, 100); // 0
+```
+
+#### ClampMax
+将值限制在指定最大值以内。
+```csharp
+public static int ClampMax(this int value, int max)
+```
+
+#### ClampMin
+将值限制在指定最小值以上。
+```csharp
+public static int ClampMin(this int value, int min)
+```
+
+---
+
+### 3. 类型转换
+
+#### ToBool
+将 int 转换为 bool（非零为 true）。
+```csharp
+public static bool ToBool(this int value)
+```
+**示例：**
+```csharp
+int value1 = 0;
+int value2 = 123;
+
+bool result1 = value1.ToBool(); // false
+bool result2 = value2.ToBool(); // true
+```
+
+#### ToDouble
+将 int 转换为 double。
+```csharp
+public static double ToDouble(this int value)
+```
+
+#### ToFloat
+将 int 转换为 float。
+```csharp
+public static float ToFloat(this int value)
+```
+
+#### ToLong
+将 int 转换为 long。
+```csharp
+public static long ToLong(this int value)
+```
+
+#### ToDecimal
+将 int 转换为 decimal。
+```csharp
+public static decimal ToDecimal(this int value)
+```
+
+#### ToShort
+将 int 转换为 short。
+```csharp
+public static short ToShort(this int value)
+```
+
+#### ToByte
+将 int 转换为 byte。
+```csharp
+public static byte ToByte(this int value)
+```
+
+#### ToChar
+将 int 转换为 char。
+```csharp
+public static char ToChar(this int value)
+```
+
+---
+
+### 4. 数学运算
+
+#### Abs
+求 int 的绝对值。
+```csharp
+public static int Abs(this int value)
+```
+**示例：**
+```csharp
+int value1 = -123;
+int value2 = 123;
+
+int result1 = value1.Abs(); // 123
+int result2 = value2.Abs(); // 123
+```
+
+#### Max
+求两个 int 的最大值。
+```csharp
+public static int Max(this int value, int other)
+```
+
+#### Min
+求两个 int 的最小值。
+```csharp
+public static int Min(this int value, int other)
+```
+
+#### Add
+int 加法。
+```csharp
+public static int Add(this int value, int other)
+```
+**示例：**
+```csharp
+int value = 100;
+int result = value.Add(50); // 150
+```
+
+#### Subtract
+int 减法。
+```csharp
+public static int Subtract(this int value, int other)
+```
+**示例：**
+```csharp
+int value = 100;
+int result = value.Subtract(30); // 70
+```
+
+#### Multiply
+int 乘法。
+```csharp
+public static int Multiply(this int value, int other)
+```
+**示例：**
+```csharp
+int value = 100;
+int result = value.Multiply(2); // 200
+```
+
+#### DivideSafe
+int 除法，除数为零时返回零。
+```csharp
+public static int DivideSafe(this int value, int other)
+```
+**示例：**
+```csharp
+int value = 100;
+
+int result1 = value.DivideSafe(4); // 25
+int result2 = value.DivideSafe(0); // 0
+```
+
+#### Mod
+int 求余。
+```csharp
+public static int Mod(this int value, int other)
+```
+
+#### Pow
+int 求幂。
+```csharp
+public static int Pow(this int value, int power)
+```
+**示例：**
+```csharp
+int value = 2;
+int result = value.Pow(10); // 1024
+```
+
+#### Sqrt
+int 求平方根。
+```csharp
+public static int Sqrt(this int value)
+```
+**示例：**
+```csharp
+int value = 16;
+int result = value.Sqrt(); // 4
+```
+
+#### AbsDiff
+int 求绝对差值。
+```csharp
+public static int AbsDiff(this int value, int other)
+```
+**示例：**
+```csharp
+int value1 = 100;
+int value2 = 80;
+
+int result = value1.AbsDiff(value2); // 20
+```
+
+#### Sign
+int 求符号（-1、0、1）。
+```csharp
+public static int Sign(this int value)
+```
+**示例：**
+```csharp
+int value1 = 123;
+int value2 = 0;
+int value3 = -123;
+
+int result1 = value1.Sign(); // 1
+int result2 = value2.Sign(); // 0
+int result3 = value3.Sign(); // -1
+```
+
+#### Factorial
+int 求阶乘。
+```csharp
+public static long Factorial(this int value)
+```
+**示例：**
+```csharp
+int value = 5;
+long result = value.Factorial(); // 120 (5! = 5*4*3*2*1)
+```
+
+#### Gcd
+int 求最大公约数。
+```csharp
+public static int Gcd(this int value, int other)
+```
+**示例：**
+```csharp
+int value1 = 12;
+int value2 = 8;
+
+int result = value1.Gcd(value2); // 4
+```
+
+#### Lcm
+int 求最小公倍数。
+```csharp
+public static int Lcm(this int value, int other)
+```
+**示例：**
+```csharp
+int value1 = 12;
+int value2 = 8;
+
+int result = value1.Lcm(value2); // 24
+```
+
+---
+
+### 5. 格式化输出
+
+#### ToStringFormat
+将 int 转换为指定格式的字符串。
+```csharp
+public static string ToStringFormat(this int value, string format = null)
+```
+
+#### ToCurrencyString
+将 int 转换为货币格式字符串。
+```csharp
+public static string ToCurrencyString(this int value, string culture = "zh-CN")
+```
+**示例：**
+```csharp
+int value = 1234;
+string result = value.ToCurrencyString(); // "￥1,234"
+```
+
+#### ToPercentString
+将 int 转换为百分比字符串。
+```csharp
+public static string ToPercentString(this int value)
+```
+**示例：**
+```csharp
+int value = 12;
+string result = value.ToPercentString(); // "12%"
+```
+
+#### ToThousandsString
+将 int 转换为千分位格式字符串。
+```csharp
+public static string ToThousandsString(this int value)
+```
+**示例：**
+```csharp
+int value = 1234567;
+string result = value.ToThousandsString(); // "1,234,567"
+```
+
+#### ToHexString
+将 int 转换为十六进制字符串。
+```csharp
+public static string ToHexString(this int value)
+public static string ToHexString(this int value, int digits)
+```
+**示例：**
+```csharp
+int value = 255;
+string result1 = value.ToHexString(); // "FF"
+string result2 = value.ToHexString(4); // "00FF"
+```
+
+#### ToBinaryString
+将 int 转换为二进制字符串。
+```csharp
+public static string ToBinaryString(this int value)
+```
+**示例：**
+```csharp
+int value = 10;
+string result = value.ToBinaryString(); // "1010"
+```
+
+#### ToOctalString
+将 int 转换为八进制字符串。
+```csharp
+public static string ToOctalString(this int value)
+```
+**示例：**
+```csharp
+int value = 10;
+string result = value.ToOctalString(); // "12"
+```
+
+---
+
+### 6. 中文转换
+
+#### ToChineseUpper
+将 int 转换为中文大写金额（仅整数）。
+```csharp
+public static string ToChineseUpper(this int value)
+```
+**示例：**
+```csharp
+int value = 12345;
+string result = value.ToChineseUpper(); // "壹万贰仟叁佰肆拾伍元"
+```
+
+#### ToChineseNumber
+将 int 转换为中文数字。
+```csharp
+public static string ToChineseNumber(this int value)
+```
+**示例：**
+```csharp
+int value = 12345;
+string result = value.ToChineseNumber(); // "一万二千三百四十五"
+```
+
+#### ToChineseWeekday
+将 int 转换为星期中文（0~6，周日~周六）。
+```csharp
+public static string ToChineseWeekday(this int value)
+```
+**示例：**
+```csharp
+int value = 1;
+string result = value.ToChineseWeekday(); // "星期一"
+```
+
+#### ToEnglishWeekday
+将 int 转换为英文星期（0~6，Sunday~Saturday）。
+```csharp
+public static string ToEnglishWeekday(this int value)
+```
+**示例：**
+```csharp
+int value = 1;
+string result = value.ToEnglishWeekday(); // "Monday"
+```
+
+---
+
+### 7. 特殊功能
+
+#### ToRomanString
+将 int 转换为罗马数字字符串（1~3999）。
+```csharp
+public static string ToRomanString(this int value)
+```
+**示例：**
+```csharp
+int value1 = 1;
+int value2 = 10;
+int value3 = 2023;
+
+string result1 = value1.ToRomanString(); // "I"
+string result2 = value2.ToRomanString(); // "X"
+string result3 = value3.ToRomanString(); // "MMXXIII"
+```
+
+#### Repeat
+重复执行指定操作。
+```csharp
+public static void Repeat(this int value, Action action)
+public static void Repeat(this int value, Action<int> action)
+```
+**示例：**
+```csharp
+int count = 5;
+
+// 无索引版本
+count.Repeat(() => Console.WriteLine("Hello"));
+
+// 带索引版本
+count.Repeat(i => Console.WriteLine($"第 {i + 1} 次"));
+```
+
+#### Times
+生成从 0 到 value-1 的整数序列。
+```csharp
+public static IEnumerable<int> Times(this int value)
+```
+**示例：**
+```csharp
+int count = 5;
+var sequence = count.Times(); // [0, 1, 2, 3, 4]
+```
+
+#### Range
+生成从 value 开始的整数序列。
+```csharp
+public static IEnumerable<int> Range(this int start, int count)
+```
+**示例：**
+```csharp
+int start = 10;
+var sequence = start.Range(5); // [10, 11, 12, 13, 14]
+```
+
+#### ToEnum
+将 int 转换为枚举类型。
+```csharp
+public static TEnum ToEnum<TEnum>(this int value, TEnum defaultValue = default) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2 }
+
+int value = 1;
+Status status = value.ToEnum<Status>(); // Status.Active
+```
+
+---
+
+## 使用场景
+
+1. **数值计算** - 进行各种数学运算和比较
+2. **金额展示** - 将数值转换为指定格式的字符串显示
+3. **数据验证** - 数值范围和状态判断
+4. **财务计算** - 货币格式显示、中文大写金额转换
+5. **类型转换** - int 与其他数值类型的安全转换
+6. **业务逻辑** - 数值状态判断（正负、奇偶、质数等）
+7. **循环操作** - 简化循环执行操作
+8. **数字显示** - 罗马数字、中文数字转换
+9. **枚举处理** - 整数与枚举类型的相互转换
+
+## 注意事项
+
+1. 所有方法都是扩展方法，需要通过 `int` 实例来调用
+2. 除法方法提供安全版本 `DivideSafe`，避免除零异常
+3. 货币格式方法支持多语言区域设置，默认为中文区域
+4. 中文大写金额转换实现了完整的金额格式转换
+5. 罗马数字转换仅支持 1~3999 范围内的整数
+6. 进制转换方法对超出范围的值返回原值字符串
+7. 重复执行方法对无效值（null 或非正数）进行了安全处理
+8. 枚举转换方法在枚举值未定义时返回默认值
+9. 数学运算方法使用系统内置的转换函数，性能较好
+10. 格式化方法支持标准的 .NET 格式字符串
