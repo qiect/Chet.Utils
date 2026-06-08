@@ -19,6 +19,20 @@ export default defineConfig({
           lang: 'zh-CN',
         },
       },
+      head: [
+        {
+          tag: 'script',
+          attrs: { is: 'inline' },
+          content: `
+            (function() {
+              var stored = localStorage.getItem('starlight-theme');
+              if (!stored) {
+                document.documentElement.dataset.theme = 'dark';
+              }
+            })();
+          `,
+        },
+      ],
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/qiect/Chet.Utils' },
       ],
