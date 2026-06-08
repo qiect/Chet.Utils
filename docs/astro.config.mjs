@@ -11,6 +11,7 @@ export default defineConfig({
     starlight({
       title: 'Chet.Utils',
       logo: { src: './src/assets/logo.svg', alt: 'Chet.Utils' },
+      customCss: ['./src/styles/custom.css'],
       defaultLocale: 'root',
       locales: {
         root: {

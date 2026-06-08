@@ -1,29 +1,83 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- Background rounded square -->
-  <rect width="512" height="512" rx="96" fill="#2563eb"/>
-  
-  <!-- Decorative subtle grid pattern -->
-  <rect x="48" y="48" width="416" height="416" rx="64" fill="#1d4ed8" opacity="0.5"/>
-  
-  <!-- Stylized "C" letter -->
-  <path d="M310 140C284 126 256 120 228 124C200 128 176 142 158 162C140 182 130 208 128 234C126 260 132 288 146 312C160 336 180 354 204 364C228 374 254 376 280 370C306 364 328 350 344 330" 
-        stroke="white" stroke-width="48" stroke-linecap="round" fill="none"/>
-  
-  <!-- Gear teeth around the C -->
-  <circle cx="340" cy="200" r="8" fill="#60a5fa"/>
-  <circle cx="360" cy="240" r="6" fill="#93c5fd"/>
-  <circle cx="364" cy="284" r="8" fill="#60a5fa"/>
-  <circle cx="352" cy="326" r="6" fill="#93c5fd"/>
-  
-  <!-- Wrench accent -->
-  <path d="M370 150L400 120C406 114 416 114 422 120L428 126C434 132 434 142 428 148L398 178" 
-        stroke="#60a5fa" stroke-width="16" stroke-linecap="round" fill="none"/>
-  
-  <!-- Small utility dots -->
-  <circle cx="160" cy="380" r="10" fill="#60a5fa" opacity="0.8"/>
-  <circle cx="200" cy="400" r="7" fill="#93c5fd" opacity="0.6"/>
-  <circle cx="140" cy="350" r="6" fill="#93c5fd" opacity="0.6"/>
-  
-  <!-- Code bracket accent -->
-  <path d="M100 220L80 256L100 292" stroke="#60a5fa" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c0c0c"/>
+      <stop offset="100%" stop-color="#1a0a12"/>
+    </linearGradient>
+    <!-- Primary pink gradient -->
+    <linearGradient id="pinkGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff78ac"/>
+      <stop offset="50%" stop-color="#e8105a"/>
+      <stop offset="100%" stop-color="#bd0249"/>
+    </linearGradient>
+    <!-- Glow gradient -->
+    <radialGradient id="glowGrad" cx="0.35" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#bd0249" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#bd0249" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Accent gradient for dots -->
+    <linearGradient id="dotGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff78ac"/>
+      <stop offset="100%" stop-color="#bd0249"/>
+    </linearGradient>
+    <!-- Subtle border gradient -->
+    <linearGradient id="borderGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff78ac" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#bd0249" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#ff78ac" stop-opacity="0.2"/>
+    </linearGradient>
+    <!-- Shadow filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 0.2 0 0 0  0 0 0.3 0 0  0 0 0 0.6 0" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Soft inner shadow -->
+    <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="108" fill="url(#bgGrad)"/>
+
+  <!-- Ambient glow -->
+  <rect width="512" height="512" rx="108" fill="url(#glowGrad)"/>
+
+  <!-- Subtle border -->
+  <rect x="1" y="1" width="510" height="510" rx="107" fill="none" stroke="url(#borderGrad)" stroke-width="1.5"/>
+
+  <!-- Inner frame line -->
+  <rect x="24" y="24" width="464" height="464" rx="88" fill="none" stroke="#bd0249" stroke-width="0.5" opacity="0.12"/>
+
+  <!-- Main "C" letter - bold geometric with gradient fill -->
+  <path d="M328 128C300 112 268 106 236 110C204 114 176 128 154 150C132 172 118 200 112 232C106 264 110 296 122 326C134 356 154 380 180 398C206 416 236 426 268 426C296 424 320 416 340 402"
+        stroke="url(#pinkGrad)" stroke-width="40" stroke-linecap="round" fill="none" filter="url(#glow)"/>
+
+  <!-- Inner highlight edge on C -->
+  <path d="M328 128C300 112 268 106 236 110C204 114 176 128 154 150C132 172 118 200 112 232C106 264 110 296 122 326C134 356 154 380 180 398C206 416 236 426 268 426C296 424 320 416 340 402"
+        stroke="#ff78ac" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.35"/>
+
+  <!-- Decorative dot trail - elegant diminishing pattern -->
+  <circle cx="362" cy="152" r="7" fill="url(#dotGrad)" opacity="0.9"/>
+  <circle cx="382" cy="186" r="5.5" fill="url(#dotGrad)" opacity="0.7"/>
+  <circle cx="392" cy="224" r="4.5" fill="url(#dotGrad)" opacity="0.55"/>
+  <circle cx="392" cy="262" r="3.5" fill="url(#dotGrad)" opacity="0.4"/>
+  <circle cx="384" cy="298" r="3" fill="url(#dotGrad)" opacity="0.3"/>
+  <circle cx="370" cy="332" r="2.5" fill="url(#dotGrad)" opacity="0.2"/>
+
+  <!-- Code bracket accent < - left side -->
+  <path d="M88 220L68 256L88 292" stroke="#ff78ac" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.25"/>
+
+  <!-- Subtle horizontal accent lines -->
+  <line x1="60" y1="380" x2="120" y2="380" stroke="#bd0249" stroke-width="1" opacity="0.15"/>
+  <line x1="72" y1="396" x2="100" y2="396" stroke="#ff78ac" stroke-width="1" opacity="0.1"/>
+
+  <!-- Small precision mark -->
+  <rect x="436" y="436" width="24" height="24" rx="4" fill="none" stroke="#bd0249" stroke-width="1" opacity="0.2"/>
+  <rect x="442" y="442" width="12" height="12" rx="2" fill="#ff78ac" opacity="0.15"/>
 </svg>

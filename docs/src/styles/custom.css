@@ -1,0 +1,28 @@
+/* Enhanced table styles for Starlight */
+main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  display: table;
+}
+
+main th {
+  background: var(--sl-color-gray-6);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--sl-color-gray-4);
+}
+
+main td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--sl-color-gray-4);
+}
+
+main tr:nth-child(even) td {
+  background: var(--sl-color-gray-6);
+}
+
+main tr:hover td {
+  background: var(--sl-color-gray-5);
+}
