@@ -10,6 +10,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Chet.Utils',
+      logo: { src: './src/assets/logo.svg', alt: 'Chet.Utils' },
       defaultLocale: 'root',
       locales: {
         root: {
