@@ -1,0 +1,75 @@
+---
+title: "[home] Chet.Utils"
+description: 全面的 .NET 工具类库，提供 500+ 个扩展方法和帮助类
+template: splash
+hero:
+  tagline: 全面的 .NET 工具类库，简化日常开发，提高编码效率
+  actions:
+    - text: 快速开始
+      link: /getting-started/
+      variant: primary
+    - text: GitHub
+      link: https://github.com/qiect/Chet.Utils
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## 安装
+
+```bash
+dotnet add package Chet.Utils
+```
+
+## 核心特性
+
+<CardGrid stagger>
+  <Card title="🚀 高性能" icon="bolt">
+    经过优化的实现，减少不必要的内存分配
+  </Card>
+  <Card title="🔒 安全可靠" icon="shield">
+    完善的空值检查和异常处理
+  </Card>
+  <Card title="📖 完整文档" icon="book-open">
+    所有方法都有详细的 XML 注释和使用示例
+  </Card>
+  <Card title="🎯 易于使用" icon="check-circle">
+    直观的 API 设计，符合 .NET 命名规范
+  </Card>
+</CardGrid>
+
+## 统计
+
+| 分类 | 数量 |
+|------|------|
+| 扩展方法类 | 12 |
+| 帮助类 | 11 |
+| 方法总数 | 500+ |
+| 开源协议 | MIT |
+
+## 快速示例
+
+```csharp
+using Chet.Utils;
+using Chet.Utils.Helpers;
+
+// 字符串验证
+"test@example.com".IsEmail();    // true
+
+// 日期处理
+DateTime.Now.IsWeekend();
+DateTime.Now.ToChineseDateString();
+
+// 集合分页
+var page = list.GetPage(1, 10);
+
+// 数值格式化
+12345.ToThousandsString();       // "12,345"
+12345.ToChineseNumber();         // "一万二千三百四十五"
+
+// HTTP 请求
+var http = new HttpClientHelper();
+var data = await http.GetAsync<string>("https://api.example.com/data");
+
+// 正则验证
+RegexHelper.IsMobilePhone("13800138000");
+```

@@ -1,0 +1,220 @@
+---
+title: "DataTableMyHelper"
+description: "DataTableMyHelper 是一个静态帮助类，为 DataTable 提供了补充缺失值、JSON 数组转 DataTable 以及数据表映射等实用功能，旨在简化 DataTable 数据处理和转换的开发工作。"
+---
+
+# DataTableMyHelper 帮助类
+
+## 概述
+
+[DataTableMyHelper](../../Chet.Utils/Helpers/DataTableMyHelper.cs) 是一个静态帮助类，为 DataTable 提供了补充缺失值、JSON 数组转 DataTable 以及数据表映射等实用功能，旨在简化 DataTable 数据处理和转换的开发工作。
+
+## 主要特性
+
+- 🧹 补充缺失值（先向下查找补充，若后续都为空则延续上方最近的非空值）
+- 📦 JSON 数组转 DataTable（支持 Newtonsoft.Json）
+- 🔄 数据表映射（将 DataTable 映射为指定类型的实体对象列表）
+
+## 类定义
+
+```csharp
+public static partial class DataTableHelper
+```
+
+**注意：** DataTableMyHelper 中的方法属于 `DataTableHelper` 类的 `partial` 定义，使用时通过 `DataTableHelper` 调用。
+
+---
+
+## 方法详解
+
+### FillMissingValues
+
+补充 DataTable 中每一列的缺失值（先向下查找补充，若后续都为空则延续上方最近的非空值）。
+
+```csharp
+public static void FillMissingValues(DataTable table)
+```
+
+**参数：**
+- `table`: 需要处理的 DataTable
+
+**行为说明：**
+- 遍历每一列，对每一行检查值是否为 null、DBNull 或空字符串
+- 如果当前值为空，先向下查找第一个非空值进行填充
+- 如果向下未找到非空值，但存在上方最近的非空值，则使用上方的值填充
+- 如果上方和下方都没有非空值，则保持为空
+
+**示例：**
+
+```csharp
+using Chet.Utils.Helpers;
+using System.Data;
+
+// 创建包含缺失值的 DataTable
+var table = new DataTable();
+table.Columns.Add("Name", typeof(string));
+table.Columns.Add("Age", typeof(string));
+table.Columns.Add("City", typeof(string));
+
+table.Rows.Add("张三", "25", "北京");
+table.Rows.Add(null, null, null);      // 缺失行
+table.Rows.Add("李四", "30", "上海");
+table.Rows.Add(null, null, null);      // 缺失行
+table.Rows.Add(null, "35", null);      // 部分缺失
+
+// 补充缺失值
+DataTableHelper.FillMissingValues(table);
+
+// 结果：
+// 行1: 张三, 25, 北京
+// 行2: 李四, 30, 上海  （向下找到非空值填充）
+// 行3: 李四, 30, 上海
+// 行4: 李四, 35, 上海  （向下未找到，使用上方最近的非空值）
+// 行5: 李四, 35, 上海
+```
+
+---
+
+### JsonToDataTableChunked
+
+将 JSON 数组转换为 DataTable。
+
+```csharp
+public static DataTable JsonToDataTableChunked(JArray jsonArray)
+```
+
+**参数：**
+- `jsonArray`: Newtonsoft.Json 的 JArray 对象，表示 JSON 数组
+
+**返回值：**
+- 转换后的 DataTable，列名取自 JSON 对象的属性名
+
+**行为说明：**
+- 根据 JSON 数组中第一个对象的属性名创建 DataTable 列
+- 所有列的类型为 `object`
+- 使用 `BeginLoadData` / `EndLoadData` 优化批量数据加载性能
+- 自动将 JToken 转换为对应的 .NET 类型：
+  - `JTokenType.Integer` → `long`
+  - `JTokenType.Float` → `double`
+  - `JTokenType.Boolean` → `bool`
+  - `JTokenType.String` → `string`
+  - `JTokenType.Null` → `DBNull.Value`
+  - `JTokenType.Date` → `DateTime`
+  - 其他类型 → `string`
+
+**示例：**
+
+```csharp
+using Chet.Utils.Helpers;
+using Newtonsoft.Json.Linq;
+
+// 从 JSON 字符串创建 JArray
+string json = @"[
+    { ""Name"": ""张三"", ""Age"": 25, ""Score"": 89.5, ""IsActive"": true },
+    { ""Name"": ""李四"", ""Age"": 30, ""Score"": 95.0, ""IsActive"": false },
+    { ""Name"": ""王五"", ""Age"": 28, ""Score"": 76.5, ""IsActive"": true }
+]";
+
+JArray jsonArray = JArray.Parse(json);
+
+// 转换为 DataTable
+DataTable table = DataTableHelper.JsonToDataTableChunked(jsonArray);
+
+// 遍历结果
+foreach (DataRow row in table.Rows)
+{
+    Console.WriteLine($"姓名: {row["Name"]}, 年龄: {row["Age"]}, 分数: {row["Score"]}");
+}
+```
+
+---
+
+### MapToEntities\<T\>
+
+将 DataTable 中的数据映射为指定类型的实体对象列表。映射关系通过字段映射字典指定，仅处理 DataTable 中存在且目标类型中也存在的属性。
+
+```csharp
+public static List<T> MapToEntities<T>(DataTable dataTable, Dictionary<string, string> fieldMapping) where T : new()
+```
+
+**参数：**
+- `dataTable`: 源数据表，包含待转换的行数据
+- `fieldMapping`: 字段映射字典，键为 DataTable 列名，值为目标类型的属性名
+
+**返回值：**
+- 转换后的实体对象列表
+
+**泛型约束：**
+- `T`: 目标实体类型，必须具有无参构造函数
+
+**行为说明：**
+- 自动过滤出有效的映射关系：源列存在且目标属性也存在
+- 如果没有有效的映射关系，返回空列表并输出警告
+- 自动处理 DBNull 值，跳过空值
+- 安全类型转换，支持：
+  - 可空类型（自动提取基础类型）
+  - 常见类型（string、DateTime、bool）
+  - 通用类型转换（通过 `Convert.ChangeType`）
+- 转换失败时返回目标类型的默认值
+- 单行处理出错时记录日志但继续处理其他行
+
+**示例：**
+
+```csharp
+using Chet.Utils.Helpers;
+using System.Data;
+
+// 定义目标实体类型
+public class UserDto
+{
+    public string UserName { get; set; }
+    public int UserAge { get; set; }
+    public string UserCity { get; set; }
+}
+
+// 创建 DataTable
+var table = new DataTable();
+table.Columns.Add("name", typeof(string));
+table.Columns.Add("age", typeof(int));
+table.Columns.Add("city", typeof(string));
+
+table.Rows.Add("张三", 25, "北京");
+table.Rows.Add("李四", 30, "上海");
+table.Rows.Add("王五", 28, "广州");
+
+// 定义字段映射（DataTable 列名 → 实体属性名）
+var mapping = new Dictionary<string, string>
+{
+    ["name"] = "UserName",
+    ["age"] = "UserAge",
+    ["city"] = "UserCity"
+};
+
+// 映射为实体列表
+List<UserDto> users = DataTableHelper.MapToEntities<UserDto>(table, mapping);
+
+foreach (var user in users)
+{
+    Console.WriteLine($"姓名: {user.UserName}, 年龄: {user.UserAge}, 城市: {user.UserCity}");
+}
+// 输出：
+// 姓名: 张三, 年龄: 25, 城市: 北京
+// 姓名: 李四, 年龄: 30, 城市: 上海
+// 姓名: 王五, 年龄: 28, 城市: 广州
+```
+
+---
+
+## 使用场景
+
+1. **Excel 数据导入** - 从 Excel 读取的 DataTable 常含有合并单元格导致的空值，使用 `FillMissingValues` 自动补充
+2. **API 数据转换** - 将 JSON API 返回的数组数据转换为 DataTable 进行进一步处理
+3. **数据映射** - 将数据库查询结果映射为业务实体对象，支持列名与属性名不同的映射
+
+## 注意事项
+
+1. `FillMissingValues` 方法会直接修改传入的 DataTable，而非创建新的副本
+2. `JsonToDataTableChunked` 依赖 Newtonsoft.Json，需确保项目已引用该包
+3. `MapToEntities` 方法要求目标类型具有无参构造函数
+4. `MapToEntities` 在类型转换失败时会返回目标类型的默认值，不会抛出异常
+5. 这三个方法是 `DataTableHelper` 类的 partial 定义的一部分，通过 `DataTableHelper` 类名调用

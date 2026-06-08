@@ -1,0 +1,123 @@
+---
+title: 快速开始
+description: Chet.Utils 快速开始指南
+---
+
+import { Card, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## 环境要求
+
+- .NET 8.0 或更高版本
+- .NET Standard 2.0（部分功能）
+
+## 安装
+
+<Tabs>
+  <TabItem label=".NET CLI">
+    ```bash
+    dotnet add package Chet.Utils
+    ```
+  </TabItem>
+  <TabItem label="NuGet 包管理器">
+    ```powershell
+    Install-Package Chet.Utils
+    ```
+  </TabItem>
+  <TabItem label="PackageReference">
+    ```xml
+    <PackageReference Include="Chet.Utils" Version="1.5.0" />
+    ```
+  </TabItem>
+</Tabs>
+
+## 引入命名空间
+
+```csharp
+// 扩展方法
+using Chet.Utils;
+
+// 帮助类
+using Chet.Utils.Helpers;
+```
+
+## 使用扩展方法
+
+```csharp
+using Chet.Utils;
+
+// 字符串扩展
+string email = "test@example.com";
+bool isValid = email.IsEmail(); // true
+
+// 日期扩展
+DateTime date = DateTime.Now;
+bool isWeekend = date.IsWeekend(); // 判断是否周末
+string formatted = date.ToChineseDateString(); // "二〇二四年一月一日"
+
+// 集合扩展
+var list = new List<int> { 1, 2, 3, 4, 5 };
+var page = list.GetPage(1, 2); // 分页获取数据
+bool isEmpty = list.IsNullOrEmpty(); // 判断是否为空
+
+// 数值扩展
+int value = 12345;
+string thousands = value.ToThousandsString(); // "12,345"
+string chinese = value.ToChineseNumber(); // "一万二千三百四十五"
+```
+
+## 使用帮助类
+
+```csharp
+using Chet.Utils.Helpers;
+
+// HTTP 客户端
+var httpHelper = new HttpClientHelper();
+var response = await httpHelper.GetAsync<string>("https://api.example.com/data");
+
+// 正则表达式
+bool isPhone = RegexHelper.IsMobilePhone("13800138000");
+var emails = RegexHelper.ExtractEmails("联系邮箱: test@example.com");
+
+// 计时器
+var elapsed = StopwatchHelper.Measure(() =>
+{
+    // 要测试的代码
+});
+Console.WriteLine($"执行时间: {elapsed.TotalMilliseconds}ms");
+
+// WebSocket 客户端
+var wsClient = new WebSocketHelper();
+wsClient.OnMessageReceived += (sender, e) => Console.WriteLine(e.Message);
+await wsClient.ConnectAsync(new Uri("ws://localhost:8080"));
+await wsClient.SendMessageAsync("Hello, World!");
+```
+
+## 版本历史
+
+### v1.5.0（当前版本）
+
+重构所有扩展类和帮助类，使其更通用、更易用
+
+### v1.4.0
+
+- 添加 WebSocket 帮助类，包含客户端和服务端实现
+- StringExtensions 类扩展了部分方法
+- 完善所有扩展类和帮助类的 XML 文档注释
+
+### v1.3.0
+
+- 添加 ApplicationHelper、ReflectHelper、StopwatchHelper、TaskHelper、UnitHelper
+
+### v1.2.0
+
+- 添加 DataTableHelper、FileHelper、RegexHelper
+
+### v1.1.0
+
+- 添加 HttpClientHelper
+- 完善扩展方法类
+
+### v1.0.0
+
+- 基础扩展方法类（Bool、DateTime、Decimal、Double、Float、Int、String、Enumerable）
+- 基础帮助类

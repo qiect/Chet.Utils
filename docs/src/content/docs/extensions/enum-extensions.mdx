@@ -1,0 +1,495 @@
+---
+title: "EnumExtensions"
+description: "为枚举类型提供了丰富的扩展方法，涵盖枚举值判断、转换、描述、标志位操作等功能，旨在简化枚举类型的使用，提高代码的可读性和便捷性，特别是处理需要枚举描述和标志位枚举等复杂场景。"
+---
+
+# EnumExtensions 功能文档
+
+## 概述
+
+[EnumExtensions](../../Chet.Utils/Extensions/EnumExtensions.cs) 是一个静态扩展类，为枚举类型提供了丰富的扩展方法，涵盖枚举值判断、转换、描述、标志位操作等功能，旨在简化枚举类型的使用，提高代码的可读性和便捷性，特别是处理需要枚举描述和标志位枚举等复杂场景。
+
+## 主要功能模块
+
+### 1. 基础判断
+
+#### IsDefined
+判断枚举值是否定义在枚举类型中。
+```csharp
+public static bool IsDefined<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 待判断的枚举值
+
+**返回值：**
+- 如果枚举值已定义返回 true；否则返回 false
+
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2 }
+
+var status = (Status)1;
+var isDefined = status.IsDefined(); // true
+
+var invalidStatus = (Status)999;
+var isInvalid = invalidStatus.IsDefined(); // false
+```
+
+#### IsValid
+判断枚举值是否有效（已定义或在标志枚举中为有效组合）。
+```csharp
+public static bool IsValid<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 待判断的枚举值
+
+**返回值：**
+- 如果枚举值有效返回 true；否则返回 false
+
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read | Permissions.Write;
+var isValid = perm.IsValid(); // true
+
+var invalidPerm = (Permissions)8;
+var isInvalid = invalidPerm.IsValid(); // false
+```
+
+#### IsDefault
+判断枚举值是否为默认值（通常为 0）。
+```csharp
+public static bool IsDefault<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 待判断的枚举值
+
+**返回值：**
+- 如果枚举值为默认值返回 true；否则返回 false
+
+**示例：**
+```csharp
+enum Status { None = 0, Active = 1 }
+
+var status = Status.None;
+var isDefault = status.IsDefault(); // true
+
+var active = Status.Active;
+var isNotDefault = active.IsDefault(); // false
+```
+
+#### IsNotDefault
+判断枚举值是否为非默认值。
+```csharp
+public static bool IsNotDefault<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+---
+
+### 2. 类型转换
+
+#### ToInt
+枚举值转为 int。
+```csharp
+public static int ToInt<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2 }
+
+var status = Status.Active;
+var intValue = status.ToInt(); // 1
+```
+
+#### ToLong
+枚举值转为 long。
+```csharp
+public static long ToLong<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToByte
+枚举值转为 byte。
+```csharp
+public static byte ToByte<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToShort
+枚举值转为 short。
+```csharp
+public static short ToShort<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToSByte
+枚举值转为 sbyte。
+```csharp
+public static sbyte ToSByte<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToUShort
+枚举值转为 ushort。
+```csharp
+public static ushort ToUShort<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToUInt
+枚举值转为 uint。
+```csharp
+public static uint ToUInt<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToULong
+枚举值转为 ulong。
+```csharp
+public static ulong ToULong<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToStringValue
+枚举值转为字符串。
+```csharp
+public static string ToStringValue<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active, Inactive }
+
+var status = Status.Active;
+var str = status.ToStringValue(); // "Active"
+```
+
+#### ToLowerString
+枚举值转为小写字符串。
+```csharp
+public static string ToLowerString<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### ToUpperString
+枚举值转为大写字符串。
+```csharp
+public static string ToUpperString<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+---
+
+### 3. 字符串解析
+
+#### Parse
+字符串转为枚举值，转换失败返回默认值。
+```csharp
+public static TEnum Parse<TEnum>(this string value, TEnum defaultValue = default, bool ignoreCase = true) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 字符串值
+- `defaultValue`: 转换失败时的默认值
+- `ignoreCase`: 是否忽略大小写，默认 true
+
+**返回值：**
+- 解析后的枚举值
+
+**示例：**
+```csharp
+enum Status { Active, Inactive }
+
+var status = "Active".Parse<Status>(); // Status.Active
+var status2 = "active".Parse<Status>(); // Status.Active (忽略大小写)
+var status3 = "invalid".Parse(Status.Inactive); // Status.Inactive (默认值)
+```
+
+#### TryParse
+尝试将字符串转为枚举值。
+```csharp
+public static bool TryParse<TEnum>(this string value, out TEnum result, bool ignoreCase = true) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active, Inactive }
+
+if ("Active".TryParse<Status>(out var status))
+{
+    Console.WriteLine(status); // Status.Active
+}
+```
+
+#### ParseExact
+字符串转为枚举值，转换失败抛出异常。
+```csharp
+public static TEnum ParseExact<TEnum>(this string value, bool ignoreCase = true) where TEnum : struct, Enum
+```
+**异常：**
+- `ArgumentException`: 当字符串无法解析为枚举值时抛出
+
+**示例：**
+```csharp
+enum Status { Active, Inactive }
+
+var status = "Active".ParseExact<Status>(); // Status.Active
+var status2 = "invalid".ParseExact<Status>(); // 抛出 ArgumentException
+```
+
+---
+
+### 4. 数值转枚举
+
+#### ToEnum (int)
+int 转为枚举值，转换失败返回默认值。
+```csharp
+public static TEnum ToEnum<TEnum>(this int value, TEnum defaultValue = default) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2 }
+
+var status = 1.ToEnum<Status>(); // Status.Active
+var status2 = 999.ToEnum(Status.Inactive); // Status.Inactive (默认值)
+```
+
+#### ToEnum (long)
+long 转为枚举值，转换失败返回默认值。
+```csharp
+public static TEnum ToEnum<TEnum>(this long value, TEnum defaultValue = default) where TEnum : struct, Enum
+```
+
+#### ToEnum (byte)
+byte 转为枚举值，转换失败返回默认值。
+```csharp
+public static TEnum ToEnum<TEnum>(this byte value, TEnum defaultValue = default) where TEnum : struct, Enum
+```
+
+#### ToEnum (short)
+short 转为枚举值，转换失败返回默认值。
+```csharp
+public static TEnum ToEnum<TEnum>(this short value, TEnum defaultValue = default) where TEnum : struct, Enum
+```
+
+#### TryToEnum (int)
+尝试将 int 转为枚举值。
+```csharp
+public static bool TryToEnum<TEnum>(this int value, out TEnum result) where TEnum : struct, Enum
+```
+
+#### TryToEnum (long)
+尝试将 long 转为枚举值。
+```csharp
+public static bool TryToEnum<TEnum>(this long value, out TEnum result) where TEnum : struct, Enum
+```
+
+---
+
+### 5. 描述特性
+
+#### GetDescription
+枚举值转为描述（DescriptionAttribute），无描述则返回名称。
+```csharp
+public static string GetDescription<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status
+{
+    [Description("激活状态")]
+    Active = 1,
+    [Description("停用状态")]
+    Inactive = 2
+}
+
+var status = Status.Active;
+var desc = status.GetDescription(); // "激活状态"
+```
+
+#### FromDescription
+根据描述获取枚举值（DescriptionAttribute），找不到则返回默认值。
+```csharp
+public static TEnum FromDescription<TEnum>(this string description, TEnum defaultValue = default) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status
+{
+    [Description("激活状态")]
+    Active = 1,
+    [Description("停用状态")]
+    Inactive = 2
+}
+
+var status = "激活状态".FromDescription<Status>(); // Status.Active
+```
+
+#### GetDisplayName
+获取枚举值的显示名称（DisplayAttribute.Name），无特性则返回枚举名称。
+```csharp
+public static string GetDisplayName<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### GetDisplayDescription
+获取枚举值的显示描述（DisplayAttribute.Description），无特性则返回枚举名称。
+```csharp
+public static string GetDisplayDescription<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+
+#### GetAttribute
+获取枚举值的指定特性。
+```csharp
+public static TAttribute GetAttribute<TEnum, TAttribute>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
+```
+
+#### GetAttributes
+获取枚举值的所有指定特性。
+```csharp
+public static IEnumerable<TAttribute> GetAttributes<TEnum, TAttribute>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
+```
+
+---
+
+### 6. 集合操作
+
+#### GetValues
+获取枚举类型的所有值列表。
+```csharp
+public static IEnumerable<TEnum> GetValues<TEnum>() where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2 }
+
+var values = EnumExtensions.GetValues<Status>();
+// [Status.Active, Status.Inactive]
+```
+
+#### GetNames
+获取枚举类型的所有名称列表。
+```csharp
+public static IEnumerable<string> GetNames<TEnum>() where TEnum : struct, Enum
+```
+
+#### GetValueDescriptionDict
+获取枚举类型的值与描述字典。
+```csharp
+public static Dictionary<TEnum, string> GetValueDescriptionDict<TEnum>() where TEnum : struct, Enum
+```
+
+#### GetNameDescriptionDict
+获取枚举类型的名称与描述字典。
+```csharp
+public static Dictionary<string, string> GetNameDescriptionDict<TEnum>() where TEnum : struct, Enum
+```
+
+#### GetUnderlyingType
+获取枚举类型的基础类型（如 int、byte）。
+```csharp
+public static Type GetUnderlyingType<TEnum>() where TEnum : struct, Enum
+```
+
+---
+
+### 7. 标志操作
+
+#### HasFlag
+判断枚举值是否包含指定标志。
+```csharp
+public static bool HasFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read | Permissions.Write;
+var hasRead = perm.HasFlag(Permissions.Read); // true
+var hasExecute = perm.HasFlag(Permissions.Execute); // false
+```
+
+#### AddFlag
+枚举值添加标志。
+```csharp
+public static TEnum AddFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read;
+perm = perm.AddFlag(Permissions.Write); // Permissions.Read | Permissions.Write
+```
+
+#### RemoveFlag
+枚举值移除标志。
+```csharp
+public static TEnum RemoveFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
+```
+
+#### ToggleFlag
+枚举值切换标志（有则移除，无则添加）。
+```csharp
+public static TEnum ToggleFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
+```
+
+#### GetFlags
+获取枚举值包含的所有标志。
+```csharp
+public static IEnumerable<TEnum> GetFlags<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read | Permissions.Write | Permissions.Execute;
+var flags = perm.GetFlags();
+// [Permissions.Read, Permissions.Write, Permissions.Execute]
+```
+
+---
+
+### 8. 比较运算
+
+#### EqualsAny
+判断枚举值是否等于任意一个指定值。
+```csharp
+public static bool EqualsAny<TEnum>(this TEnum value, params TEnum[] values) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2, Pending = 3 }
+
+var status = Status.Active;
+var result = status.EqualsAny(Status.Active, Status.Pending); // true
+```
+
+#### EqualsNone
+判断枚举值是否不等于所有指定值。
+```csharp
+public static bool EqualsNone<TEnum>(this TEnum value, params TEnum[] values) where TEnum : struct, Enum
+```
+
+#### In
+判断枚举值是否在指定集合中。
+```csharp
+public static bool In<TEnum>(this TEnum value, IEnumerable<TEnum> values) where TEnum : struct, Enum
+```
+
+---
+
+## 使用场景
+
+1. **UI 显示** - 将枚举值转换为用户友好的描述文本显示
+2. **数据导入导出** - 在枚举值和字符串/数值之间相互转换
+3. **配置管理** - 获取和保存枚举类型的所有选项
+4. **权限控制** - 使用标志位枚举进行权限位运算
+5. **API 接口** - 枚举值与外部系统数据格式转换
+6. **日志记录** - 记录枚举值的描述信息而非数值
+7. **数据绑定** - 为下拉列表等控件提供枚举值和描述的绑定源
+8. **业务逻辑** - 基于枚举描述进行业务规则判断
+
+## 注意事项
+
+1. 所有方法都是扩展方法，需要通过枚举实例来调用
+2. `GetDescription` 方法依赖 DescriptionAttribute 特性，未标记的枚举值返回名称
+3. `Parse` 方法默认支持大小写不敏感的字符串解析
+4. `ToEnum` 方法在转换失败时返回默认值，不会抛出异常
+5. 标志位操作方法仅适用于带有 [Flags] 特性的枚举类型
+6. `FromDescription` 方法在找不到匹配描述时返回默认枚举值
+7. 字典获取方法适用于数据绑定和枚举值描述管理
+8. 类型转换方法可以便捷地进行边界检查，提高代码健壮性
+9. 数值转换方法可以避免边界溢出，提高代码安全性和健壮性

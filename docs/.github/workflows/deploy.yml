@@ -31,15 +31,8 @@ jobs:
         run: npm ci
         working-directory: docs
 
-      - name: Build Astro site
+      - name: Build site
         run: npm run build
-        working-directory: docs
-
-      - name: Install Pagefind
-        run: npx pagefind --version
-
-      - name: Create Pagefind index
-        run: npx pagefind --site dist
         working-directory: docs
 
       - name: Upload artifact
