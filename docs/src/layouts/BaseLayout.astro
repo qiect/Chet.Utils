@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.vue';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Chet.Utils - .NET 工具类库文档' } = Astro.props;
+const siteTitle = `${title} | Chet.Utils`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{siteTitle}</title>
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+    </script>
+  </head>
+  <body class="min-h-screen" data-pagefind-body>
+    <slot />
+  </body>
+</html>

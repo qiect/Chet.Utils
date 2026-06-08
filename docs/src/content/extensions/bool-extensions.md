@@ -1,0 +1,408 @@
+---
+title: "BoolExtensions"
+description: "为 bool 类型提供了丰富的扩展方法，包括基础判断、逻辑运算、类型转换、字符串转换等功能，旨在简化布尔值的处理和转换，提高代码的可读性和便捷性。"
+targetType: "bool"
+namespace: "Chet.Utils"
+className: "BoolExtensions"
+category: "Extensions"
+order: 1
+---
+
+# BoolExtensions 扩展类文档
+
+## 概述
+
+[BoolExtensions](../../Chet.Utils/Extensions/BoolExtensions.cs) 是一个静态扩展类，为 `bool` 类型提供了丰富的扩展方法，包括基础判断、逻辑运算、类型转换、字符串转换等功能，旨在简化布尔值的处理和转换，提高代码的可读性和便捷性。
+
+## 主要功能模块
+
+### 1. 基础判断方法
+
+提供布尔值状态判断的便捷方法。
+
+**主要方法：**
+
+- `IsTrue()` - 判断布尔值是否为 true
+- `IsFalse()` - 判断布尔值是否为 false
+- `Not()` - 对布尔值取反操作
+
+### 2. 逻辑运算方法
+
+提供布尔值的逻辑运算功能。
+
+**主要方法：**
+
+- `And(bool other)` - 与运算（AND）
+- `Or(bool other)` - 或运算（OR）
+- `Xor(bool other)` - 异或运算（XOR）
+- `Xnor(bool other)` - 同或运算（等价于相等比较）
+- `Nand(bool other)` - 与非运算
+- `Nor(bool other)` - 或非运算
+
+### 3. 数值类型转换
+
+提供布尔值到各种数值类型的转换。
+
+**主要方法：**
+
+- `ToInt()` - 转换为 int（true=1, false=0）
+- `ToLong()` - 转换为 long（true=1, false=0）
+- `ToByte()` - 转换为 byte（true=1, false=0）
+- `ToShort()` - 转换为 short（true=1, false=0）
+- `ToFloat()` - 转换为 float（true=1.0, false=0.0）
+- `ToDouble()` - 转换为 double（true=1.0, false=0.0）
+- `ToDecimal()` - 转换为 decimal（true=1.0, false=0.0）
+
+### 4. 字符串转换方法
+
+提供布尔值到各种字符串格式的转换。
+
+**主要方法：**
+
+- `ToStringValue()` - 转换为标准字符串（"True"/"False"）
+- `ToLowerString()` - 转换为小写字符串（"true"/"false"）
+- `ToChineseString()` - 转换为中文字符串（"是"/"否"）
+- `ToYesNo()` - 转换为 Yes/No 字符串
+- `ToOnOff()` - 转换为 On/Off 字符串
+- `ToYN()` - 转换为 Y/N 字符串
+- `ToOneZero()` - 转换为 1/0 字符串
+- `ToReverseString()` - 转换为反向字符串（"False"/"True"）
+- `ToReverseChineseString()` - 转换为反向中文字符串（"否"/"是"）
+- `ToEnabledDisabled()` - 转换为启用/禁用字符串
+- `ToSuccessFailed()` - 转换为成功/失败字符串
+
+### 5. 自定义转换方法
+
+提供布尔值到自定义类型的映射转换。
+
+**主要方法：**
+
+- `ToCustomString(string trueString, string falseString)` - 转换为自定义字符串
+- `ToValue<T>(T trueValue, T falseValue)` - 转换为指定类型的值
+- `ToEnum<TEnum>(TEnum trueEnum, TEnum falseEnum)` - 转换为枚举值
+- `ToNullable(bool nullable = false)` - 转换为可空布尔值
+
+### 6. 条件执行方法
+
+提供基于布尔值的条件执行功能。
+
+**主要方法：**
+
+- `IfTrue(Action action)` - 如果为 true 则执行指定操作
+- `IfFalse(Action action)` - 如果为 false 则执行指定操作
+- `IfElse(Action trueAction, Action falseAction)` - 根据布尔值执行不同操作
+
+***
+
+## 方法详细说明
+
+### 基础判断
+
+#### IsTrue
+
+判断布尔值是否为 true。
+
+```csharp
+public static bool IsTrue(this bool value)
+```
+
+**参数：**
+
+- `value`: 待判断的布尔值
+
+**返回值：**
+
+- 如果值为 true 返回 true；否则返回 false
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+bool result1 = value1.IsTrue(); // true
+bool result2 = value2.IsTrue(); // false
+```
+
+#### IsFalse
+
+判断布尔值是否为 false。
+
+```csharp
+public static bool IsFalse(this bool value)
+```
+
+**参数：**
+
+- `value`: 待判断的布尔值
+
+**返回值：**
+
+- 如果值为 false 返回 true；否则返回 false
+
+**示例：**
+
+```csharp
+bool value1 = false;
+bool value2 = true;
+
+bool result1 = value1.IsFalse(); // true
+bool result2 = value2.IsFalse(); // false
+```
+
+#### Not
+
+对布尔值取反。
+
+```csharp
+public static bool Not(this bool value)
+```
+
+**参数：**
+
+- `value`: 待处理的布尔值
+
+**返回值：**
+
+- 取反后的值
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+bool result1 = value1.Not(); // false
+bool result2 = value2.Not(); // true
+```
+
+### 逻辑运算
+
+#### And
+
+对两个布尔值进行与运算。
+
+```csharp
+public static bool And(this bool value, bool other)
+```
+
+**参数：**
+
+- `value`: 第一个布尔值
+- `other`: 第二个布尔值
+
+**返回值：**
+
+- 与运算结果
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+bool result = value1.And(value2); // false
+```
+
+#### Or
+
+对两个布尔值进行或运算。
+
+```csharp
+public static bool Or(this bool value, bool other)
+```
+
+**参数：**
+
+- `value`: 第一个布尔值
+- `other`: 第二个布尔值
+
+**返回值：**
+
+- 或运算结果
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+bool result = value1.Or(value2); // true
+```
+
+#### Xor
+
+对两个布尔值进行异或运算。
+
+```csharp
+public static bool Xor(this bool value, bool other)
+```
+
+**参数：**
+
+- `value`: 第一个布尔值
+- `other`: 第二个布尔值
+
+**返回值：**
+
+- 异或运算结果
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+bool result = value1.Xor(value2); // true
+```
+
+### 数值转换
+
+#### ToInt
+
+将布尔值转换为 int。
+
+```csharp
+public static int ToInt(this bool value)
+```
+
+**参数：**
+
+- `value`: 待转换的布尔值
+
+**返回值：**
+
+- true 返回 1，false 返回 0
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+int result1 = value1.ToInt(); // 1
+int result2 = value2.ToInt(); // 0
+```
+
+### 字符串转换
+
+#### ToChineseString
+
+将布尔值转换为中文字符串。
+
+```csharp
+public static string ToChineseString(this bool value)
+```
+
+**参数：**
+
+- `value`: 待转换的布尔值
+
+**返回值：**
+
+- true 返回 "是"，false 返回 "否"
+
+**示例：**
+
+```csharp
+bool value1 = true;
+bool value2 = false;
+
+string result1 = value1.ToChineseString(); // "是"
+string result2 = value2.ToChineseString(); // "否"
+```
+
+#### ToCustomString
+
+将布尔值转换为自定义字符串。
+
+```csharp
+public static string ToCustomString(this bool value, string trueString, string falseString)
+```
+
+**参数：**
+
+- `value`: 待转换的布尔值
+- `trueString`: true 时的字符串
+- `falseString`: false 时的字符串
+
+**返回值：**
+
+- 自定义字符串
+
+**示例：**
+
+```csharp
+bool value = true;
+string result = value.ToCustomString("通过", "不通过"); // "通过"
+```
+
+### 条件执行
+
+#### IfTrue
+
+如果布尔值为 true，则执行指定操作。
+
+```csharp
+public static void IfTrue(this bool value, Action action)
+```
+
+**参数：**
+
+- `value`: 待判断的布尔值
+- `action`: 要执行的操作
+
+**示例：**
+
+```csharp
+bool value = true;
+value.IfTrue(() => Console.WriteLine("值为 true"));
+```
+
+#### IfElse
+
+根据布尔值执行不同的操作。
+
+```csharp
+public static void IfElse(this bool value, Action trueAction, Action falseAction)
+```
+
+**参数：**
+
+- `value`: 待判断的布尔值
+- `trueAction`: true 时执行的操作
+- `falseAction`: false 时执行的操作
+
+**示例：**
+
+```csharp
+bool value = true;
+value.IfElse(
+    () => Console.WriteLine("值为 true"),
+    () => Console.WriteLine("值为 false")
+);
+```
+
+***
+
+## 使用场景
+
+1. **界面显示** - 将布尔值转换为用户友好的字符串格式（如"是/否"）
+2. **数据转换** - 在数据传输中将布尔值转换为数字或字符串
+3. **配置管理** - 根据配置项的状态进行不同的处理
+4. **逻辑运算** - 使用链式调用进行复杂的布尔逻辑运算
+5. **API 响应** - 将布尔值转换为特定格式的字符串以适应接口要求
+6. **国际化** - 支持多种语言环境下的布尔值表示
+7. **状态映射** - 将布尔值映射到枚举或其他业务状态
+
+***
+
+## 注意事项
+
+1. 所有方法都是扩展方法，需要通过 `bool` 实例调用
+2. 数值转换方法遵循标准约定：true 映射为 1（或 1.0），false 映射为 0（或 0.0）
+3. 字符串转换方法提供了多种常用格式，也可通过自定义方法指定特定格式
+4. 逻辑运算方法提供了函数式链式调用的便捷方式
+5. `ToNullable()` 方法默认返回原值，只有当 `nullable` 参数为 true 时才返回 null
+6. `ToValue<T>()` 方法支持将布尔值映射到任意类型
+7. 反向转换方法提供与常规则转换相反的结果

@@ -1,0 +1,547 @@
+---
+title: "ReflectHelper"
+description: "是一个静态帮助类，为反射操作提供了丰富的功能，包括类型信息获取、属性操作、方法调用、字段操作、动态创建实例、表达式树、类型检查、高级反射等，旨在封装 .NET 的反射 API，简化复杂的反射操作并提高开发效率。"
+namespace: "Chet.Utils.Helpers"
+className: "ReflectHelper"
+category: "Helpers"
+order: 5
+---
+
+# ReflectHelper 帮助类
+
+## 概述
+
+[ReflectHelper](../../Chet.Utils/Helpers/ReflectHelper.cs) 是一个静态帮助类，为反射操作提供了丰富的功能，包括类型信息获取、属性操作、方法调用、字段操作、动态创建实例、表达式树、类型检查、高级反射等，旨在封装 .NET 的反射 API，简化复杂的反射操作并提高开发效率。
+
+## 主要功能模块
+
+### 1. 类型信息获取
+
+提供获取类型元数据信息的功能，包括属性、方法、字段、特性、接口等。
+
+**主要方法：**
+
+#### GetPublicProperties
+获取类型的所有公共属性。
+```csharp
+public static PropertyInfo[] GetPublicProperties(Type type)
+```
+**参数：**
+- `type`: 目标类型
+
+**返回值：**
+- 属性信息数组
+
+**示例：**
+```csharp
+var properties = ReflectHelper.GetPublicProperties(typeof(MyClass));
+foreach (var prop in properties)
+{
+    Console.WriteLine($"属性: {prop.Name}, 类型: {prop.PropertyType.Name}");
+}
+```
+
+#### GetAllProperties
+获取类型的所有属性（包括私有属性）。
+```csharp
+public static PropertyInfo[] GetAllProperties(Type type)
+```
+
+#### GetProperty
+根据名称获取类型的属性。
+```csharp
+public static PropertyInfo? GetProperty(Type type, string propertyName)
+```
+**参数：**
+- `type`: 目标类型
+- `propertyName`: 属性名称
+
+**返回值：**
+- 属性信息，如果不存在则返回 null
+
+**示例：**
+```csharp
+var property = ReflectHelper.GetProperty(typeof(MyClass), "Name");
+if (property != null)
+{
+    Console.WriteLine($"找到属性: {property.Name}");
+}
+```
+
+#### GetPublicMethods / GetAllMethods
+获取类型的公共方法或所有方法。
+```csharp
+public static MethodInfo[] GetPublicMethods(Type type)
+public static MethodInfo[] GetAllMethods(Type type)
+```
+
+#### GetMethod
+根据名称获取类型的方法。
+```csharp
+public static MethodInfo? GetMethod(Type type, string methodName, params Type[] parameterTypes)
+```
+**参数：**
+- `type`: 目标类型
+- `methodName`: 方法名称
+- `parameterTypes`: 参数类型数组，用于重载方法区分
+
+**示例：**
+```csharp
+var method = ReflectHelper.GetMethod(typeof(MyClass), "Calculate", typeof(int), typeof(int));
+```
+
+#### GetPublicFields / GetAllFields / GetField
+获取类型的字段信息。
+```csharp
+public static FieldInfo[] GetPublicFields(Type type)
+public static FieldInfo[] GetAllFields(Type type)
+public static FieldInfo? GetField(Type type, string fieldName)
+```
+
+#### GetCustomAttribute
+获取类型的特性。
+```csharp
+public static T? GetCustomAttribute<T>(Type type, bool inherit = true) where T : Attribute
+```
+**示例：**
+```csharp
+var displayAttr = ReflectHelper.GetCustomAttribute<DisplayAttribute>(typeof(MyClass));
+if (displayAttr != null)
+{
+    Console.WriteLine($"显示名称: {displayAttr.Name}");
+}
+```
+
+#### GetCustomAttributes / HasCustomAttribute
+获取所有特性或检查是否具有指定特性。
+```csharp
+public static Attribute[] GetCustomAttributes(Type type, bool inherit = true)
+public static bool HasCustomAttribute<T>(Type type, bool inherit = true) where T : Attribute
+```
+
+#### GetInterfaces / ImplementsInterface
+获取类型实现的接口或检查是否实现指定接口。
+```csharp
+public static Type[] GetInterfaces(Type type)
+public static bool ImplementsInterface(Type type, Type interfaceType)
+public static bool ImplementsInterface<TInterface>(Type type)
+```
+**示例：**
+```csharp
+if (ReflectHelper.ImplementsInterface(typeof(MyList), typeof(IEnumerable)))
+{
+    Console.WriteLine("MyList 实现了 IEnumerable 接口");
+}
+```
+
+#### GetBaseType / IsSubclassOf
+获取基类型或检查继承关系。
+```csharp
+public static Type? GetBaseType(Type type)
+public static bool IsSubclassOf(Type type, Type baseType)
+```
+
+#### IsValueType / IsReferenceType / IsAbstract / IsInterface / IsGenericType
+类型特性检查方法。
+```csharp
+public static bool IsValueType(Type type)
+public static bool IsReferenceType(Type type)
+public static bool IsAbstract(Type type)
+public static bool IsInterface(Type type)
+public static bool IsGenericType(Type type)
+public static bool IsGenericTypeDefinition(Type type)
+```
+
+#### GetGenericArguments
+获取泛型类型的类型参数。
+```csharp
+public static Type[] GetGenericArguments(Type type)
+```
+
+### 2. 属性操作
+
+提供对属性的获取、设置和元数据操作功能。
+
+**主要方法：**
+
+#### GetPropertyValue
+获取对象属性值。
+```csharp
+public static object? GetPropertyValue(object obj, string propertyName)
+public static T? GetPropertyValue<T>(object obj, string propertyName)
+```
+**参数：**
+- `obj`: 目标对象
+- `propertyName`: 属性名称
+
+**返回值：**
+- 属性值
+
+**示例：**
+```csharp
+var person = new Person { Name = "张三", Age = 25 };
+var name = ReflectHelper.GetPropertyValue(person, "Name");
+Console.WriteLine($"姓名: {name}");
+```
+
+#### SetPropertyValue
+设置对象属性值。
+```csharp
+public static void SetPropertyValue(object obj, string propertyName, object? value)
+```
+**示例：**
+```csharp
+var person = new Person();
+ReflectHelper.SetPropertyValue(person, "Name", "李四");
+ReflectHelper.SetPropertyValue(person, "Age", 30);
+```
+
+#### TrySetPropertyValue
+尝试设置对象属性值，失败时返回 false。
+```csharp
+public static bool TrySetPropertyValue(object obj, string propertyName, object? value)
+```
+
+#### GetPropertyDisplayName / GetPropertyDescription
+获取属性的显示名称或描述信息。
+```csharp
+public static string GetPropertyDisplayName(PropertyInfo property)
+public static string GetPropertyDescription(PropertyInfo property)
+```
+**示例：**
+```csharp
+var property = typeof(Person).GetProperty("Name");
+var displayName = ReflectHelper.GetPropertyDisplayName(property);
+Console.WriteLine($"显示名称: {displayName}");
+```
+
+#### GetPropertyValues
+获取对象所有属性的名称和值。
+```csharp
+public static Dictionary<string, object?> GetPropertyValues(object? obj)
+```
+**示例：**
+```csharp
+var person = new Person { Name = "张三", Age = 25 };
+var propertyValues = ReflectHelper.GetPropertyValues(person);
+foreach (var kvp in propertyValues)
+{
+    Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+}
+```
+
+#### SetPropertyValues
+批量设置对象属性值。
+```csharp
+public static void SetPropertyValues(object obj, Dictionary<string, object?> propertyValues)
+```
+**示例：**
+```csharp
+var person = new Person();
+var values = new Dictionary<string, object?>
+{
+    ["Name"] = "王五",
+    ["Age"] = 28
+};
+ReflectHelper.SetPropertyValues(person, values);
+```
+
+#### CanRead / CanWrite / GetPropertyType
+属性特性检查方法。
+```csharp
+public static bool CanRead(PropertyInfo property)
+public static bool CanWrite(PropertyInfo property)
+public static Type GetPropertyType(PropertyInfo property)
+```
+
+### 3. 方法调用
+
+提供对对象方法的调用和元数据操作功能。
+
+**主要方法：**
+
+#### InvokeMethod
+调用对象方法。
+```csharp
+public static object? InvokeMethod(object obj, string methodName, params object?[] parameters)
+public static T? InvokeMethod<T>(object obj, string methodName, params object?[] parameters)
+```
+**参数：**
+- `obj`: 目标对象
+- `methodName`: 方法名称
+- `parameters`: 参数数组
+
+**返回值：**
+- 方法返回值
+
+**示例：**
+```csharp
+var calculator = new Calculator();
+var result = ReflectHelper.InvokeMethod(calculator, "Add", 5, 3);
+Console.WriteLine($"结果: {result}");
+```
+
+#### InvokeStaticMethod
+调用静态方法。
+```csharp
+public static object? InvokeStaticMethod(Type type, string methodName, params object?[] parameters)
+public static T? InvokeStaticMethod<T>(Type type, string methodName, params object?[] parameters)
+```
+**示例：**
+```csharp
+var result = ReflectHelper.InvokeStaticMethod(typeof(Math), "Abs", -10);
+Console.WriteLine($"绝对值: {result}");
+```
+
+#### GetMethodParameters / GetMethodReturnType
+获取方法参数信息或返回值类型。
+```csharp
+public static ParameterInfo[] GetMethodParameters(MethodInfo method)
+public static Type GetMethodReturnType(MethodInfo method)
+```
+
+#### IsAsyncMethod / IsStaticMethod / IsPublicMethod
+方法特性检查。
+```csharp
+public static bool IsAsyncMethod(MethodInfo method)
+public static bool IsStaticMethod(MethodInfo method)
+public static bool IsPublicMethod(MethodInfo method)
+```
+
+### 4. 字段操作
+
+提供对字段的获取、设置和元数据操作功能。
+
+**主要方法：**
+
+#### GetFieldValue / SetFieldValue
+获取或设置对象字段值。
+```csharp
+public static object? GetFieldValue(object obj, string fieldName)
+public static T? GetFieldValue<T>(object obj, string fieldName)
+public static void SetFieldValue(object obj, string fieldName, object? value)
+```
+
+#### IsStaticField / IsPublicField
+字段特性检查。
+```csharp
+public static bool IsStaticField(FieldInfo field)
+public static bool IsPublicField(FieldInfo field)
+```
+
+### 5. 动态创建与实例化
+
+提供动态创建实例和类型信息获取功能。
+
+**主要方法：**
+
+#### CreateInstance
+创建类型实例。
+```csharp
+public static T CreateInstance<T>() where T : new()
+public static object? CreateInstance(Type type, params object?[] args)
+public static T? CreateInstance<T>(params object?[] args)
+```
+**示例：**
+```csharp
+var person = ReflectHelper.CreateInstance<Person>();
+var person2 = ReflectHelper.CreateInstance(typeof(Person), "张三", 25);
+```
+
+#### GetDefaultValue
+获取类型的默认值。
+```csharp
+public static object? GetDefaultValue(Type type)
+```
+
+#### IsInstantiable
+检查类型是否可以被实例化。
+```csharp
+public static bool IsInstantiable(Type type)
+```
+
+#### GetConstructors / GetAllConstructors
+获取类型的构造函数。
+```csharp
+public static ConstructorInfo[] GetConstructors(Type type)
+public static ConstructorInfo[] GetAllConstructors(Type type)
+```
+
+### 6. 表达式树操作
+
+提供基于表达式树的属性名称获取和访问器创建功能。
+
+**主要方法：**
+
+#### GetPropertyName
+获取属性名称（通过表达式树）。
+```csharp
+public static string GetPropertyName<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+```
+**参数：**
+- `propertyExpression`: 属性表达式
+
+**返回值：**
+- 属性名称
+
+**示例：**
+```csharp
+var propertyName = ReflectHelper.GetPropertyName<Person, string>(p => p.Name);
+Console.WriteLine($"属性名: {propertyName}");
+```
+
+#### GetPropertyValue / SetPropertyValue (表达式树版本)
+通过表达式树获取或设置属性值。
+```csharp
+public static TProperty GetPropertyValue<T, TProperty>(T obj, Expression<Func<T, TProperty>> propertyExpression)
+public static void SetPropertyValue<T, TProperty>(T obj, Expression<Func<T, TProperty>> propertyExpression, TProperty value)
+```
+
+#### CreatePropertyGetter / CreatePropertySetter
+创建高性能的属性访问器。
+```csharp
+public static Func<T, TProperty> CreatePropertyGetter<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+public static Action<T, TProperty> CreatePropertySetter<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+```
+
+#### CreateMethodCaller
+创建方法调用器。
+```csharp
+public static Func<T, object?[], object?> CreateMethodCaller<T>(Expression<Action<T>> methodExpression)
+```
+
+### 7. 类型转换与检查
+
+提供类型检查和转换相关的功能。
+
+**主要方法：**
+
+#### IsNumericType / IsBooleanType / IsStringType / IsCollectionType
+类型检查方法。
+```csharp
+public static bool IsNumericType(Type type)
+public static bool IsBooleanType(Type type)
+public static bool IsStringType(Type type)
+public static bool IsCollectionType(Type type)
+```
+
+#### IsNullableType / GetNullableUnderlyingType
+可空类型检查。
+```csharp
+public static bool IsNullableType(Type type)
+public static Type? GetNullableUnderlyingType(Type type)
+```
+
+#### IsEnumType / GetEnumValues / GetEnumNames
+枚举类型操作。
+```csharp
+public static bool IsEnumType(Type type)
+public static Array GetEnumValues(Type enumType)
+public static string[] GetEnumNames(Type enumType)
+```
+
+#### IsCompatibleType
+检查两个类型是否兼容。
+```csharp
+public static bool IsCompatibleType(Type fromType, Type toType)
+```
+
+### 8. 高级反射操作
+
+提供程序集加载和高级反射信息获取功能。
+
+**主要方法：**
+
+#### GetExtensionMethods
+获取类型的所有扩展方法。
+```csharp
+public static IEnumerable<MethodInfo> GetExtensionMethods(Type extendedType, params Assembly[] assemblies)
+```
+
+#### GetTypes
+获取程序集中的所有类型。
+```csharp
+public static Type[] GetTypes(Assembly assembly)
+public static Type[] GetTypes(Assembly assembly, Func<Type, bool> predicate)
+```
+
+#### GetAssemblies / LoadAssembly / LoadAssemblyFromFile
+程序集操作。
+```csharp
+public static Assembly[] GetAssemblies()
+public static Assembly LoadAssembly(string assemblyName)
+public static Assembly LoadAssemblyFromFile(string assemblyPath)
+```
+
+#### GetTypeInfo
+获取类型的详细信息。
+```csharp
+public static Dictionary<string, object?> GetTypeInfo(Type type)
+```
+
+#### IsAnonymousType
+检查类型是否为匿名类型。
+```csharp
+public static bool IsAnonymousType(Type type)
+```
+
+#### GetNestedTypes / GetEvents
+获取嵌套类型或事件信息。
+```csharp
+public static Type[] GetNestedTypes(Type type)
+public static EventInfo[] GetEvents(Type type)
+```
+
+### 9. 高性能反射方法
+
+提供高性能的反射实现，通过表达式树编译提升性能。
+
+**主要方法：**
+
+#### CreateFastPropertyGetter / CreateFastPropertySetter
+创建高性能的属性访问器。
+```csharp
+public static Func<T, TProperty?> CreateFastPropertyGetter<T, TProperty>(PropertyInfo property)
+public static Action<T, TProperty?> CreateFastPropertySetter<T, TProperty>(PropertyInfo property)
+```
+
+#### CreateFastMethodCaller
+创建高性能的方法调用器。
+```csharp
+public static Func<T, object?[], object?> CreateFastMethodCaller<T>(MethodInfo method)
+```
+
+#### CreatePropertyAccessor
+获取属性的快速访问委托。
+```csharp
+public static (Func<T, object?>? Getter, Action<T, object?>? Setter) CreatePropertyAccessor<T>(string propertyName)
+```
+
+## 辅助类
+
+### PropertyInfoWrapper
+属性信息封装类，提供便捷的属性操作接口。
+
+### MethodInfoWrapper
+方法信息封装类，提供便捷的方法操作接口。
+
+## 使用场景
+
+1. **ORM框架开发** - 动态映射数据库记录到对象属性
+2. **序列化/反序列化** - 通过反射识别对象属性进行数据转换
+3. **依赖注入容器** - 动态创建和配置对象实例
+4. **AOP框架** - 通过反射实现方法拦截
+5. **插件系统** - 动态加载和调用外部程序集中的类型
+6. **数据验证** - 通过特性获取属性的验证规则
+7. **UI绑定** - 获取属性的显示名称和描述信息用于界面展示
+8. **脚本引擎** - 动态调用对象的方法和属性
+
+## 注意事项
+
+1. 当属性或方法不存在时会抛出异常
+2. 对于高性能场景，建议使用表达式树创建的访问器
+3. 私有成员访问需要使用相应的 BindingFlags
+4. 类型转换失败会抛出 InvalidCastException
+5. 调用泛型方法时需要确保类型参数正确
+6. 对于频繁调用的反射操作，建议缓存 MethodInfo、PropertyInfo 等元数据对象
+7. 动态加载程序集时要注意程序集加载上下文和依赖解析

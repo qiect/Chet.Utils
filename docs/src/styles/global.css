@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-600;
+}
+
+/* Code blocks */
+pre {
+  border-radius: 0.5rem;
+}
+
+code {
+  @apply text-sm;
+}
+
+:not(pre) > code {
+  @apply bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-primary-700 dark:text-primary-300;
+  font-size: 0.875em;
+}
+
+/* Table styles */
+table {
+  @apply w-full border-collapse;
+}
+
+th {
+  @apply bg-gray-50 dark:bg-gray-800 text-left px-4 py-2 text-sm font-semibold border border-gray-200 dark:border-gray-700;
+}
+
+td {
+  @apply px-4 py-2 text-sm border border-gray-200 dark:border-gray-700;
+}
+
+tr:nth-child(even) td {
+  @apply bg-gray-50/50 dark:bg-gray-800/50;
+}
+
+/* Anchor links */
+h2, h3, h4 {
+  scroll-margin-top: 5rem;
+}
+
+h2:hover .anchor-link,
+h3:hover .anchor-link,
+h4:hover .anchor-link {
+  @apply opacity-100;
+}
+
+.anchor-link {
+  @apply opacity-0 ml-2 text-primary-400 hover:text-primary-600 transition-opacity;
+  text-decoration: none;
+}
+
+/* Pagefind */
+.pagefind-ui__search-input {
+  @apply bg-white dark:bg-gray-800;
+  color: inherit;
+}
