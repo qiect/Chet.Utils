@@ -22,11 +22,11 @@ namespace Chet.Utils.Tests.Extensions
         public void IsNullOrEmpty_Test()
         {
             Stream nullStream = null;
-            Assert.True(nullStream.IsNullOrEmpty());
+            Assert.True(nullStream.IsNullOrEmptySafe());
             using var ms = new MemoryStream();
-            Assert.True(ms.IsNullOrEmpty());
+            Assert.True(ms.IsNullOrEmptySafe());
             ms.WriteByte(1);
-            Assert.False(ms.IsNullOrEmpty());
+            Assert.False(ms.IsNullOrEmptySafe());
         }
 
         [Fact]

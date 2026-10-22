@@ -1,10 +1,12 @@
 ﻿using System.Data;
 using System.Dynamic;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Chet.Utils.Helpers;
+
 
 /// <summary>
 /// DataTable 高级操作帮助类，提供 <see cref="DataTableExtensions"/> 中未包含的高级数据处理功能。
@@ -12,7 +14,7 @@ namespace Chet.Utils.Helpers;
 /// <remarks>
 /// <para>本类提供以下 DataTableExtensions 中未包含的功能：</para>
 /// <list type="bullet">
-///   <item><description>数据转换：ToDynamicList（动态对象）、ToDataTableFromJson（JSON转表）、MapColumns（列名映射）</description></item>
+///   <item><description>数据转换：ToDynamicList（动态对象）、ToDataTableFromJson（JSON转表）、MapColumns（列名映射）、MapToEntityList（实体映射）</description></item>
 ///   <item><description>数据透视：Pivot（透视表）、AdvancedPivot（高级透视）、GroupByAdvanced（高级分组聚合）</description></item>
 ///   <item><description>数据分析：CalculateStatistics（完整统计）、AnalyzeDistribution（分布分析）、CalculateCorrelation（相关性）</description></item>
 ///   <item><description>数据导出：ExportToHtml（HTML表格）、ExportToExcelXml（Excel XML）、ExportToMarkdown（Markdown）</description></item>
@@ -69,20 +71,49 @@ public static partial class DataTableHelper
     }
 
     /// <summary>
-    /// 将 JSON 字符串转换为 <see cref="DataTable"/>。
+    /// 将 JSON 字符串转换为 <see cref="DataTable"/>，所有值转为字符串。
     /// </summary>
     /// <param name="json">JSON 字符串，必须是对象数组格式。</param>
-    /// <returns>转换后的 <see cref="DataTable"/>。</returns>
+    /// <returns>转换后的 <see cref="DataTable"/>，列类型均为 <see cref="string"/>。</returns>
     /// <exception cref="ArgumentException"><paramref name="json"/> 为 null 或空字符串时抛出。</exception>
     /// <exception cref="InvalidOperationException">JSON 解析失败时抛出。</exception>
     /// <example>
     /// <code>
     /// string json = "[{\"Name\":\"张三\",\"Age\":25},{\"Name\":\"李四\",\"Age\":30}]";
     /// var dt = DataTableHelper.ToDataTableFromJson(json);
-    /// // dt 包含 Name 和 Age 两列，两行数据
+    /// // dt.Rows[0]["Age"] => "25"（字符串）
     /// </code>
     /// </example>
     public static DataTable ToDataTableFromJson(string json)
+    {
+        return ToDataTableFromJson(json, preserveTypes: false);
+    }
+
+    /// <summary>
+    /// 将 JSON 字符串转换为 <see cref="DataTable"/>。
+    /// </summary>
+    /// <param name="json">JSON 字符串，必须是对象数组格式。</param>
+    /// <param name="preserveTypes">
+    /// 是否保留 JSON 值的原始类型。<see langword="true"/> 时列类型为 <see cref="object"/>，值保留为 long、double、bool、DateTime 等；
+    /// <see langword="false"/> 时列类型为 <see cref="string"/>，所有值转为字符串。
+    /// </param>
+    /// <returns>转换后的 <see cref="DataTable"/>。</returns>
+    /// <exception cref="ArgumentException"><paramref name="json"/> 为 null 或空字符串时抛出。</exception>
+    /// <exception cref="InvalidOperationException">JSON 解析失败时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// string json = "[{\"Name\":\"张三\",\"Age\":25},{\"Name\":\"李四\",\"Age\":30}]";
+    /// 
+    /// // 保留类型
+    /// var dt = DataTableHelper.ToDataTableFromJson(json, preserveTypes: true);
+    /// // dt.Rows[0]["Age"] => 25L（long）
+    /// 
+    /// // 全转字符串
+    /// var dt2 = DataTableHelper.ToDataTableFromJson(json, preserveTypes: false);
+    /// // dt2.Rows[0]["Age"] => "25"（string）
+    /// </code>
+    /// </example>
+    public static DataTable ToDataTableFromJson(string json, bool preserveTypes)
     {
         if (string.IsNullOrWhiteSpace(json))
             throw new ArgumentException("JSON 字符串不能为空", nameof(json));
@@ -105,10 +136,14 @@ public static partial class DataTableHelper
                 }
             }
 
+            var columnType = preserveTypes ? typeof(object) : typeof(string);
             foreach (var columnName in columnNames)
             {
-                dataTable.Columns.Add(columnName, typeof(string));
+                dataTable.Columns.Add(columnName, columnType);
             }
+
+            dataTable.MinimumCapacity = jsonArray.Count;
+            dataTable.BeginLoadData();
 
             foreach (var item in jsonArray)
             {
@@ -117,9 +152,9 @@ public static partial class DataTableHelper
                 {
                     if (item.TryGetValue(columnName, out var element))
                     {
-                        row[columnName] = element.ValueKind == JsonValueKind.Null
-                            ? DBNull.Value
-                            : element.ToString();
+                        row[columnName] = preserveTypes
+                            ? ConvertJsonElementToObject(element)
+                            : (element.ValueKind == JsonValueKind.Null ? DBNull.Value : (object)element.ToString());
                     }
                     else
                     {
@@ -128,6 +163,8 @@ public static partial class DataTableHelper
                 }
                 dataTable.Rows.Add(row);
             }
+
+            dataTable.EndLoadData();
         }
         catch (JsonException ex)
         {
@@ -136,6 +173,8 @@ public static partial class DataTableHelper
 
         return dataTable;
     }
+
+
 
     /// <summary>
     /// 映射 <see cref="DataTable"/> 的列名。
@@ -211,6 +250,86 @@ public static partial class DataTableHelper
         }
 
         return dataTable;
+    }
+
+    /// <summary>
+    /// 将 <see cref="DataTable"/> 中的数据映射为指定类型的实体对象列表。
+    /// 映射关系通过字段映射字典指定，仅处理 DataTable 中存在且目标类型中也存在的属性。
+    /// </summary>
+    /// <typeparam name="T">目标实体类型，必须具有无参构造函数。</typeparam>
+    /// <param name="dataTable">源 <see cref="DataTable"/>，包含待转换的行数据。</param>
+    /// <param name="fieldMapping">字段映射字典，键为 DataTable 列名，值为目标类型的属性名。</param>
+    /// <returns>转换后的实体对象列表。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="dataTable"/> 或 <paramref name="fieldMapping"/> 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var dt = new DataTable();
+    /// dt.Columns.Add("UserName", typeof(string));
+    /// dt.Columns.Add("UserAge", typeof(int));
+    /// dt.Rows.Add("张三", 25);
+    /// 
+    /// var mapping = new Dictionary&lt;string, string&gt;
+    /// {
+    ///     { "UserName", "Name" },
+    ///     { "UserAge", "Age" }
+    /// };
+    /// 
+    /// var list = DataTableHelper.MapToEntityList&lt;Person&gt;(dt, mapping);
+    /// // list[0].Name => "张三"
+    /// // list[0].Age => 25
+    /// </code>
+    /// </example>
+    public static List<T> MapToEntityList<T>(DataTable dataTable, Dictionary<string, string> fieldMapping) where T : new()
+    {
+        ArgumentNullException.ThrowIfNull(dataTable);
+        ArgumentNullException.ThrowIfNull(fieldMapping);
+
+        if (dataTable.Rows.Count == 0)
+            return new List<T>();
+
+        var existingColumns = new HashSet<string>(dataTable.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+
+        var validMapping = new List<(string SourceColumn, PropertyInfo Property)>();
+        foreach (var mapping in fieldMapping)
+        {
+            if (!existingColumns.Contains(mapping.Key)) continue;
+            var prop = typeof(T).GetProperty(mapping.Value);
+            if (prop != null && prop.CanWrite)
+                validMapping.Add((mapping.Key, prop));
+        }
+
+        if (validMapping.Count == 0)
+        {
+            Console.WriteLine("警告: 没有有效的映射关系");
+            return new List<T>();
+        }
+
+        var result = new List<T>(dataTable.Rows.Count);
+
+        foreach (DataRow row in dataTable.Rows)
+        {
+            try
+            {
+                var entity = new T();
+
+                foreach (var (sourceColumn, property) in validMapping)
+                {
+                    var value = row[sourceColumn];
+                    if (value != DBNull.Value)
+                    {
+                        property.SetValue(entity, ConvertValueSafe(value, property.PropertyType));
+                    }
+                }
+
+                result.Add(entity);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"处理行时出错: {ex.Message}");
+            }
+        }
+
+        return result;
     }
 
     #endregion
@@ -955,10 +1074,89 @@ public static partial class DataTableHelper
     }
 
     /// <summary>
-    /// 填充 <see cref="DataTable"/> 中的缺失值。
+    /// 自动填充 <see cref="DataTable"/> 中每一列的缺失值。
+    /// 填充策略：优先向下取第一个非空值，若下方均为空则沿用上方最近的非空值。
+    /// 返回新表，不修改原表。
     /// </summary>
     /// <param name="dataTable">源 <see cref="DataTable"/>。</param>
-    /// <param name="fillingRules">填充规则字典（列名 -> 填充值或填充函数）。</param>
+    /// <returns>填充后的新 <see cref="DataTable"/>。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="dataTable"/> 为 null 时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var dt = new DataTable();
+    /// dt.Columns.Add("Name", typeof(string));
+    /// dt.Rows.Add("张三");
+    /// dt.Rows.Add(DBNull.Value);
+    /// dt.Rows.Add("李四");
+    /// 
+    /// var filledDt = DataTableHelper.FillMissingValues(dt);
+    /// // filledDt.Rows[1]["Name"] => "张三"（沿用上方非空值）
+    /// // dt 原表不变
+    /// </code>
+    /// </example>
+    public static DataTable FillMissingValues(DataTable dataTable)
+    {
+        ArgumentNullException.ThrowIfNull(dataTable);
+
+        var result = dataTable.Copy();
+
+        if (result.Rows.Count == 0)
+            return result;
+
+        int rowCount = result.Rows.Count;
+        int colCount = result.Columns.Count;
+
+        for (int col = 0; col < colCount; col++)
+        {
+            // 从下往上：预计算每个空值位置下方最近的非空值
+            var nextNonNull = new object[rowCount];
+            object nextValue = null;
+            for (int row = rowCount - 1; row >= 0; row--)
+            {
+                var cellValue = result.Rows[row][col];
+                if (IsCellNullOrEmpty(cellValue))
+                {
+                    nextNonNull[row] = nextValue;
+                }
+                else
+                {
+                    nextValue = cellValue;
+                    nextNonNull[row] = null;
+                }
+            }
+
+            // 从上往下：优先用下方非空值填充，否则用上方最近非空值
+            object lastValue = null;
+            for (int row = 0; row < rowCount; row++)
+            {
+                var cellValue = result.Rows[row][col];
+                if (IsCellNullOrEmpty(cellValue))
+                {
+                    if (nextNonNull[row] != null)
+                    {
+                        result.Rows[row][col] = nextNonNull[row];
+                        lastValue = nextNonNull[row];
+                    }
+                    else if (lastValue != null)
+                    {
+                        result.Rows[row][col] = lastValue;
+                    }
+                }
+                else
+                {
+                    lastValue = cellValue;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 按自定义规则填充 <see cref="DataTable"/> 中的缺失值。
+    /// </summary>
+    /// <param name="dataTable">源 <see cref="DataTable"/>。</param>
+    /// <param name="fillingRules">填充规则字典（列名 -> 填充函数，函数接收当前表和行索引，返回填充值）。</param>
     /// <returns>填充后的新 <see cref="DataTable"/>。</returns>
     /// <exception cref="ArgumentNullException">参数为 null 时抛出。</exception>
     /// <example>
@@ -1000,6 +1198,89 @@ public static partial class DataTableHelper
                     }
                 }
             }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 用常量值填充指定列的缺失值。
+    /// </summary>
+    /// <param name="dataTable">源 <see cref="DataTable"/>。</param>
+    /// <param name="columnName">列名。</param>
+    /// <param name="fillValue">填充值。</param>
+    /// <returns>填充后的新 <see cref="DataTable"/>。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="dataTable"/> 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">列名不存在时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var filledDt = DataTableHelper.FillMissingValues(dt, "City", "未知");
+    /// </code>
+    /// </example>
+    public static DataTable FillMissingValues(DataTable dataTable, string columnName, object fillValue)
+    {
+        ArgumentNullException.ThrowIfNull(dataTable);
+
+        if (!dataTable.Columns.Contains(columnName))
+            throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
+
+        var result = dataTable.Copy();
+        var column = result.Columns[columnName]!;
+
+        for (int i = 0; i < result.Rows.Count; i++)
+        {
+            if (IsCellNullOrEmpty(result.Rows[i][column]))
+            {
+                result.Rows[i][column] = fillValue ?? DBNull.Value;
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 用指定策略填充指定列的缺失值。
+    /// </summary>
+    /// <param name="dataTable">源 <see cref="DataTable"/>。</param>
+    /// <param name="columnName">列名。</param>
+    /// <param name="fillMethod">填充策略。</param>
+    /// <returns>填充后的新 <see cref="DataTable"/>。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="dataTable"/> 为 null 时抛出。</exception>
+    /// <exception cref="ArgumentException">列名不存在时抛出。</exception>
+    /// <example>
+    /// <code>
+    /// var filledDt = DataTableHelper.FillMissingValues(dt, "Age", FillMethod.Previous);
+    /// var filledDt2 = DataTableHelper.FillMissingValues(dt, "Score", FillMethod.Mean);
+    /// var filledDt3 = DataTableHelper.FillMissingValues(dt, "City", FillMethod.Mode);
+    /// </code>
+    /// </example>
+    public static DataTable FillMissingValues(DataTable dataTable, string columnName, FillMethod fillMethod)
+    {
+        ArgumentNullException.ThrowIfNull(dataTable);
+
+        if (!dataTable.Columns.Contains(columnName))
+            throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
+
+        var result = dataTable.Copy();
+        var column = result.Columns[columnName]!;
+
+        switch (fillMethod)
+        {
+            case FillMethod.Previous:
+                FillWithPrevious(result, column);
+                break;
+            case FillMethod.Next:
+                FillWithNext(result, column);
+                break;
+            case FillMethod.Mean:
+                FillWithMean(result, column);
+                break;
+            case FillMethod.Median:
+                FillWithMedian(result, column);
+                break;
+            case FillMethod.Mode:
+                FillWithMode(result, column);
+                break;
         }
 
         return result;
@@ -1690,6 +1971,127 @@ public static partial class DataTableHelper
 
     #region 私有辅助方法
 
+    /// <summary>
+    /// 将 <see cref="JsonElement"/> 转换为 CLR 对象，保留原始类型。
+    /// </summary>
+    /// <param name="element">需要转换的 <see cref="JsonElement"/>。</param>
+    /// <returns>转换后的对象；若值为 null 则返回 <see cref="DBNull.Value"/>。</returns>
+    private static object ConvertJsonElementToObject(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.Number => element.TryGetInt64(out var longVal) ? longVal : element.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.String => (object?)element.GetString() ?? DBNull.Value,
+            JsonValueKind.Null => DBNull.Value,
+            _ => element.ToString()
+        };
+    }
+
+    private static void FillWithPrevious(DataTable table, DataColumn column)
+    {
+        object lastValue = DBNull.Value;
+        for (int i = 0; i < table.Rows.Count; i++)
+        {
+            if (IsCellNullOrEmpty(table.Rows[i][column]))
+            {
+                if (lastValue != DBNull.Value)
+                    table.Rows[i][column] = lastValue;
+            }
+            else
+            {
+                lastValue = table.Rows[i][column];
+            }
+        }
+    }
+
+    private static void FillWithNext(DataTable table, DataColumn column)
+    {
+        object nextValue = DBNull.Value;
+        for (int i = table.Rows.Count - 1; i >= 0; i--)
+        {
+            if (IsCellNullOrEmpty(table.Rows[i][column]))
+            {
+                if (nextValue != DBNull.Value)
+                    table.Rows[i][column] = nextValue;
+            }
+            else
+            {
+                nextValue = table.Rows[i][column];
+            }
+        }
+    }
+
+    private static void FillWithMean(DataTable table, DataColumn column)
+    {
+        var values = new List<double>();
+        foreach (DataRow row in table.Rows)
+        {
+            if (!IsCellNullOrEmpty(row[column]) && double.TryParse(row[column].ToString(), out var v))
+                values.Add(v);
+        }
+
+        if (values.Count == 0) return;
+        var mean = values.Average();
+
+        for (int i = 0; i < table.Rows.Count; i++)
+        {
+            if (IsCellNullOrEmpty(table.Rows[i][column]))
+                table.Rows[i][column] = mean;
+        }
+    }
+
+    private static void FillWithMedian(DataTable table, DataColumn column)
+    {
+        var values = new List<double>();
+        foreach (DataRow row in table.Rows)
+        {
+            if (!IsCellNullOrEmpty(row[column]) && double.TryParse(row[column].ToString(), out var v))
+                values.Add(v);
+        }
+
+        if (values.Count == 0) return;
+        values.Sort();
+        var median = values.Count % 2 == 1
+            ? values[values.Count / 2]
+            : (values[values.Count / 2 - 1] + values[values.Count / 2]) / 2.0;
+
+        for (int i = 0; i < table.Rows.Count; i++)
+        {
+            if (IsCellNullOrEmpty(table.Rows[i][column]))
+                table.Rows[i][column] = median;
+        }
+    }
+
+    private static void FillWithMode(DataTable table, DataColumn column)
+    {
+        var freq = new Dictionary<object, int>();
+        foreach (DataRow row in table.Rows)
+        {
+            if (IsCellNullOrEmpty(row[column])) continue;
+            var key = row[column];
+            freq[key] = freq.TryGetValue(key, out var c) ? c + 1 : 1;
+        }
+
+        if (freq.Count == 0) return;
+        var mode = freq.OrderByDescending(kv => kv.Value).First().Key;
+
+        for (int i = 0; i < table.Rows.Count; i++)
+        {
+            if (IsCellNullOrEmpty(table.Rows[i][column]))
+                table.Rows[i][column] = mode;
+        }
+    }
+
+    /// <summary>
+    /// 判断单元格值是否为 null、<see cref="DBNull"/> 或空白字符串。
+    /// </summary>
+    private static bool IsCellNullOrEmpty(object value)
+    {
+        return value == null || value == DBNull.Value || (value is string s && string.IsNullOrWhiteSpace(s));
+    }
+
     private static object DefaultSumAggregate(IEnumerable<object> values)
     {
         var numericValues = values
@@ -2065,6 +2467,54 @@ public static partial class DataTableHelper
         return orderedRows ?? rows;
     }
 
+    /// <summary>
+    /// 安全地将值转换为目标类型，处理 <see cref="DBNull"/>、可空类型及常见类型转换。
+    /// 若转换失败则返回目标类型的默认值。
+    /// </summary>
+    /// <param name="value">要转换的原始值。</param>
+    /// <param name="targetType">目标类型。</param>
+    /// <returns>转换后的值；若转换失败则返回目标类型的默认值。</returns>
+    private static object ConvertValueSafe(object value, Type targetType)
+    {
+        try
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return targetType.IsValueType && Nullable.GetUnderlyingType(targetType) == null
+                    ? Activator.CreateInstance(targetType)
+                    : null;
+            }
+
+            var underlyingType = Nullable.GetUnderlyingType(targetType);
+            if (underlyingType != null)
+                targetType = underlyingType;
+
+            if (targetType == typeof(string))
+                return value.ToString();
+
+            if (targetType == typeof(DateTime))
+                return Convert.ToDateTime(value);
+
+            if (targetType == typeof(bool))
+                return Convert.ToBoolean(value);
+
+            if (targetType == typeof(Guid))
+                return Guid.Parse(value.ToString());
+
+            if (targetType == typeof(decimal))
+                return Convert.ToDecimal(value);
+
+            if (targetType.IsEnum)
+                return Enum.Parse(targetType, value.ToString());
+
+            return Convert.ChangeType(value, targetType);
+        }
+        catch
+        {
+            return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+        }
+    }
+
     #endregion
 }
 
@@ -2227,6 +2677,23 @@ public class DataValidationResult
     /// 错误信息列表。
     /// </summary>
     public List<string> Errors { get; set; } = new();
+}
+
+/// <summary>
+/// 填充缺失值的策略。
+/// </summary>
+public enum FillMethod
+{
+    /// <summary>使用前一个非空值填充。</summary>
+    Previous,
+    /// <summary>使用后一个非空值填充。</summary>
+    Next,
+    /// <summary>使用平均值填充（仅数值列）。</summary>
+    Mean,
+    /// <summary>使用中位数填充（仅数值列）。</summary>
+    Median,
+    /// <summary>使用众数填充。</summary>
+    Mode
 }
 
 /// <summary>

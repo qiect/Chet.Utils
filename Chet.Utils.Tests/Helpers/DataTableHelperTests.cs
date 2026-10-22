@@ -1,8 +1,8 @@
+using Chet.Utils.Helpers;
 using System.Data;
-using System.Text.Json;
 using Xunit;
 
-namespace Chet.Utils.Helpers.Tests
+namespace Chet.Utils.Tests.Helpers
 {
     public class DataTableHelperTests
     {
@@ -252,7 +252,7 @@ namespace Chet.Utils.Helpers.Tests
         [Fact]
         public void Pivot_NullDataTable_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 DataTableHelper.Pivot(null!, "Year", "Product", "Amount"));
         }
 
@@ -261,7 +261,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateSalesDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.Pivot(dt, "NonExistent", "Product", "Amount"));
         }
 
@@ -270,7 +270,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateSalesDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.Pivot(dt, "Year", "NonExistent", "Amount"));
         }
 
@@ -279,7 +279,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateSalesDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.Pivot(dt, "Year", "Product", "NonExistent"));
         }
 
@@ -383,7 +383,7 @@ namespace Chet.Utils.Helpers.Tests
         [Fact]
         public void CalculateStatistics_NullDataTable_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 DataTableHelper.CalculateStatistics(null!, "Age"));
         }
 
@@ -392,7 +392,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateTestDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.CalculateStatistics(dt, "NonExistent"));
         }
 
@@ -421,7 +421,7 @@ namespace Chet.Utils.Helpers.Tests
         [Fact]
         public void AnalyzeDistribution_NullDataTable_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 DataTableHelper.AnalyzeDistribution(null!, "Age"));
         }
 
@@ -430,7 +430,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateTestDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.AnalyzeDistribution(dt, "NonExistent"));
         }
 
@@ -472,7 +472,7 @@ namespace Chet.Utils.Helpers.Tests
         [Fact]
         public void CalculateCorrelation_NullDataTable_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 DataTableHelper.CalculateCorrelation(null!, "X", "Y"));
         }
 
@@ -481,7 +481,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateTestDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.CalculateCorrelation(dt, "NonExistent", "Age"));
         }
 
@@ -716,7 +716,7 @@ namespace Chet.Utils.Helpers.Tests
         [Fact]
         public void DetectOutliers_NullDataTable_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 DataTableHelper.DetectOutliers(null!, "Value"));
         }
 
@@ -725,7 +725,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var dt = CreateTestDataTable();
 
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 DataTableHelper.DetectOutliers(dt, "NonExistent"));
         }
 
@@ -811,7 +811,7 @@ namespace Chet.Utils.Helpers.Tests
         {
             var rightTable = new DataTable();
 
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 DataTableHelper.InnerJoin(null!, rightTable, "Id", "UserId"));
         }
 

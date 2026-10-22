@@ -1,8 +1,8 @@
-using System.Diagnostics;
+using Chet.Utils.Helpers;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace Chet.Utils.Helpers.Tests;
+namespace Chet.Utils.Tests.Helpers;
 
 public class ApplicationHelperTests
 {

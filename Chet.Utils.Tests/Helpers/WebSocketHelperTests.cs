@@ -1,6 +1,6 @@
+using Chet.Utils.Helpers;
 using System.Net.WebSockets;
 using System.Text;
-using Chet.Utils.Helpers;
 using Xunit;
 
 namespace Chet.Utils.Tests.Helpers

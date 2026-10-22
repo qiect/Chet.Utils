@@ -11,12 +11,12 @@ description: "DataTableHelper 是一个静态帮助类，为 DataTable 提供了
 
 ## 主要特性
 
-- 🔄 数据转换（动态对象、JSON 转 DataTable、列名映射）
+- 🔄 数据转换（动态对象、JSON 转 DataTable、列名映射、实体映射）
 - 📊 数据透视（透视表、高级透视、分组聚合）
 - 📈 数据分析（统计计算、分布分析、相关性分析）
 - 📤 数据导出（HTML、Excel XML、Markdown）
-- 🧹 数据清洗（验证、清洗、填充缺失值、异常值检测）
-- 🔗 数据连接（内连接、左连接、全连接、交叉连接）
+- 🧹 数据清洗（验证、清洗、填充缺失值、异常值检测、去重）
+- 🔗 数据连接（内连接、左连接、全连接、交叉连接、垂直合并、水平合并）
 - 🔍 高级查询（SQL 风格查询、全文搜索、正则筛选）
 
 ## 类定义
@@ -44,14 +44,16 @@ public static List<dynamic> ToDynamicList(DataTable dataTable)
 
 ### ToDataTableFromJson
 
-将 JSON 字符串转换为 DataTable。
+将 JSON 字符串转换为 DataTable。提供两个重载：
 
 ```csharp
 public static DataTable ToDataTableFromJson(string json)
+public static DataTable ToDataTableFromJson(string json, bool preserveTypes)
 ```
 
 **参数：**
 - `json`: JSON 字符串，必须是对象数组格式
+- `preserveTypes`: 是否保留 JSON 值的原始类型。`true` 时列类型为 `object`，值保留为 long、double、bool、DateTime 等；`false` 时列类型为 `string`，所有值转为字符串。无参重载默认为 `false`
 
 **返回值：** 转换后的 DataTable
 
@@ -67,12 +69,80 @@ public static DataTable MapColumns(DataTable dataTable, Dictionary<string, strin
 - `dataTable`: 源 DataTable
 - `columnMappings`: 列映射字典（原列名 -> 新列名）
 
+**返回值：** 映射后的新 DataTable（原表不变）
+
 ### ToDataTableFromObjects
 
 将对象列表转换为 DataTable。
 
 ```csharp
 public static DataTable ToDataTableFromObjects<T>(IEnumerable<T> objects, string tableName = null)
+```
+
+**参数：**
+- `objects`: 对象列表
+- `tableName`: 表名，默认为类型名称
+
+**返回值：** 转换后的 DataTable
+
+### MapToEntityList\<T\>
+
+将 DataTable 中的数据映射为指定类型的实体对象列表。映射关系通过字段映射字典指定，仅处理 DataTable 中存在且目标类型中也存在的属性。
+
+```csharp
+public static List<T> MapToEntityList<T>(DataTable dataTable, Dictionary<string, string> fieldMapping) where T : new()
+```
+
+**参数：**
+- `dataTable`: 源数据表，包含待转换的行数据
+- `fieldMapping`: 字段映射字典，键为 DataTable 列名，值为目标类型的属性名
+
+**返回值：** 转换后的实体对象列表
+
+**泛型约束：**
+- `T`: 目标实体类型，必须具有无参构造函数
+
+**行为说明：**
+- 自动过滤出有效的映射关系：源列存在且目标属性也存在
+- 如果没有有效的映射关系，返回空列表并输出警告
+- 自动处理 DBNull 值，跳过空值
+- 安全类型转换，支持可空类型、string、DateTime、bool、Guid、decimal、Enum 及通用类型转换
+- 转换失败时返回目标类型的默认值
+- 单行处理出错时记录日志但继续处理其他行
+
+**示例：**
+
+```csharp
+using Chet.Utils.Helpers;
+using System.Data;
+
+// 定义目标实体类型
+public class UserDto
+{
+    public string UserName { get; set; }
+    public int UserAge { get; set; }
+    public string UserCity { get; set; }
+}
+
+// 创建 DataTable
+var table = new DataTable();
+table.Columns.Add("name", typeof(string));
+table.Columns.Add("age", typeof(int));
+table.Columns.Add("city", typeof(string));
+
+table.Rows.Add("张三", 25, "北京");
+table.Rows.Add("李四", 30, "上海");
+
+// 定义字段映射（DataTable 列名 → 实体属性名）
+var mapping = new Dictionary<string, string>
+{
+    ["name"] = "UserName",
+    ["age"] = "UserAge",
+    ["city"] = "UserCity"
+};
+
+// 映射为实体列表
+List<UserDto> users = DataTableHelper.MapToEntityList<UserDto>(table, mapping);
 ```
 
 ---
@@ -131,18 +201,33 @@ public static DataTable GroupByAdvanced(
 计算数值列的统计信息。
 
 ```csharp
-public static Dictionary<string, double> CalculateStatistics(DataTable dataTable, string columnName)
+public static DataStatistics CalculateStatistics(DataTable dataTable, string columnName)
 ```
 
-**返回值：** 包含 Mean、Median、Mode、Variance、StandardDeviation、Min、Max、Sum、Count 等统计值
+**返回值：** `DataStatistics` 对象，包含以下属性：
+- `Count`、`Sum`、`Average`、`Min`、`Max`：基本统计量
+- `Median`：中位数
+- `Mode`：众数（`double?`，无重复值时为 null）
+- `Variance`：样本方差
+- `StandardDeviation`：标准差
+- `Quartile1`、`Quartile3`：第一/三四分位数
+- `Range`：极差
+- `Skewness`：偏度（正值右偏，负值左偏）
+- `Kurtosis`：峰度（正值比正态更尖峭，负值更平坦）
 
 ### AnalyzeDistribution
 
-分析数据分布情况。
+分析指定列的数据分布情况。
 
 ```csharp
-public static Dictionary<string, int> AnalyzeDistribution(DataTable dataTable, string columnName, int bins = 10)
+public static DataDistribution AnalyzeDistribution(DataTable dataTable, string columnName, int binCount = 10)
 ```
+
+**返回值：** `DataDistribution` 对象，包含：
+- `Bins`：直方图分箱列表（`List<HistogramBin>`，每项含 `Min`、`Max`、`Count`、`Percentage`）
+- `Skewness`：偏度
+- `Kurtosis`：峰度
+- `Percentiles`：百分位数字典
 
 ### CalculateCorrelation
 
@@ -161,12 +246,18 @@ public static double CalculateCorrelation(DataTable dataTable, string column1, s
 将 DataTable 导出为 HTML 表格。
 
 ```csharp
-public static string ExportToHtml(DataTable dataTable, string tableId = null, string tableClass = null)
+public static string ExportToHtml(DataTable dataTable, string tableClass = "data-table", bool includeIndex = false, string tableId = null)
 ```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `tableClass`: CSS 类名，默认为 `"data-table"`
+- `includeIndex`: 是否包含行索引列，默认为 `false`
+- `tableId`: 表格 HTML id 属性，可选
 
 ### ExportToExcelXml
 
-将 DataTable 导出为 Excel XML 格式。
+将 DataTable 导出为 Excel XML 格式（可被 Excel 打开）。
 
 ```csharp
 public static string ExportToExcelXml(DataTable dataTable, string sheetName = "Sheet1")
@@ -177,8 +268,12 @@ public static string ExportToExcelXml(DataTable dataTable, string sheetName = "S
 将 DataTable 导出为 Markdown 表格格式。
 
 ```csharp
-public static string ExportToMarkdown(DataTable dataTable)
+public static string ExportToMarkdown(DataTable dataTable, bool includeIndex = false)
 ```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `includeIndex`: 是否包含行索引列，默认为 `false`
 
 ---
 
@@ -192,37 +287,110 @@ public static string ExportToMarkdown(DataTable dataTable)
 public static List<DataValidationResult> ValidateData(DataTable dataTable, Dictionary<string, Func<object, bool>> validationRules)
 ```
 
+**参数：**
+- `dataTable`: 源 DataTable
+- `validationRules`: 验证规则字典（列名 -> 验证函数）
+
+**返回值：** 验证结果列表，每项包含 `IsValid`、`RowIndex`、`ColumnName`、`Value`、`Errors`
+
 ### CleanData
 
-清洗数据（移除无效行）。
+按清洗规则清洗数据。
 
 ```csharp
-public static DataTable CleanData(DataTable dataTable, Func<DataRow, bool> predicate)
+public static DataTable CleanData(DataTable dataTable, Dictionary<string, Func<object, object>> cleaningRules)
+```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `cleaningRules`: 清洗规则字典（列名 -> 清洗函数，函数接收原始值返回清洗后的值）
+
+**返回值：** 清洗后的新 DataTable（原表不变）
+
+**示例：**
+
+```csharp
+var rules = new Dictionary<string, Func<object, object>>
+{
+    { "Name", value => value?.ToString().Trim() },
+    { "Phone", value => Regex.Replace(value?.ToString() ?? "", @"[^\d]", "") }
+};
+var cleanedDt = DataTableHelper.CleanData(usersDt, rules);
 ```
 
 ### FillMissingValues
 
-填充缺失值。
+填充缺失值，提供四个重载：
+
+**1. 自动填充所有列的缺失值：**
+
+```csharp
+public static DataTable FillMissingValues(DataTable dataTable)
+```
+
+填充策略：优先向下取第一个非空值，若下方均为空则沿用上方最近的非空值。返回新表，不修改原表。
+
+**2. 按自定义规则填充：**
+
+```csharp
+public static DataTable FillMissingValues(DataTable dataTable, Dictionary<string, Func<DataTable, int, object>> fillingRules)
+```
+
+**参数：**
+- `fillingRules`: 填充规则字典（列名 -> 填充函数，函数接收当前表和行索引，返回填充值）
+
+**3. 指定列用固定值填充：**
 
 ```csharp
 public static DataTable FillMissingValues(DataTable dataTable, string columnName, object fillValue)
+```
+
+**4. 指定列用策略填充：**
+
+```csharp
 public static DataTable FillMissingValues(DataTable dataTable, string columnName, FillMethod fillMethod)
 ```
 
 **FillMethod 枚举：**
 - `Previous`: 使用前一个非空值
 - `Next`: 使用后一个非空值
-- `Mean`: 使用平均值
-- `Median`: 使用中位数
+- `Mean`: 使用平均值（仅数值列）
+- `Median`: 使用中位数（仅数值列）
 - `Mode`: 使用众数
 
 ### DetectOutliers
 
-检测异常值（使用 IQR 方法）。
+检测数值列中的异常值。
 
 ```csharp
-public static List<int> DetectOutliers(DataTable dataTable, string columnName, double iqrMultiplier = 1.5)
+public static List<int> DetectOutliers(DataTable dataTable, string columnName, OutlierDetectionMethod method = OutlierDetectionMethod.IQR, double threshold = 1.5)
 ```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `columnName`: 列名
+- `method`: 检测方法，默认为 IQR
+- `threshold`: 阈值（IQR 方法默认 1.5，Z-Score 方法默认 3.0）
+
+**OutlierDetectionMethod 枚举：**
+- `IQR`: 四分位距方法，基于 Q1 - threshold×IQR 和 Q3 + threshold×IQR 检测
+- `ZScore`: Z 分数方法，基于数据点与均值的标准差倍数检测
+
+**返回值：** 包含异常值的行索引列表
+
+### RemoveDuplicates
+
+移除 DataTable 中的重复行。
+
+```csharp
+public static DataTable RemoveDuplicates(DataTable dataTable, string[] keyColumns = null)
+```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `keyColumns`: 用于判断重复的列名数组，`null` 表示所有列
+
+**返回值：** 去重后的新 DataTable（原表不变）
 
 ---
 
@@ -230,26 +398,29 @@ public static List<int> DetectOutliers(DataTable dataTable, string columnName, d
 
 ### InnerJoin
 
-内连接两个 DataTable。
+内连接两个 DataTable。支持单键和多键：
 
 ```csharp
-public static DataTable InnerJoin(DataTable left, DataTable right, string leftColumn, string rightColumn)
+public static DataTable InnerJoin(DataTable leftTable, DataTable rightTable, string leftKey, string rightKey)
+public static DataTable InnerJoin(DataTable leftTable, DataTable rightTable, string[] leftKeys, string[] rightKeys)
 ```
 
 ### LeftJoin
 
-左连接两个 DataTable。
+左连接两个 DataTable。支持单键和多键：
 
 ```csharp
-public static DataTable LeftJoin(DataTable left, DataTable right, string leftColumn, string rightColumn)
+public static DataTable LeftJoin(DataTable leftTable, DataTable rightTable, string leftKey, string rightKey)
+public static DataTable LeftJoin(DataTable leftTable, DataTable rightTable, string[] leftKeys, string[] rightKeys)
 ```
 
 ### FullJoin
 
-全连接两个 DataTable。
+全连接两个 DataTable。支持单键和多键：
 
 ```csharp
-public static DataTable FullJoin(DataTable left, DataTable right, string leftColumn, string rightColumn)
+public static DataTable FullJoin(DataTable leftTable, DataTable rightTable, string leftKey, string rightKey)
+public static DataTable FullJoin(DataTable leftTable, DataTable rightTable, string[] leftKeys, string[] rightKeys)
 ```
 
 ### CrossJoin
@@ -257,15 +428,15 @@ public static DataTable FullJoin(DataTable left, DataTable right, string leftCol
 交叉连接两个 DataTable。
 
 ```csharp
-public static DataTable CrossJoin(DataTable left, DataTable right)
+public static DataTable CrossJoin(DataTable leftTable, DataTable rightTable)
 ```
 
 ### UnionAll
 
-垂直合并多个 DataTable。
+垂直合并多个 DataTable（UNION ALL）。
 
 ```csharp
-public static DataTable UnionAll(params DataTable[] dataTables)
+public static DataTable UnionAll(params DataTable[] tables)
 ```
 
 ### MergeHorizontally
@@ -273,8 +444,13 @@ public static DataTable UnionAll(params DataTable[] dataTables)
 水平合并两个 DataTable。
 
 ```csharp
-public static DataTable MergeHorizontally(DataTable left, DataTable right)
+public static DataTable MergeHorizontally(DataTable leftTable, DataTable rightTable, string joinColumn = null)
 ```
+
+**参数：**
+- `leftTable`: 左表
+- `rightTable`: 右表
+- `joinColumn`: 连接列名（用于对齐行），可选。如果不指定，则按行索引对齐
 
 ---
 
@@ -285,24 +461,122 @@ public static DataTable MergeHorizontally(DataTable left, DataTable right)
 SQL 风格查询。
 
 ```csharp
-public static DataTable Query(DataTable dataTable, string whereClause = null, string orderBy = null, int? limit = null)
+public static DataTable Query(DataTable dataTable, string whereClause = null, string orderByClause = null, string[] selectColumns = null)
 ```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `whereClause`: WHERE 子句（如 `"Age > 18 AND City = 'Beijing'"`）
+- `orderByClause`: ORDER BY 子句（如 `"Age DESC, Name ASC"`）
+- `selectColumns`: SELECT 列名数组，`null` 表示选择所有列
 
 ### Search
 
 全文搜索。
 
 ```csharp
-public static DataTable Search(DataTable dataTable, string keyword, string[] searchColumns = null)
+public static DataTable Search(DataTable dataTable, string searchText, string[] searchColumns = null, bool caseSensitive = false)
 ```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `searchText`: 搜索文本
+- `searchColumns`: 搜索列名数组，`null` 表示搜索所有列
+- `caseSensitive`: 是否区分大小写，默认为 `false`
 
 ### RegexFilter
 
 正则表达式筛选。
 
 ```csharp
-public static DataTable RegexFilter(DataTable dataTable, string columnName, string pattern)
+public static DataTable RegexFilter(DataTable dataTable, string columnName, string pattern, RegexOptions options = RegexOptions.None)
 ```
+
+**参数：**
+- `dataTable`: 源 DataTable
+- `columnName`: 列名
+- `pattern`: 正则表达式模式
+- `options`: 正则表达式选项，默认为 `None`
+
+---
+
+## 辅助类型
+
+### DataStatistics
+
+统计信息结果类，由 `CalculateStatistics` 返回。
+
+| 属性 | 类型 | 说明 |
+|---|---|---|
+| `Count` | `int` | 数据总数 |
+| `Sum` | `double` | 总和 |
+| `Average` | `double` | 平均值 |
+| `Min` | `double` | 最小值 |
+| `Max` | `double` | 最大值 |
+| `Median` | `double` | 中位数 |
+| `Mode` | `double?` | 众数（无重复值时为 null） |
+| `Variance` | `double` | 样本方差 |
+| `StandardDeviation` | `double` | 标准差 |
+| `Quartile1` | `double` | 第一四分位数（Q1） |
+| `Quartile3` | `double` | 第三四分位数（Q3） |
+| `Range` | `double` | 极差 |
+| `Skewness` | `double` | 偏度 |
+| `Kurtosis` | `double` | 峰度 |
+
+### DataDistribution
+
+数据分布信息类，由 `AnalyzeDistribution` 返回。
+
+| 属性 | 类型 | 说明 |
+|---|---|---|
+| `Bins` | `List<HistogramBin>` | 直方图分箱列表 |
+| `Skewness` | `double` | 偏度 |
+| `Kurtosis` | `double` | 峰度 |
+| `Percentiles` | `Dictionary<int, double>` | 百分位数字典 |
+
+### HistogramBin
+
+直方图分箱，表示数据分布直方图中的一个区间。
+
+| 属性 | 类型 | 说明 |
+|---|---|---|
+| `Min` | `double` | 区间最小值 |
+| `Max` | `double` | 区间最大值 |
+| `Count` | `int` | 区间内数据数量 |
+| `Percentage` | `double` | 区间内数据占总数的百分比 |
+
+### DataValidationResult
+
+数据验证结果，由 `ValidateData` 返回。
+
+| 属性 | 类型 | 说明 |
+|---|---|---|
+| `IsValid` | `bool` | 是否验证通过 |
+| `RowIndex` | `int` | 行索引（从 0 开始） |
+| `ColumnName` | `string` | 列名 |
+| `Value` | `object` | 原始值 |
+| `Errors` | `List<string>` | 错误信息列表 |
+
+### FillMethod 枚举
+
+填充缺失值的策略。
+
+| 值 | 说明 |
+|---|---|
+| `Previous` | 使用前一个非空值填充 |
+| `Next` | 使用后一个非空值填充 |
+| `Mean` | 使用平均值填充（仅数值列） |
+| `Median` | 使用中位数填充（仅数值列） |
+| `Mode` | 使用众数填充 |
+
+### OutlierDetectionMethod 枚举
+
+异常值检测方法。
+
+| 值 | 说明 |
+|---|---|
+| `IQR` | 四分位距方法，基于 Q1 - threshold×IQR 和 Q3 + threshold×IQR 检测 |
+| `ZScore` | Z 分数方法，基于数据点与均值的标准差倍数检测 |
 
 ---
 
@@ -336,47 +610,91 @@ var pivotTable = DataTableHelper.Pivot(
 ```csharp
 // 计算统计信息
 var stats = DataTableHelper.CalculateStatistics(salesDt, "Amount");
-Console.WriteLine($"平均值: {stats["Mean"]}");
-Console.WriteLine($"标准差: {stats["StandardDeviation"]}");
-Console.WriteLine($"最小值: {stats["Min"]}");
-Console.WriteLine($"最大值: {stats["Max"]}");
+Console.WriteLine($"平均值: {stats.Average}");
+Console.WriteLine($"标准差: {stats.StandardDeviation}");
+Console.WriteLine($"最小值: {stats.Min}");
+Console.WriteLine($"最大值: {stats.Max}");
 
-// 检测异常值
-var outlierRows = DataTableHelper.DetectOutliers(salesDt, "Amount");
-Console.WriteLine($"发现 {outlierRows.Count} 个异常值");
+// 分析分布
+var distribution = DataTableHelper.AnalyzeDistribution(salesDt, "Amount", 5);
+foreach (var bin in distribution.Bins)
+{
+    Console.WriteLine($"[{bin.Min:F2} - {bin.Max:F2}]: {bin.Count} ({bin.Percentage:F1}%)");
+}
+
+// 检测异常值（IQR 方法）
+var outliers = DataTableHelper.DetectOutliers(salesDt, "Amount");
+Console.WriteLine($"发现 {outliers.Count} 个异常值");
+
+// 检测异常值（Z-Score 方法）
+var zOutliers = DataTableHelper.DetectOutliers(salesDt, "Amount", OutlierDetectionMethod.ZScore, 2.5);
+```
+
+### 数据清洗示例
+
+```csharp
+// 清洗数据
+var rules = new Dictionary<string, Func<object, object>>
+{
+    { "Name", value => value?.ToString().Trim() },
+    { "Phone", value => Regex.Replace(value?.ToString() ?? "", @"[^\d]", "") }
+};
+var cleanedDt = DataTableHelper.CleanData(usersDt, rules);
+
+// 填充缺失值
+var filledDt = DataTableHelper.FillMissingValues(usersDt);                    // 自动填充
+var filledDt2 = DataTableHelper.FillMissingValues(usersDt, "Age", FillMethod.Mean); // 指定列用均值填充
+
+// 去重
+var distinctDt = DataTableHelper.RemoveDuplicates(usersDt);                   // 基于所有列
+var distinctDt2 = DataTableHelper.RemoveDuplicates(usersDt, new[] { "UserId" }); // 基于指定列
 ```
 
 ### 数据连接示例
 
 ```csharp
-// 内连接
-var joined = DataTableHelper.InnerJoin(
-    customersDt,
-    ordersDt,
-    "CustomerId",
-    "CustomerId"
-);
+// 内连接（单键）
+var joined = DataTableHelper.InnerJoin(ordersDt, customersDt, "CustomerId", "Id");
+
+// 内连接（多键）
+var joined = DataTableHelper.InnerJoin(ordersDt, customersDt, new[] { "CustId", "OrderId" }, new[] { "Id", "OrderId" });
 
 // 左连接
-var leftJoined = DataTableHelper.LeftJoin(
-    customersDt,
-    ordersDt,
-    "CustomerId",
-    "CustomerId"
-);
+var leftJoined = DataTableHelper.LeftJoin(customersDt, ordersDt, "CustomerId", "CustomerId");
+
+// 水平合并（按指定列对齐）
+var merged = DataTableHelper.MergeHorizontally(basicInfoDt, extendedInfoDt, "UserId");
 ```
 
 ### 数据导出示例
 
 ```csharp
 // 导出为 HTML
-string html = DataTableHelper.ExportToHtml(dataTable, "myTable", "table table-striped");
+string html = DataTableHelper.ExportToHtml(dataTable, "table table-striped", includeIndex: true, "myTable");
 
-// 导出为 Markdown
-string markdown = DataTableHelper.ExportToMarkdown(dataTable);
+// 导出为 Markdown（含行索引）
+string markdown = DataTableHelper.ExportToMarkdown(dataTable, includeIndex: true);
 
 // 导出为 Excel XML
 string excelXml = DataTableHelper.ExportToExcelXml(dataTable, "Sales Data");
+```
+
+### 高级查询示例
+
+```csharp
+// SQL 风格查询
+var result = DataTableHelper.Query(
+    usersDt,
+    "Age > 18 AND City = 'Beijing'",
+    "Age DESC, Name ASC",
+    new[] { "Name", "Age", "City" }
+);
+
+// 全文搜索（区分大小写）
+var searchResult = DataTableHelper.Search(usersDt, "张三", new[] { "Name", "Address" }, caseSensitive: true);
+
+// 正则筛选
+var regexResult = DataTableHelper.RegexFilter(usersDt, "Email", @"^[\w-\.]+@[\w-]+\.[a-z]{2,}$");
 ```
 
 ---
@@ -387,6 +705,8 @@ string excelXml = DataTableHelper.ExportToExcelXml(dataTable, "Sales Data");
 2. 基础功能请使用 DataTableExtensions 扩展方法。
 3. 大数据量操作时注意内存使用。
 4. 数据连接操作会创建新的 DataTable。
+5. `MapToEntityList` 要求目标类型具有无参构造函数，类型转换失败时返回目标类型的默认值。
+6. `FillMissingValues` 无参重载返回新 DataTable，不修改原表。
 
 ---
 

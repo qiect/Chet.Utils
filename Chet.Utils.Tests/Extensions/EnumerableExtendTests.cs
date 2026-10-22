@@ -9,15 +9,15 @@ namespace Chet.Utils.Tests.Extensions
         {
             IEnumerable<int> nullList = null;
             IEnumerable<int> emptyList = new List<int>();
-            Assert.True(nullList.IsNullOrEmpty());
-            Assert.True(emptyList.IsNullOrEmpty());
+            Assert.True(nullList.IsNullOrEmptySafe());
+            Assert.True(emptyList.IsNullOrEmptySafe());
         }
 
         [Fact]
         public void IsNullOrEmpty_IEnumerable_NotEmpty_ReturnsFalse()
         {
             IEnumerable<int> list = new List<int> { 1 };
-            Assert.False(list.IsNullOrEmpty());
+            Assert.False(list.IsNullOrEmptySafe());
         }
 
         [Fact]
@@ -351,8 +351,8 @@ namespace Chet.Utils.Tests.Extensions
         public void Chunk_NullOrInvalidSize_ReturnsEmpty()
         {
             IEnumerable<int> nullList = null;
-            var result1 = nullList.Chunk(2);
-            var result2 = new[] { 1, 2 }.Chunk(0);
+            var result1 = nullList.ChunkSafe(2);
+            var result2 = new[] { 1, 2 }.ChunkSafe(0);
             Assert.Empty(result1);
             Assert.Empty(result2);
         }
@@ -361,7 +361,7 @@ namespace Chet.Utils.Tests.Extensions
         public void Chunk_Valid_ReturnsChunks()
         {
             IEnumerable<int> list = new[] { 1, 2, 3, 4, 5 };
-            var result = list.Chunk(2).ToList();
+            var result = list.ChunkSafe(2).ToList();
             Assert.Equal(3, result.Count);
             Assert.Equal(new[] { 1, 2 }, result[0]);
             Assert.Equal(new[] { 3, 4 }, result[1]);
@@ -483,15 +483,15 @@ namespace Chet.Utils.Tests.Extensions
         {
             ICollection<int> nullCol = null;
             ICollection<int> emptyCol = new List<int>();
-            Assert.True(nullCol.IsNullOrEmpty());
-            Assert.True(emptyCol.IsNullOrEmpty());
+            Assert.True(nullCol.IsNullOrEmptySafe());
+            Assert.True(emptyCol.IsNullOrEmptySafe());
         }
 
         [Fact]
         public void IsNullOrEmpty_ICollection_NotEmpty_ReturnsFalse()
         {
             ICollection<int> col = new List<int> { 1 };
-            Assert.False(col.IsNullOrEmpty());
+            Assert.False(col.IsNullOrEmptySafe());
         }
 
         [Fact]

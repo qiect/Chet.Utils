@@ -12,7 +12,7 @@ namespace Chet.Utils;
 /// <remarks>
 /// <para>本类提供丰富的字符串扩展方法，涵盖以下功能：</para>
 /// <list type="bullet">
-///   <item><description>空值判断：IsNullOrEmpty、IsNullOrWhiteSpace、IsNull</description></item>
+///   <item><description>空值判断：IsNullOrEmptySafe、IsNullOrWhiteSpaceSafe、IsNull</description></item>
 ///   <item><description>类型判断：IsNumeric、IsInt、IsDecimal、IsGuid、IsEmail、IsMobile 等</description></item>
 ///   <item><description>类型转换：ToInt、ToDecimal、ToDateTime、ToBool 等</description></item>
 ///   <item><description>编码解码：Base64、URL、HTML、MD5、SHA256 等</description></item>
@@ -35,33 +35,33 @@ public static class StringExtensions
     /// string str2 = "";
     /// string str3 = "hello";
     /// 
-    /// bool result1 = str1.IsNullOrEmpty(); // true
-    /// bool result2 = str2.IsNullOrEmpty(); // true
-    /// bool result3 = str3.IsNullOrEmpty(); // false
+    /// bool result1 = str1.IsNullOrEmptySafe(); // true
+    /// bool result2 = str2.IsNullOrEmptySafe(); // true
+    /// bool result3 = str3.IsNullOrEmptySafe(); // false
     /// </code>
     /// </example>
-    public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
+    public static bool IsNullOrEmptySafe(this string value) => string.IsNullOrEmpty(value);
 
     /// <summary>
     /// 判断字符串是否为 null 或仅包含空白字符。
     /// </summary>
     /// <param name="value">待判断的字符串。</param>
     /// <returns>如果字符串为 null 或仅包含空白字符，返回 true；否则返回 false。</returns>
-    public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
+    public static bool IsNullOrWhiteSpaceSafe(this string value) => string.IsNullOrWhiteSpace(value);
 
     /// <summary>
     /// 判断字符串是否不为空（非 null 且非空字符串）。
     /// </summary>
     /// <param name="value">待判断的字符串。</param>
     /// <returns>如果字符串不为 null 且不为空字符串，返回 true；否则返回 false。</returns>
-    public static bool IsNotNullOrEmpty(this string value) => !string.IsNullOrEmpty(value);
+    public static bool IsNotNullOrEmptySafe(this string value) => !string.IsNullOrEmpty(value);
 
     /// <summary>
     /// 判断字符串是否不为空白（非 null 且包含非空白字符）。
     /// </summary>
     /// <param name="value">待判断的字符串。</param>
     /// <returns>如果字符串不为 null 且包含非空白字符，返回 true；否则返回 false。</returns>
-    public static bool IsNotNullOrWhiteSpace(this string value) => !string.IsNullOrWhiteSpace(value);
+    public static bool IsNotNullOrWhiteSpaceSafe(this string value) => !string.IsNullOrWhiteSpace(value);
 
     /// <summary>
     /// 判断字符串是否为空（支持自定义空值判断）。
@@ -1008,7 +1008,7 @@ public static class StringExtensions
     /// </summary>
     /// <param name="value">待处理的字符串。</param>
     /// <returns>反转后的字符串。</returns>
-    public static string Reverse(this string value)
+    public static string ReverseSafe(this string value)
     {
         if (string.IsNullOrEmpty(value)) return string.Empty;
         var arr = value.ToCharArray();

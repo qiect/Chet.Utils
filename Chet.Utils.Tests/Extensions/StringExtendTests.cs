@@ -11,7 +11,7 @@ namespace Chet.Utils.Tests.Extensions
         public void IsNullOrEmpty_Test(string input, bool expected)
         {
             string str = null;
-            Assert.Equal(expected, input.IsNullOrEmpty());
+            Assert.Equal(expected, input.IsNullOrEmptySafe());
         }
 
         [Theory]
@@ -21,7 +21,7 @@ namespace Chet.Utils.Tests.Extensions
         [InlineData("abc", false)]
         public void IsNullOrWhiteSpace_Test(string input, bool expected)
         {
-            Assert.Equal(expected, input.IsNullOrWhiteSpace());
+            Assert.Equal(expected, input.IsNullOrWhiteSpaceSafe());
         }
 
         [Theory]
@@ -339,7 +339,7 @@ namespace Chet.Utils.Tests.Extensions
         [InlineData("", "")]
         public void Reverse_Test(string input, string expected)
         {
-            Assert.Equal(expected, input.Reverse());
+            Assert.Equal(expected, input.ReverseSafe());
         }
 
         [Theory]

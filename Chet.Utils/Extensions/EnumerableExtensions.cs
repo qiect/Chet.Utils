@@ -34,12 +34,12 @@ public static class EnumerableExtensions
     /// List&lt;int&gt; list2 = new List&lt;int&gt;();
     /// List&lt;int&gt; list3 = new List&lt;int&gt; { 1, 2, 3 };
     /// 
-    /// bool result1 = list1.IsNullOrEmpty(); // true
-    /// bool result2 = list2.IsNullOrEmpty(); // true
-    /// bool result3 = list3.IsNullOrEmpty(); // false
+    /// bool result1 = list1.IsNullOrEmptySafe(); // true
+    /// bool result2 = list2.IsNullOrEmptySafe(); // true
+    /// bool result3 = list3.IsNullOrEmptySafe(); // false
     /// </code>
     /// </example>
-    public static bool IsNullOrEmpty<T>(this IEnumerable<T> source) =>
+    public static bool IsNullOrEmptySafe<T>(this IEnumerable<T> source) =>
         source == null || !source.Any();
 
     /// <summary>
@@ -167,7 +167,7 @@ public static class EnumerableExtensions
     /// <param name="source">集合。</param>
     /// <param name="predicate">条件。</param>
     /// <returns>如果集合包含满足条件的元素返回 true；否则返回 false。</returns>
-    public static bool Contains<T>(this IEnumerable<T> source, Func<T, bool> predicate) =>
+    public static bool ContainsWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate) =>
         source != null && predicate != null && source.Any(predicate);
 
     /// <summary>
@@ -205,7 +205,7 @@ public static class EnumerableExtensions
     /// <param name="source">集合。</param>
     /// <param name="keySelector">键选择器。</param>
     /// <returns>去重后的集合。</returns>
-    public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static IEnumerable<TSource> DistinctBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     {
         if (source == null || keySelector == null) yield break;
         var seenKeys = new HashSet<TKey>();
@@ -465,7 +465,7 @@ public static class EnumerableExtensions
     /// <param name="source">集合。</param>
     /// <param name="keySelector">键选择器。</param>
     /// <returns>最大值对应的元素，如果集合为空则返回默认值。</returns>
-    public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static TSource MaxBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         where TKey : IComparable<TKey>
     {
         if (source == null || keySelector == null) return default;
@@ -496,7 +496,7 @@ public static class EnumerableExtensions
     /// <param name="source">集合。</param>
     /// <param name="keySelector">键选择器。</param>
     /// <returns>最小值对应的元素，如果集合为空则返回默认值。</returns>
-    public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static TSource MinBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         where TKey : IComparable<TKey>
     {
         if (source == null || keySelector == null) return default;
@@ -666,7 +666,7 @@ public static class EnumerableExtensions
     /// <typeparam name="T">元素类型。</typeparam>
     /// <param name="source">集合。</param>
     /// <param name="action">操作委托，参数为元素和索引。</param>
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
+    public static void ForEachIndexed<T>(this IEnumerable<T> source, Action<T, int> action)
     {
         if (source == null || action == null) return;
         int index = 0;
@@ -717,11 +717,11 @@ public static class EnumerableExtensions
     /// <example>
     /// <code>
     /// var list = Enumerable.Range(1, 10);
-    /// var chunks = list.Chunk(3);
+    /// var chunks = list.ChunkSafe(3);
     /// // 结果: [[1,2,3], [4,5,6], [7,8,9], [10]]
     /// </code>
     /// </example>
-    public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int size)
+    public static IEnumerable<IEnumerable<T>> ChunkSafe<T>(this IEnumerable<T> source, int size)
     {
         if (source == null || size <= 0) yield break;
         var chunk = new List<T>(size);
@@ -748,7 +748,7 @@ public static class EnumerableExtensions
     public static void Batch<T>(this IEnumerable<T> source, int batchSize, Action<IEnumerable<T>> action)
     {
         if (source == null || action == null || batchSize <= 0) return;
-        foreach (var batch in source.Chunk(batchSize))
+        foreach (var batch in source.ChunkSafe(batchSize))
         {
             action(batch);
         }
@@ -764,7 +764,7 @@ public static class EnumerableExtensions
     public static async Task BatchAsync<T>(this IEnumerable<T> source, int batchSize, Func<IEnumerable<T>, Task> action)
     {
         if (source == null || action == null || batchSize <= 0) return;
-        foreach (var batch in source.Chunk(batchSize))
+        foreach (var batch in source.ChunkSafe(batchSize))
         {
             await action(batch);
         }
@@ -924,7 +924,7 @@ public static class EnumerableExtensions
     /// <typeparam name="T">元素类型。</typeparam>
     /// <param name="collection">待判断的集合。</param>
     /// <returns>如果集合为 null 或不包含任何元素返回 true；否则返回 false。</returns>
-    public static bool IsNullOrEmpty<T>(this ICollection<T> collection) =>
+    public static bool IsNullOrEmptySafe<T>(this ICollection<T> collection) =>
         collection == null || collection.Count == 0;
 
     /// <summary>

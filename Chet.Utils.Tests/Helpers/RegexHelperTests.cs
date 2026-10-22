@@ -1,7 +1,8 @@
+using Chet.Utils.Helpers;
 using System.Text.RegularExpressions;
 using Xunit;
 
-namespace Chet.Utils.Helpers.Tests;
+namespace Chet.Utils.Tests.Helpers;
 
 public class RegexHelperTests
 {

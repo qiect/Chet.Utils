@@ -33,10 +33,10 @@ public static class DataTableExtensions
     /// <example>
     /// <code>
     /// DataTable dt = null;
-    /// var isEmpty = dt.IsNullOrEmpty(); // true
+    /// var isEmpty = dt.IsNullOrEmptySafe(); // true
     /// </code>
     /// </example>
-    public static bool IsNullOrEmpty(this DataTable dt) =>
+    public static bool IsNullOrEmptySafe(this DataTable dt) =>
         dt == null || dt.Rows.Count == 0;
 
     /// <summary>

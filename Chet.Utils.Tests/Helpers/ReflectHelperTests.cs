@@ -1,9 +1,9 @@
+using Chet.Utils.Helpers;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using Xunit;
 
-namespace Chet.Utils.Helpers.Tests;
+namespace Chet.Utils.Tests.Helpers;
 
 public class ReflectHelperTests
 {

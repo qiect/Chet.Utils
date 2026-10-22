@@ -10,8 +10,8 @@ namespace Chet.Utils.Tests.Extensions
         {
             DataTable dtNull = null;
             var dtEmpty = new DataTable();
-            Assert.True(dtNull.IsNullOrEmpty());
-            Assert.True(dtEmpty.IsNullOrEmpty());
+            Assert.True(dtNull.IsNullOrEmptySafe());
+            Assert.True(dtEmpty.IsNullOrEmptySafe());
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace Chet.Utils.Tests.Extensions
             var dt = new DataTable();
             dt.Columns.Add("A");
             dt.Rows.Add("1");
-            Assert.False(dt.IsNullOrEmpty());
+            Assert.False(dt.IsNullOrEmptySafe());
         }
 
         [Fact]

@@ -117,17 +117,17 @@ namespace Chet.Utils.Tests.Extensions
         public void HasFlag_AddFlag_RemoveFlag_Test()
         {
             var value = FlagEnum.A.AddFlag(FlagEnum.B);
-            Assert.True(value.HasFlag(FlagEnum.A));
-            Assert.True(value.HasFlag(FlagEnum.B));
-            Assert.False(value.HasFlag(FlagEnum.C));
+            Assert.True(value.HasFlagSafe(FlagEnum.A));
+            Assert.True(value.HasFlagSafe(FlagEnum.B));
+            Assert.False(value.HasFlagSafe(FlagEnum.C));
 
             value = value.AddFlag(FlagEnum.C);
-            Assert.True(value.HasFlag(FlagEnum.C));
+            Assert.True(value.HasFlagSafe(FlagEnum.C));
 
             value = value.RemoveFlag(FlagEnum.B);
-            Assert.False(value.HasFlag(FlagEnum.B));
-            Assert.True(value.HasFlag(FlagEnum.A));
-            Assert.True(value.HasFlag(FlagEnum.C));
+            Assert.False(value.HasFlagSafe(FlagEnum.B));
+            Assert.True(value.HasFlagSafe(FlagEnum.A));
+            Assert.True(value.HasFlagSafe(FlagEnum.C));
         }
 
         [Fact]

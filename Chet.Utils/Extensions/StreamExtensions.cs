@@ -58,14 +58,14 @@ public static class StreamExtensions
     /// </summary>
     /// <param name="stream">待判断的流。</param>
     /// <returns>如果流为空或长度为零返回 true；否则返回 false。</returns>
-    public static bool IsNullOrEmpty(this Stream stream) => stream == null || stream.Length == 0;
+    public static bool IsNullOrEmptySafe(this Stream stream) => stream == null || stream.Length == 0;
 
     /// <summary>
     /// 判断流是否不为空且长度大于零。
     /// </summary>
     /// <param name="stream">待判断的流。</param>
     /// <returns>如果流不为空且长度大于零返回 true；否则返回 false。</returns>
-    public static bool IsNotNullOrEmpty(this Stream stream) => stream != null && stream.Length > 0;
+    public static bool IsNotNullOrEmptySafe(this Stream stream) => stream != null && stream.Length > 0;
 
     /// <summary>
     /// 判断流是否为空流（Stream.Null）。

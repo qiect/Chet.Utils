@@ -1,7 +1,7 @@
-using System.Diagnostics;
+using Chet.Utils.Helpers;
 using Xunit;
 
-namespace Chet.Utils.Helpers.Tests;
+namespace Chet.Utils.Tests.Helpers;
 
 public class StopwatchHelperTests
 {

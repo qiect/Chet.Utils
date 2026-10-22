@@ -1,3 +1,4 @@
+using Chet.Utils.Helpers;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using Xunit;
 
-namespace Chet.Utils.Helpers.Tests
+namespace Chet.Utils.Tests.Helpers
 {
     public class HttpClientHelperTests
     {

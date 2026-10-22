@@ -761,11 +761,11 @@ public static class EnumExtensions
     /// enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
     /// 
     /// var perm = Permissions.Read | Permissions.Write;
-    /// var hasRead = perm.HasFlag(Permissions.Read); // true
-    /// var hasExecute = perm.HasFlag(Permissions.Execute); // false
+    /// var hasRead = perm.HasFlagSafe(Permissions.Read); // true
+    /// var hasExecute = perm.HasFlagSafe(Permissions.Execute); // false
     /// </code>
     /// </example>
-    public static bool HasFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum =>
+    public static bool HasFlagSafe<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum =>
         (Convert.ToInt64(value) & Convert.ToInt64(flag)) != 0;
 
     /// <summary>
