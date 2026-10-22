@@ -1,13 +1,13 @@
 ---
 title: "EnumerableExtensions"
-description: "为 IEnumerable&lt;T&gt; 和 ICollection&lt;T&gt; 类型提供了丰富的扩展方法，包括空值判断、安全操作、集合操作、分页排序、统计计算、集合转换、批量操作等功能，旨在简化集合处理，提高代码的安全性和可读性。"
+description: "为 IEnumerable<T> 和 ICollection<T> 类型提供了丰富的扩展方法，包括空值判断、安全操作、集合操作、分页排序、统计计算、集合转换、批量操作等功能，旨在简化集合处理，提高代码的安全性和可读性。"
 ---
 
 # EnumerableExtensions 扩展类文档
 
 ## 概述
 
-[EnumerableExtensions](../../Chet.Utils/Extensions/EnumerableExtensions.cs) 是一个静态扩展类，为 `IEnumerable&lt;T&gt;` 和 `ICollection&lt;T&gt;` 类型提供了丰富的扩展方法，包括空值判断、安全操作、集合操作、分页排序、统计计算、集合转换、批量操作等功能，旨在简化集合处理，提高代码的安全性和可读性，特别是用于处理可能为空的集合类型的日常操作场景。
+[EnumerableExtensions](../../Chet.Utils/Extensions/EnumerableExtensions.cs) 是一个静态扩展类，为 `IEnumerable<T>` 和 `ICollection<T>` 类型提供了丰富的扩展方法，包括空值判断、安全操作、集合操作、分页排序、统计计算、集合转换、批量操作等功能，旨在简化集合处理，提高代码的安全性和可读性，特别是用于处理可能为空的集合类型的日常操作场景。
 
 ## 主要功能模块
 
@@ -16,82 +16,82 @@ description: "为 IEnumerable&lt;T&gt; 和 ICollection&lt;T&gt; 类型提供了�
 提供对可枚举集合的各种安全操作方法。
 
 #### 状态判断方法
-- `IsNullOrEmpty&lt;T&gt;()` - 判断集合是否为 null 或空
-- `IsNotEmpty&lt;T&gt;()` - 判断集合是否不为空
-- `SafeCount&lt;T&gt;()` - 获取集合元素数量（安全）
-- `CountIf&lt;T&gt;(Func<T, bool> predicate)` - 获取集合元素数量（使用条件过滤）
+- `IsNullOrEmpty<T>()` - 判断集合是否为 null 或空
+- `IsNotEmpty<T>()` - 判断集合是否不为空
+- `SafeCount<T>()` - 获取集合元素数量（安全）
+- `CountIf<T>(Func<T, bool> predicate)` - 获取集合元素数量（使用条件过滤）
 
 #### 安全获取元素方法
-- `FirstOrDefaultSafe&lt;T&gt;()` - 获取集合的第一个元素，若为空则返回默认值
-- `FirstOrDefaultSafe&lt;T&gt;(Func<T, bool> predicate)` - 获取集合的第一个满足条件的元素
-- `LastOrDefaultSafe&lt;T&gt;()` - 获取集合的最后一个元素，若为空则返回默认值
-- `LastOrDefaultSafe&lt;T&gt;(Func<T, bool> predicate)` - 获取集合的最后一个满足条件的元素
-- `ElementAtOrDefaultSafe&lt;T&gt;(int index)` - 获取集合中指定索引的元素，若越界则返回默认值
-- `SingleOrDefaultSafe&lt;T&gt;()` - 获取集合的单个元素，若为空或包含多个元素则返回默认值
-- `SingleOrDefaultSafe&lt;T&gt;(Func<T, bool> predicate)` - 获取集合的单个满足条件的元素
+- `FirstOrDefaultSafe<T>()` - 获取集合的第一个元素，若为空则返回默认值
+- `FirstOrDefaultSafe<T>(Func<T, bool> predicate)` - 获取集合的第一个满足条件的元素
+- `LastOrDefaultSafe<T>()` - 获取集合的最后一个元素，若为空则返回默认值
+- `LastOrDefaultSafe<T>(Func<T, bool> predicate)` - 获取集合的最后一个满足条件的元素
+- `ElementAtOrDefaultSafe<T>(int index)` - 获取集合中指定索引的元素，若越界则返回默认值
+- `SingleOrDefaultSafe<T>()` - 获取集合的单个元素，若为空或包含多个元素则返回默认值
+- `SingleOrDefaultSafe<T>(Func<T, bool> predicate)` - 获取集合的单个满足条件的元素
 
 #### 集合操作方法
-- `ContainsSafe&lt;T&gt;(T item)` - 判断集合是否包含指定元素（支持 null 集合）
-- `Contains&lt;T&gt;(Func<T, bool> predicate)` - 判断集合是否包含满足指定条件的元素
-- `ToListSafe&lt;T&gt;()` - 将集合转换为 List（安全）
-- `ToArraySafe&lt;T&gt;()` - 将集合转换为数组（安全）
-- `DistinctSafe&lt;T&gt;()` - 集合去重（安全）
-- `DistinctBy&lt;TSource, TKey&gt;(Func&lt;TSource, TKey&gt; keySelector)` - 根据指定键去重
-- `WhereSafe&lt;T&gt;(Func<T, bool> predicate)` - 集合过滤（安全）
-- `SelectSafe&lt;TSource, TResult&gt;(Func&lt;TSource, TResult&gt; selector)` - 集合投影（安全）
-- `GroupBySafe&lt;TSource, TKey&gt;(Func&lt;TSource, TKey&gt; keySelector)` - 集合分组（安全）
-- `OrderBySafe&lt;TSource, TKey&gt;(Func&lt;TSource, TKey&gt; keySelector)` - 集合排序（安全）
-- `OrderByDescendingSafe&lt;TSource, TKey&gt;(Func&lt;TSource, TKey&gt; keySelector)` - 集合逆序排序（安全）
-- `ReverseSafe&lt;T&gt;()` - 集合反转（安全）
-- `Shuffle&lt;T&gt;()` - 集合随机排序（洗牌）
+- `ContainsSafe<T>(T item)` - 判断集合是否包含指定元素（支持 null 集合）
+- `Contains<T>(Func<T, bool> predicate)` - 判断集合是否包含满足指定条件的元素
+- `ToListSafe<T>()` - 将集合转换为 List（安全）
+- `ToArraySafe<T>()` - 将集合转换为数组（安全）
+- `DistinctSafe<T>()` - 集合去重（安全）
+- `DistinctBy<TSource, TKey>(Func<TSource, TKey> keySelector)` - 根据指定键去重
+- `WhereSafe<T>(Func<T, bool> predicate)` - 集合过滤（安全）
+- `SelectSafe<TSource, TResult>(Func<TSource, TResult> selector)` - 集合投影（安全）
+- `GroupBySafe<TSource, TKey>(Func<TSource, TKey> keySelector)` - 集合分组（安全）
+- `OrderBySafe<TSource, TKey>(Func<TSource, TKey> keySelector)` - 集合排序（安全）
+- `OrderByDescendingSafe<TSource, TKey>(Func<TSource, TKey> keySelector)` - 集合逆序排序（安全）
+- `ReverseSafe<T>()` - 集合反转（安全）
+- `Shuffle<T>()` - 集合随机排序（洗牌）
 
 #### 分页方法
-- `Page&lt;T&gt;(int pageIndex, int pageSize)` - 集合分页（安全）
-- `GetPaged&lt;T&gt;(int pageIndex, int pageSize)` - 获取分页信息（包含分页数据和分页信息）
+- `Page<T>(int pageIndex, int pageSize)` - 集合分页（安全）
+- `GetPaged<T>(int pageIndex, int pageSize)` - 获取分页信息（包含分页数据和分页信息）
 
 #### 统计方法
 - `SumSafe()` - 集合求和（安全）- 支持 int、double、decimal、float
 - `AverageSafe()` - 集合平均值（安全）- 支持 int、double、decimal、float
 - `MaxSafe()` - 集合最大值（安全）- 支持 int、double、decimal、float
 - `MinSafe()` - 集合最小值（安全）- 支持 int、double、decimal、float
-- `MaxBy&lt;TSource, TKey&gt;(Func&lt;TSource, TKey&gt; keySelector)` - 获取集合中最大值对应的元素
-- `MinBy&lt;TSource, TKey&gt;(Func&lt;TSource, TKey&gt; keySelector)` - 获取集合中最小值对应的元素
+- `MaxBy<TSource, TKey>(Func<TSource, TKey> keySelector)` - 获取集合中最大值对应的元素
+- `MinBy<TSource, TKey>(Func<TSource, TKey> keySelector)` - 获取集合中最小值对应的元素
 
 #### 批量操作方法
-- `ForEachSafe&lt;T&gt;(Action&lt;T&gt; action)` - 集合遍历执行操作（安全）
-- `ForEachAsync&lt;T&gt;(Func&lt;T, Task&gt; action)` - 集合遍历执行异步操作
-- `Chunk&lt;T&gt;(int size)` - 集合分块（按指定大小分组）
-- `Batch&lt;T&gt;(int batchSize)` - 集合分批（与 Chunk 类似）
+- `ForEachSafe<T>(Action<T> action)` - 集合遍历执行操作（安全）
+- `ForEachAsync<T>(Func<T, Task> action)` - 集合遍历执行异步操作
+- `Chunk<T>(int size)` - 集合分块（按指定大小分组）
+- `Batch<T>(int batchSize)` - 集合分批（与 Chunk 类似）
 
 #### 集合判断方法
-- `AllSafe&lt;T&gt;(Func<T, bool> predicate)` - 判断是否全部满足条件（安全）
-- `AnySafe&lt;T&gt;(Func<T, bool> predicate)` - 判断是否存在满足条件的元素（安全）
-- `SequenceEqualSafe&lt;T&gt;(IEnumerable&lt;T&gt; other)` - 判断两个集合是否相等（安全）
+- `AllSafe<T>(Func<T, bool> predicate)` - 判断是否全部满足条件（安全）
+- `AnySafe<T>(Func<T, bool> predicate)` - 判断是否存在满足条件的元素（安全）
+- `SequenceEqualSafe<T>(IEnumerable<T> other)` - 判断两个集合是否相等（安全）
 
 #### 集合转换方法
-- `ToDictionarySafe&lt;TSource, TKey, TValue&gt;(Func&lt;TSource, TKey&gt; keySelector, Func&lt;TSource, TValue&gt; valueSelector)` - 集合转换为字典（安全）
-- `ToHashSetSafe&lt;T&gt;()` - 集合转换为 HashSet（安全）
-- `ToDataTable&lt;T&gt;()` - IEnumerable 转换为 DataTable
-- `ToConcurrentDictionary&lt;TKey, TValue&gt;()` - IEnumerable&lt;KeyValuePair&gt; 转换为 ConcurrentDictionary
-- `ToConcurrentDictionary&lt;TSource, TKey, TValue&gt;(Func&lt;TSource, TKey&gt; keySelector, Func&lt;TSource, TValue&gt; valueSelector)` - IEnumerable 转换为 ConcurrentDictionary（自定义键值选择器）
+- `ToDictionarySafe<TSource, TKey, TValue>(Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)` - 集合转换为字典（安全）
+- `ToHashSetSafe<T>()` - 集合转换为 HashSet（安全）
+- `ToDataTable<T>()` - IEnumerable 转换为 DataTable
+- `ToConcurrentDictionary<TKey, TValue>()` - IEnumerable<KeyValuePair> 转换为 ConcurrentDictionary
+- `ToConcurrentDictionary<TSource, TKey, TValue>(Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)` - IEnumerable 转换为 ConcurrentDictionary（自定义键值选择器）
 
 #### 其他方法
-- `RemoveNulls&lt;T&gt;()` - 集合去除 null 元素
-- `Join&lt;T&gt;(string separator)` - 将集合元素连接为字符串
+- `RemoveNulls<T>()` - 集合去除 null 元素
+- `Join<T>(string separator)` - 将集合元素连接为字符串
 
 ### 2. ICollection 扩展方法
 
 提供对集合类型的安全操作方法。
 
 #### 状态判断方法
-- `IsNullOrEmpty&lt;T&gt;()` - 判断集合是否为 null 或空
+- `IsNullOrEmpty<T>()` - 判断集合是否为 null 或空
 
 #### 元素操作方法
-- `AddSafe&lt;T&gt;(T item)` - 安全添加元素到集合
-- `RemoveSafe&lt;T&gt;(T item)` - 安全移除元素
-- `ClearSafe&lt;T&gt;()` - 清空集合（安全）
-- `AddRangeSafe&lt;T&gt;(IEnumerable&lt;T&gt; items)` - 批量添加元素（安全）
-- `RemoveRangeSafe&lt;T&gt;(IEnumerable&lt;T&gt; items)` - 批量移除元素（安全）
+- `AddSafe<T>(T item)` - 安全添加元素到集合
+- `RemoveSafe<T>(T item)` - 安全移除元素
+- `ClearSafe<T>()` - 清空集合（安全）
+- `AddRangeSafe<T>(IEnumerable<T> items)` - 批量添加元素（安全）
+- `RemoveRangeSafe<T>(IEnumerable<T> items)` - 批量移除元素（安全）
 
 ---
 
@@ -573,9 +573,9 @@ list.AddRangeSafe(new[] { 3, 4, 5 });
 1. 所有方法都是扩展方法，需要通过集合实例调用
 2. 带有 "Safe" 后缀的方法对 null 值做了安全处理，不会抛出异常
 3. 大部分方法在集合为 null 时会返回空集合或默认值，而不是抛出异常
-4. `Page&lt;T&gt;()` 方法使用 0 作为起始页索引
-5. `ToDataTable&lt;T&gt;()` 方法基于反射实现，可能不支持某些字段映射
-6. `Chunk&lt;T&gt;()` 方法使用延迟执行，内存效率较高
+4. `Page<T>()` 方法使用 0 作为起始页索引
+5. `ToDataTable<T>()` 方法基于反射实现，可能不支持某些字段映射
+6. `Chunk<T>()` 方法使用延迟执行，内存效率较高
 7. 统计方法在集合为空时会返回默认值（通常为 0），而不是抛出异常
 8. 转换方法在选择器委托为 null 时，使用默认委托进行处理
 9. 集合操作方法都进行了空值有效性检查，使代码更健壮
