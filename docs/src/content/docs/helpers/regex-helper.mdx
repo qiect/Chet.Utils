@@ -19,7 +19,7 @@ description: "RegexHelper 是一个静态帮助类，为正则表达式操作提
 | `MobilePhonePattern` | 中国大陆手机号 | `^1[3-9]\d{9}$` |
 | `TelephonePattern` | 固定电话 | `^(\d{3,4}-)?\d{7,8}(-\d{1,4})?$` |
 | `IdCardPattern` | 身份证号码（15位或18位） | 18位含校验码 |
-| `UrlPattern` | URL地址 | `^(https?|ftp)://[^\s/$.?#].[^\s]*$` |
+| `UrlPattern` | URL地址 | `^(https?\|ftp)://[^\s/$.?#].[^\s]*$` |
 | `IPv4Pattern` | IPv4地址 | 标准 IPv4 格式 |
 | `IPv6Pattern` | IPv6地址 | 标准 IPv6 格式 |
 | `IntegerPattern` | 整数 | `^-?\d+$` |
@@ -31,9 +31,9 @@ description: "RegexHelper 是一个静态帮助类，为正则表达式操作提
 | `PostalCodePattern` | 中国邮政编码 | `^[1-9]\d{5}$` |
 | `BankCardPattern` | 银行卡号 | `^\d{16,19}$` |
 | `LicensePlatePattern` | 中国车牌号 | 含新能源车牌 |
-| `DatePattern` | 日期（yyyy-MM-dd） | `^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$` |
-| `TimePattern` | 时间（HH:mm:ss） | `^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$` |
-| `HexColorPattern` | 十六进制颜色 | `^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$` |
+| `DatePattern` | 日期（yyyy-MM-dd） | `^\d{4}-(0[1-9]\|1[0-2])-(0[1-9]\|[12]\d\|3[01])$` |
+| `TimePattern` | 时间（HH:mm:ss） | `^([01]\d\|2[0-3]):[0-5]\d:[0-5]\d$` |
+| `HexColorPattern` | 十六进制颜色 | `^#?([a-fA-F0-9]{6}\|[a-fA-F0-9]{3})$` |
 | `QQPattern` | QQ号 | `^[1-9]\d{4,10}$` |
 | `WeChatPattern` | 微信号 | `^[a-zA-Z][a-zA-Z0-9_-]{5,19}$` |
 | `UsernamePattern` | 用户名 | `^[a-zA-Z][a-zA-Z0-9_]{4,15}$` |

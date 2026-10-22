@@ -72,7 +72,7 @@ description: "为 IEnumerable<T> 和 ICollection<T> 类型提供了丰富的扩�
 - `ToDictionarySafe<TSource, TKey, TValue>(Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)` - 集合转换为字典（安全）
 - `ToHashSetSafe<T>()` - 集合转换为 HashSet（安全）
 - `ToDataTable<T>()` - IEnumerable 转换为 DataTable
-- `ToConcurrentDictionary<TKey, TValue>()` - IEnumerable<KeyValuePair> 转换为 ConcurrentDictionary
+- `ToConcurrentDictionary<TKey, TValue>()` - `IEnumerable<KeyValuePair>` 转换为 ConcurrentDictionary
 - `ToConcurrentDictionary<TSource, TKey, TValue>(Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)` - IEnumerable 转换为 ConcurrentDictionary（自定义键值选择器）
 
 #### 其他方法
