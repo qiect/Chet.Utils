@@ -253,7 +253,7 @@ public static class DataTableExtensions
     /// DataTable 按条件筛选，返回新 DataTable。
     /// </summary>
     /// <param name="dt">待筛选的 DataTable。</param>
-    /// <param name="filter">筛选表达式，如 "Age &gt; 18 AND Name LIKE '张%'"。</param>
+    /// <param name="filter">筛选表达式，如 "Age > 18 AND Name LIKE '张%'"。</param>
     /// <returns>筛选后的新 DataTable。</returns>
     public static DataTable Filter(this DataTable dt, string filter)
     {

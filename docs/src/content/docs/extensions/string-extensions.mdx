@@ -1254,7 +1254,7 @@ public static string HtmlEncode(this string value)
 
 **示例：**
 ```csharp
-"<div>Test</div>".HtmlEncode(); // "&lt;div&gt;Test&lt;/div&gt;"
+"<div>Test</div>".HtmlEncode(); // "<div>Test</div>"
 ```
 
 #### HtmlDecode
@@ -1266,7 +1266,7 @@ public static string HtmlDecode(this string value)
 
 **示例：**
 ```csharp
-"&lt;div&gt;Test&lt;/div&gt;".HtmlDecode(); // "<div>Test</div>"
+"<div>Test</div>".HtmlDecode(); // "<div>Test</div>"
 ```
 
 ---

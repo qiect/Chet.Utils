@@ -258,8 +258,8 @@ public static class EnumExtensions
     /// <code>
     /// enum Status { Active, Inactive }
     /// 
-    /// var status = "Active".Parse&lt;Status&gt;(); // Status.Active
-    /// var status2 = "active".Parse&lt;Status&gt;(); // Status.Active (忽略大小写)
+    /// var status = "Active".Parse<Status>(); // Status.Active
+    /// var status2 = "active".Parse<Status>(); // Status.Active (忽略大小写)
     /// var status3 = "invalid".Parse(Status.Inactive); // Status.Inactive (默认值)
     /// </code>
     /// </example>
@@ -284,7 +284,7 @@ public static class EnumExtensions
     /// <code>
     /// enum Status { Active, Inactive }
     /// 
-    /// if ("Active".TryParse&lt;Status&gt;(out var status))
+    /// if ("Active".TryParse<Status>(out var status))
     /// {
     ///     Console.WriteLine(status); // Status.Active
     /// }
@@ -310,8 +310,8 @@ public static class EnumExtensions
     /// <code>
     /// enum Status { Active, Inactive }
     /// 
-    /// var status = "Active".ParseExact&lt;Status&gt;(); // Status.Active
-    /// var status2 = "invalid".ParseExact&lt;Status&gt;(); // 抛出 ArgumentException
+    /// var status = "Active".ParseExact<Status>(); // Status.Active
+    /// var status2 = "invalid".ParseExact<Status>(); // 抛出 ArgumentException
     /// </code>
     /// </example>
     public static TEnum ParseExact<TEnum>(this string value, bool ignoreCase = true) where TEnum : struct, Enum
@@ -336,7 +336,7 @@ public static class EnumExtensions
     /// <code>
     /// enum Status { Active = 1, Inactive = 2 }
     /// 
-    /// var status = 1.ToEnum&lt;Status&gt;(); // Status.Active
+    /// var status = 1.ToEnum<Status>(); // Status.Active
     /// var status2 = 999.ToEnum(Status.Inactive); // Status.Inactive (默认值)
     /// </code>
     /// </example>
@@ -494,7 +494,7 @@ public static class EnumExtensions
     ///     Inactive = 2
     /// }
     /// 
-    /// var status = "激活状态".FromDescription&lt;Status&gt;(); // Status.Active
+    /// var status = "激活状态".FromDescription<Status>(); // Status.Active
     /// </code>
     /// </example>
     public static TEnum FromDescription<TEnum>(this string description, TEnum defaultValue = default) where TEnum : struct, Enum
@@ -583,7 +583,7 @@ public static class EnumExtensions
     /// }
     /// 
     /// var status = Status.Active;
-    /// var colorAttr = status.GetAttribute&lt;ColorAttribute, Status&gt;();
+    /// var colorAttr = status.GetAttribute<ColorAttribute, Status>();
     /// Console.WriteLine(colorAttr?.Color); // "green"
     /// </code>
     /// </example>
@@ -638,7 +638,7 @@ public static class EnumExtensions
     /// <code>
     /// enum Status { Active = 1, Inactive = 2 }
     /// 
-    /// var values = EnumExtensions.GetValues&lt;Status&gt;();
+    /// var values = EnumExtensions.GetValues<Status>();
     /// // [Status.Active, Status.Inactive]
     /// </code>
     /// </example>
@@ -654,7 +654,7 @@ public static class EnumExtensions
     /// <code>
     /// enum Status { Active = 1, Inactive = 2 }
     /// 
-    /// var names = EnumExtensions.GetNames&lt;Status&gt;();
+    /// var names = EnumExtensions.GetNames<Status>();
     /// // ["Active", "Inactive"]
     /// </code>
     /// </example>
@@ -676,7 +676,7 @@ public static class EnumExtensions
     ///     Inactive = 2
     /// }
     /// 
-    /// var dict = EnumExtensions.GetValueDescriptionDict&lt;Status&gt;();
+    /// var dict = EnumExtensions.GetValueDescriptionDict<Status>();
     /// // { Status.Active: "激活状态", Status.Inactive: "停用状态" }
     /// </code>
     /// </example>

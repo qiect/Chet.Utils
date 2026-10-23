@@ -30,9 +30,9 @@ public static class EnumerableExtensions
     /// <returns>如果集合为 null 或不包含任何元素，返回 true；否则返回 false。</returns>
     /// <example>
     /// <code>
-    /// List&lt;int&gt; list1 = null;
-    /// List&lt;int&gt; list2 = new List&lt;int&gt;();
-    /// List&lt;int&gt; list3 = new List&lt;int&gt; { 1, 2, 3 };
+    /// List<int> list1 = null;
+    /// List<int> list2 = new List<int>();
+    /// List<int> list3 = new List<int> { 1, 2, 3 };
     /// 
     /// bool result1 = list1.IsNullOrEmptySafe(); // true
     /// bool result2 = list2.IsNullOrEmptySafe(); // true
@@ -581,7 +581,7 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// IEnumerable&lt;KeyValuePair&gt; 转为 ConcurrentDictionary。
+    /// IEnumerable<KeyValuePair> 转为 ConcurrentDictionary。
     /// </summary>
     /// <typeparam name="TKey">键类型。</typeparam>
     /// <typeparam name="TValue">值类型。</typeparam>

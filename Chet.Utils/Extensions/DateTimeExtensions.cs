@@ -91,7 +91,7 @@ public static class DateTimeExtensions
     public static bool IsTomorrow(this DateTime dt) => dt.Date == DateTime.Today.AddDays(1);
 
     /// <summary>
-    /// 判断 DateTime 是否为 null 或默认值（针对 Nullable&lt;DateTime&gt;）。
+    /// 判断 DateTime 是否为 null 或默认值（针对 Nullable<DateTime>）。
     /// </summary>
     /// <param name="dt">待判断的可空 DateTime。</param>
     /// <returns>如果 DateTime 为 null 或等于默认值，返回 true；否则返回 false。</returns>

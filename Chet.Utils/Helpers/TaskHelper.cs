@@ -196,7 +196,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">exception 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var failedTask = TaskHelper.FromException&lt;int&gt;(new InvalidOperationException("Error"));
+    /// var failedTask = TaskHelper.FromException<int>(new InvalidOperationException("Error"));
     /// </code>
     /// </example>
     public static Task<T> FromException<T>(Exception exception)
@@ -226,7 +226,7 @@ public static partial class TaskHelper
     /// <returns>已取消的任务实例。</returns>
     /// <example>
     /// <code>
-    /// var canceledTask = TaskHelper.FromCanceled&lt;int&gt;();
+    /// var canceledTask = TaskHelper.FromCanceled<int>();
     /// </code>
     /// </example>
     public static Task<T> FromCanceled<T>()
@@ -282,7 +282,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">tasks 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var tasks = new List&lt;Task&lt;int&gt;&gt; { task1, task2 };
+    /// var tasks = new List<Task<int>> { task1, task2 };
     /// var results = await TaskHelper.WhenAll(tasks);
     /// </code>
     /// </example>
@@ -1210,7 +1210,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">actions 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var actions = new List&lt;Func&lt;Task&gt;&gt;
+    /// var actions = new List<Func<Task>>
     /// {
     ///     async () => await ProcessItemAsync(1),
     ///     async () => await ProcessItemAsync(2),
@@ -1678,7 +1678,7 @@ public static partial class TaskHelper
     /// <code>
     /// var result = await TaskHelper.ExecuteChainAsync(
     ///     "initial",
-    ///     new Func&lt;string, Task&lt;string&gt;&gt;[]
+    ///     new Func<string, Task<string>>[]
     ///     {
     ///         async s => await ProcessStep1(s),
     ///         async s => await ProcessStep2(s),
@@ -1783,7 +1783,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentOutOfRangeException">maxDegreeOfParallelism 或 capacity 无效时抛出。</exception>
     /// <example>
     /// <code>
-    /// using var queue = TaskHelper.CreateTaskQueue&lt;string&gt;(
+    /// using var queue = TaskHelper.CreateTaskQueue<string>(
     ///     async item => await ProcessItemAsync(item),
     ///     maxDegreeOfParallelism: 5);
     /// 
@@ -1815,9 +1815,9 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">processor 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var queue = TaskHelper.CreatePriorityTaskQueue&lt;int&gt;(
+    /// var queue = TaskHelper.CreatePriorityTaskQueue<int>(
     ///     async item => await ProcessItemAsync(item),
-    ///     Comparer&lt;int&gt;.Default);
+    ///     Comparer<int>.Default);
     /// 
     /// await queue.EnqueueAsync(5); // 低优先级
     /// await queue.EnqueueAsync(1); // 高优先级
@@ -1845,7 +1845,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">consumer 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var producerConsumer = TaskHelper.CreateProducerConsumerQueue&lt;string&gt;(
+    /// var producerConsumer = TaskHelper.CreateProducerConsumerQueue<string>(
     ///     async item => await ProcessItemAsync(item),
     ///     boundedCapacity: 100);
     /// 
@@ -1882,7 +1882,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentOutOfRangeException">maxDegreeOfParallelism 无效时抛出。</exception>
     /// <example>
     /// <code>
-    /// using var pool = TaskHelper.CreateTaskPool&lt;string, int&gt;(
+    /// using var pool = TaskHelper.CreateTaskPool<string, int>(
     ///     async item => await ProcessItemAsync(item),
     ///     maxDegreeOfParallelism: 10);
     /// 
@@ -2192,7 +2192,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">function 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var result = await TaskHelper.WithCancellation&lt;int&gt;(ct => CalculateWithCancel(ct), cts.Token);
+    /// var result = await TaskHelper.WithCancellation<int>(ct => CalculateWithCancel(ct), cts.Token);
     /// </code>
     /// </example>
     public static Task<T> WithCancellation<T>(
@@ -2417,7 +2417,7 @@ public static partial class TaskHelper
     /// <exception cref="ArgumentNullException">task 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// await TaskHelper.IgnoreExceptionAsync&lt;InvalidOperationException&gt;(RiskyOperation());
+    /// await TaskHelper.IgnoreExceptionAsync<InvalidOperationException>(RiskyOperation());
     /// </code>
     /// </example>
     public static async Task IgnoreExceptionAsync<TException>(Task task) where TException : Exception

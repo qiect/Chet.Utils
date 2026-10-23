@@ -549,15 +549,15 @@ namespace Chet.Utils.Helpers
     /// using var httpClient = new HttpClientHelper();
     /// 
     /// // GET请求
-    /// var user = await httpClient.GetAsync&lt;User&gt;("https://api.example.com/users/1");
+    /// var user = await httpClient.GetAsync<User>("https://api.example.com/users/1");
     /// 
     /// // POST请求
-    /// var result = await httpClient.PostJsonAsync&lt;CreateUserRequest, CreateUserResponse&gt;(
+    /// var result = await httpClient.PostJsonAsync<CreateUserRequest, CreateUserResponse>(
     ///     "https://api.example.com/users", 
     ///     new CreateUserRequest { Name = "John" });
     /// 
     /// // 带重试的请求
-    /// var data = await httpClient.GetWithRetryAsync&lt;Data&gt;(
+    /// var data = await httpClient.GetWithRetryAsync<Data>(
     ///     "https://api.example.com/data", 
     ///     maxRetries: 3);
     /// </code>
@@ -1722,7 +1722,7 @@ namespace Chet.Utils.Helpers
     /// 
     /// // 使用 CancellationToken 控制具体请求的超时
     /// using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-    /// var result = await httpClient.GetAsync&lt;User&gt;("https://api.example.com/users/1", cancellationToken: cts.Token);
+    /// var result = await httpClient.GetAsync<User>("https://api.example.com/users/1", cancellationToken: cts.Token);
     /// </code>
     /// </remarks>
     public class HttpClientOptions

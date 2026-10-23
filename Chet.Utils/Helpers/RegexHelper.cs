@@ -720,7 +720,7 @@ public static partial class RegexHelper
     /// <example>
     /// <code>
     /// var phone = "13812345678";
-    /// var pattern = @"(?&lt;prefix&gt;1[3-9])(?&lt;number&gt;\d{8})";
+    /// var pattern = @"(?<prefix>1[3-9])(?<number>\d{8})";
     /// var prefix = RegexHelper.GetGroupValue(phone, pattern, "prefix");
     /// Console.WriteLine($"前缀: {prefix}");
     /// </code>
@@ -874,7 +874,7 @@ public static partial class RegexHelper
     /// <returns>移除后的字符串。</returns>
     /// <example>
     /// <code>
-    /// var result = RegexHelper.RemoveHtmlTags("&lt;p&gt;Hello&lt;/p&gt;");
+    /// var result = RegexHelper.RemoveHtmlTags("<p>Hello</p>");
     /// // result = "Hello"
     /// </code>
     /// </example>

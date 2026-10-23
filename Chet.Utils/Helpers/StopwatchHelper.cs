@@ -709,7 +709,7 @@ public static class StopwatchHelper
     /// <code>
     /// var result = StopwatchHelper.Benchmark("List.Add", () =>
     /// {
-    ///     var list = new List&lt;int&gt;();
+    ///     var list = new List<int>();
     ///     list.Add(1);
     /// }, iterations: 10000, warmupIterations: 100);
     /// Console.WriteLine(result);
@@ -808,12 +808,12 @@ public static class StopwatchHelper
     ///     "StringBuilder", () =>
     ///     {
     ///         var sb = new StringBuilder();
-    ///         for (int i = 0; i &lt; 100; i++) sb.Append(i);
+    ///         for (int i = 0; i < 100; i++) sb.Append(i);
     ///     },
     ///     "StringConcat", () =>
     ///     {
     ///         var s = "";
-    ///         for (int i = 0; i &lt; 100; i++) s += i;
+    ///         for (int i = 0; i < 100; i++) s += i;
     ///     },
     ///     iterations: 10000
     /// );

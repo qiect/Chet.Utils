@@ -185,7 +185,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentNullException"><paramref name="dataTable"/> 或 <paramref name="columnMappings"/> 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var mappings = new Dictionary&lt;string, string&gt;
+    /// var mappings = new Dictionary<string, string>
     /// {
     ///     { "user_name", "UserName" },
     ///     { "create_time", "CreateTime" }
@@ -221,7 +221,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentNullException"><paramref name="objects"/> 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var users = new List&lt;User&gt; { new User { Name = "张三", Age = 25 } };
+    /// var users = new List<User> { new User { Name = "张三", Age = 25 } };
     /// var dt = DataTableHelper.ToDataTableFromObjects(users, "Users");
     /// </code>
     /// </example>
@@ -268,13 +268,13 @@ public static partial class DataTableHelper
     /// dt.Columns.Add("UserAge", typeof(int));
     /// dt.Rows.Add("张三", 25);
     /// 
-    /// var mapping = new Dictionary&lt;string, string&gt;
+    /// var mapping = new Dictionary<string, string>
     /// {
     ///     { "UserName", "Name" },
     ///     { "UserAge", "Age" }
     /// };
     /// 
-    /// var list = DataTableHelper.MapToEntityList&lt;Person&gt;(dt, mapping);
+    /// var list = DataTableHelper.MapToEntityList<Person>(dt, mapping);
     /// // list[0].Name => "张三"
     /// // list[0].Age => 25
     /// </code>
@@ -432,7 +432,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentException">字段名不存在时抛出。</exception>
     /// <example>
     /// <code>
-    /// var dataFields = new Dictionary&lt;string, Func&lt;IEnumerable&lt;object&gt;, object&gt;&gt;
+    /// var dataFields = new Dictionary<string, Func<IEnumerable<object>, object>>
     /// {
     ///     { "Amount", values => values.Sum(v => Convert.ToDecimal(v)) },
     ///     { "Quantity", values => values.Sum(v => Convert.ToInt32(v)) }
@@ -552,7 +552,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentNullException">参数为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var aggregates = new Dictionary&lt;string, Func&lt;IEnumerable&lt;object&gt;, object&gt;&gt;
+    /// var aggregates = new Dictionary<string, Func<IEnumerable<object>, object>>
     /// {
     ///     { "TotalAmount", values => values.Sum(v => Convert.ToDecimal(v)) },
     ///     { "AvgPrice", values => values.Average(v => Convert.ToDecimal(v)) },
@@ -961,7 +961,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentNullException">参数为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var rules = new Dictionary&lt;string, Func&lt;object, bool&gt;&gt;
+    /// var rules = new Dictionary<string, Func<object, bool>>
     /// {
     ///     { "Age", value => value != null &amp;&amp; Convert.ToInt32(value) >= 0 &amp;&amp; Convert.ToInt32(value) <= 150 },
     ///     { "Email", value => value != null &amp;&amp; Regex.IsMatch(value.ToString(), @"^[\w-\.]+@[\w-]+\.[a-z]{2,}$") }
@@ -1033,7 +1033,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentNullException">参数为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var rules = new Dictionary&lt;string, Func&lt;object, object&gt;&gt;
+    /// var rules = new Dictionary<string, Func<object, object>>
     /// {
     ///     { "Name", value => value?.ToString().Trim() },
     ///     { "Phone", value => Regex.Replace(value?.ToString() ?? "", @"[^\d]", "") }
@@ -1161,7 +1161,7 @@ public static partial class DataTableHelper
     /// <exception cref="ArgumentNullException">参数为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var rules = new Dictionary&lt;string, Func&lt;DataTable, int, object&gt;&gt;
+    /// var rules = new Dictionary<string, Func<DataTable, int, object>>
     /// {
     ///     { "Age", (dt, rowIdx) => dt.AsEnumerable().Average(r => Convert.ToDouble(r["Age"])) },
     ///     { "City", (dt, rowIdx) => "未知" }
@@ -2257,8 +2257,8 @@ public static partial class DataTableHelper
     {
         return value
             .Replace("&", "&amp;")
-            .Replace("<", "&lt;")
-            .Replace(">", "&gt;")
+            .Replace("<", "<")
+            .Replace(">", ">")
             .Replace("\"", "&quot;")
             .Replace("'", "&#39;");
     }
@@ -2267,8 +2267,8 @@ public static partial class DataTableHelper
     {
         return value
             .Replace("&", "&amp;")
-            .Replace("<", "&lt;")
-            .Replace(">", "&gt;")
+            .Replace("<", "<")
+            .Replace(">", ">")
             .Replace("\"", "&quot;")
             .Replace("'", "&apos;");
     }

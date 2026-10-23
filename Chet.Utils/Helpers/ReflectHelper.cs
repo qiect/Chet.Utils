@@ -194,7 +194,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     /// <example>
     /// <code>
-    /// var displayAttr = ReflectHelper.GetCustomAttribute&lt;DisplayAttribute&gt;(typeof(MyClass));
+    /// var displayAttr = ReflectHelper.GetCustomAttribute<DisplayAttribute>(typeof(MyClass));
     /// if (displayAttr != null)
     /// {
     ///     Console.WriteLine($"显示名称: {displayAttr.Name}");
@@ -610,7 +610,7 @@ public static class ReflectHelper
     /// <example>
     /// <code>
     /// var person = new Person();
-    /// var values = new Dictionary&lt;string, object&gt;
+    /// var values = new Dictionary<string, object>
     /// {
     ///     ["Name"] = "王五",
     ///     ["Age"] = 28
@@ -995,7 +995,7 @@ public static class ReflectHelper
     /// <returns>实例。</returns>
     /// <example>
     /// <code>
-    /// var person = ReflectHelper.CreateInstance&lt;Person&gt;();
+    /// var person = ReflectHelper.CreateInstance<Person>();
     /// </code>
     /// </example>
     public static T CreateInstance<T>() where T : new()
@@ -1161,7 +1161,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentException">表达式不是有效的属性表达式时抛出。</exception>
     /// <example>
     /// <code>
-    /// var propertyName = ReflectHelper.GetPropertyName&lt;Person, string&gt;(p => p.Name);
+    /// var propertyName = ReflectHelper.GetPropertyName<Person, string>(p => p.Name);
     /// Console.WriteLine($"属性名: {propertyName}");
     /// </code>
     /// </example>

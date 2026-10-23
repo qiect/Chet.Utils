@@ -74,7 +74,7 @@ description: "为 bool 类型提供了丰富的扩展方法，包括基础判断
 
 - `ToCustomString(string trueString, string falseString)` - 转换为自定义字符串
 - `ToValue<T>(T trueValue, T falseValue)` - 转换为指定类型的值
-- `ToEnum&lt;TEnum&gt;(TEnum trueEnum, TEnum falseEnum)` - 转换为枚举值
+- `ToEnum<TEnum>(TEnum trueEnum, TEnum falseEnum)` - 转换为枚举值
 - `ToNullable(bool nullable = false)` - 转换为可空布尔值
 - `Match<T>(T trueValue, T falseValue)` - 根据布尔值返回对应的值
 - `Match<T>(Func<T> trueFunc, Func<T> falseFunc)` - 根据布尔值执行对应函数并返回结果
