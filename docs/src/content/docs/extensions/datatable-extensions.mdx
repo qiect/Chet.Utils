@@ -212,7 +212,7 @@ int count = dt.GetColumnCount(); // 2
 
 提供 DataTable 与其他数据结构之间的转换功能。
 
-#### ToList<T> (使用转换器)
+#### ToList\<T\> (使用转换器)
 
 将 DataTable 转换为泛型集合。
 
@@ -245,7 +245,7 @@ var list = dt.ToList(row => new Person
 });
 ```
 
-#### ToList<T> (自动映射)
+#### ToList\<T\> (自动映射)
 
 将 DataTable 转换为泛型集合（自动映射）。
 
@@ -1111,7 +1111,7 @@ dt.Rows.Add("张三");
 object value = dt.GetValue(0, "Name"); // "张三"
 ```
 
-#### GetValue<T>
+#### GetValue\<T\>
 
 获取指定单元格的值并转换为指定类型。
 
@@ -1448,7 +1448,7 @@ var paged = dt.GetPagedData(1, 10);
 
 提供 DataTable 与实体之间的转换功能。
 
-#### ToEntity<T>
+#### ToEntity\<T\>
 
 将 DataTable 的第一行转换为实体。
 
@@ -1476,7 +1476,7 @@ Person person = dt.ToEntity<Person>();
 // person.Name = "张三", person.Age = 25
 ```
 
-#### ToEntityList<T>
+#### ToEntityList\<T\>
 
 将 DataTable 转换为实体列表。
 
@@ -1504,7 +1504,7 @@ dt.Rows.Add("李四", 30);
 List<Person> list = dt.ToEntityList<Person>();
 ```
 
-#### FromEntityList<T>
+#### FromEntityList\<T\>
 
 从实体列表创建 DataTable。
 

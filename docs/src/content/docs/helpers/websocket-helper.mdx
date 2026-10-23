@@ -53,7 +53,7 @@ public WebSocketHelper(
 | receiveBufferSize    | int                            | 接收缓冲区大小（字节），默认 4096          |
 | sendBufferSize       | int                            | 发送缓冲区大小（字节），默认 4096          |
 | connectionTimeout    | TimeSpan?                      | 连接超时时间，默认 30 秒               |
-| configureOptions     | Action<ClientWebSocketOptions> | WebSocket 选项配置委托             |
+| configureOptions     | Action\<ClientWebSocketOptions\> | WebSocket 选项配置委托             |
 
 #### 示例
 
@@ -259,8 +259,8 @@ public WebSocketServerHelper(int port, int heartbeatIntervalSec = 30)
 | -------------------- | -------------------- | ----------------- |
 | ConnectedClientCount | int                  | 获取当前连接的客户端数量      |
 | IsRunning            | bool                 | 获取服务器是否正在运行       |
-| ConnectedClientIds   | IEnumerable\<string> | 获取所有已连接的客户端 ID 列表 |
-| GroupNames           | IEnumerable\<string> | 获取所有组名称           |
+| ConnectedClientIds   | IEnumerable\<string\> | 获取所有已连接的客户端 ID 列表 |
+| GroupNames           | IEnumerable\<string\> | 获取所有组名称           |
 
 ### 事件
 
@@ -341,7 +341,7 @@ public Task StartServerAsync(string prefix)
 
 | 参数名      | 类型                   | 描述           |
 | -------- | -------------------- | ------------ |
-| prefixes | IEnumerable\<string> | 监听的 URL 前缀列表 |
+| prefixes | IEnumerable\<string\> | 监听的 URL 前缀列表 |
 | prefix   | string               | 监听的 URL 前缀   |
 
 **示例：**
