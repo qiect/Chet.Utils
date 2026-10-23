@@ -150,6 +150,82 @@ namespace Chet.Utils.Tests.Helpers
         }
 
         [Fact]
+        public void ToDataTableFromJson_PreserveTypesTrue_RetainsOriginalTypes()
+        {
+            var json = "[{\"Id\":1,\"Name\":\"张三\",\"Score\":95.5,\"Active\":true},{\"Id\":2,\"Name\":\"李四\",\"Score\":88.0,\"Active\":false}]";
+
+            var result = DataTableHelper.ToDataTableFromJson(json, preserveTypes: true);
+
+            Assert.Equal(2, result.Rows.Count);
+            Assert.Equal(typeof(object), result.Columns["Id"].DataType);
+            Assert.Equal(typeof(object), result.Columns["Name"].DataType);
+            Assert.Equal(typeof(object), result.Columns["Score"].DataType);
+            Assert.Equal(typeof(object), result.Columns["Active"].DataType);
+            Assert.Equal(1.0, Convert.ToDouble(result.Rows[0]["Id"]));
+            Assert.Equal("张三", result.Rows[0]["Name"]);
+            Assert.Equal(95.5, Convert.ToDouble(result.Rows[0]["Score"]));
+            Assert.True(Convert.ToBoolean(result.Rows[0]["Active"]));
+            Assert.Equal(2.0, Convert.ToDouble(result.Rows[1]["Id"]));
+            Assert.False(Convert.ToBoolean(result.Rows[1]["Active"]));
+        }
+
+        [Fact]
+        public void ToDataTableFromJson_PreserveTypesTrue_NumericValueIsNumber()
+        {
+            var json = "[{\"Id\":1}]";
+
+            var result = DataTableHelper.ToDataTableFromJson(json, preserveTypes: true);
+
+            Assert.Equal(1.0, Convert.ToDouble(result.Rows[0]["Id"]));
+        }
+
+        [Fact]
+        public void ToDataTableFromJson_PreserveTypesTrue_BoolStoredAsBool()
+        {
+            var json = "[{\"Active\":true}]";
+
+            var result = DataTableHelper.ToDataTableFromJson(json, preserveTypes: true);
+
+            Assert.IsType<bool>(result.Rows[0]["Active"]);
+        }
+
+        [Fact]
+        public void ToDataTableFromJson_PreserveTypesFalse_AllValuesAreStrings()
+        {
+            var json = "[{\"Id\":1,\"Name\":\"张三\",\"Score\":95.5}]";
+
+            var result = DataTableHelper.ToDataTableFromJson(json, preserveTypes: false);
+
+            Assert.Equal(typeof(string), result.Columns["Id"].DataType);
+            Assert.Equal(typeof(string), result.Columns["Name"].DataType);
+            Assert.Equal(typeof(string), result.Columns["Score"].DataType);
+            Assert.Equal("1", result.Rows[0]["Id"]);
+            Assert.Equal("张三", result.Rows[0]["Name"]);
+            Assert.Equal("95.5", result.Rows[0]["Score"]);
+        }
+
+        [Fact]
+        public void ToDataTableFromJson_PreserveTypesTrue_WithNullValue_HandlesNull()
+        {
+            var json = "[{\"Id\":1,\"Name\":null}]";
+
+            var result = DataTableHelper.ToDataTableFromJson(json, preserveTypes: true);
+
+            Assert.Equal(DBNull.Value, result.Rows[0]["Name"]);
+        }
+
+        [Fact]
+        public void ToDataTableFromJson_PreserveTypesTrue_WithMissingKey_FillsDBNull()
+        {
+            var json = "[{\"Id\":1,\"Name\":\"张三\"},{\"Id\":2}]";
+
+            var result = DataTableHelper.ToDataTableFromJson(json, preserveTypes: true);
+
+            Assert.Equal(2, result.Rows.Count);
+            Assert.Equal(DBNull.Value, result.Rows[1]["Name"]);
+        }
+
+        [Fact]
         public void MapColumns_ValidMappings_ReturnsMappedDataTable()
         {
             var dt = CreateTestDataTable();
@@ -230,6 +306,103 @@ namespace Chet.Utils.Tests.Helpers
         public void ToDataTableFromObjects_NullList_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => DataTableHelper.ToDataTableFromObjects<TestUser>(null!));
+        }
+
+        [Fact]
+        public void MapToEntityList_ValidMapping_ReturnsEntityList()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("UserName", typeof(string));
+            dt.Columns.Add("UserAge", typeof(int));
+            dt.Rows.Add("张三", 25);
+            dt.Rows.Add("李四", 30);
+
+            var mapping = new Dictionary<string, string>
+            {
+                { "UserName", "Name" },
+                { "UserAge", "Age" }
+            };
+
+            var result = DataTableHelper.MapToEntityList<TestUser>(dt, mapping);
+
+            Assert.Equal(2, result.Count);
+            Assert.Equal("张三", result[0].Name);
+            Assert.Equal(25, result[0].Age);
+            Assert.Equal("李四", result[1].Name);
+            Assert.Equal(30, result[1].Age);
+        }
+
+        [Fact]
+        public void MapToEntityList_NullDataTable_ThrowsArgumentNullException()
+        {
+            var mapping = new Dictionary<string, string> { { "Id", "Id" } };
+
+            Assert.Throws<ArgumentNullException>(() => DataTableHelper.MapToEntityList<TestUser>(null!, mapping));
+        }
+
+        [Fact]
+        public void MapToEntityList_NullFieldMapping_ThrowsArgumentNullException()
+        {
+            var dt = CreateTestDataTable();
+
+            Assert.Throws<ArgumentNullException>(() => DataTableHelper.MapToEntityList<TestUser>(dt, null!));
+        }
+
+        [Fact]
+        public void MapToEntityList_EmptyDataTable_ReturnsEmptyList()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("UserName", typeof(string));
+            dt.Columns.Add("UserAge", typeof(int));
+
+            var mapping = new Dictionary<string, string>
+            {
+                { "UserName", "Name" },
+                { "UserAge", "Age" }
+            };
+
+            var result = DataTableHelper.MapToEntityList<TestUser>(dt, mapping);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void MapToEntityList_NonExistentSourceColumn_SkipsInvalidMapping()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Name", typeof(string));
+            dt.Rows.Add("张三");
+
+            var mapping = new Dictionary<string, string>
+            {
+                { "NonExistent", "Name" },
+                { "Name", "Name" }
+            };
+
+            var result = DataTableHelper.MapToEntityList<TestUser>(dt, mapping);
+
+            Assert.Single(result);
+            Assert.Equal("张三", result[0].Name);
+        }
+
+        [Fact]
+        public void MapToEntityList_WithNullValues_SkipsNullFields()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("UserName", typeof(string));
+            dt.Columns.Add("UserAge", typeof(int));
+            dt.Rows.Add(DBNull.Value, 25);
+
+            var mapping = new Dictionary<string, string>
+            {
+                { "UserName", "Name" },
+                { "UserAge", "Age" }
+            };
+
+            var result = DataTableHelper.MapToEntityList<TestUser>(dt, mapping);
+
+            Assert.Single(result);
+            Assert.Equal(25, result[0].Age);
         }
 
         #endregion
@@ -673,6 +846,220 @@ namespace Chet.Utils.Tests.Helpers
         }
 
         [Fact]
+        public void FillMissingValues_AutoFill_FillsAllColumns()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Name", typeof(string));
+            dt.Columns.Add("Age", typeof(int));
+            dt.Rows.Add("张三", 25);
+            dt.Rows.Add(DBNull.Value, DBNull.Value);
+            dt.Rows.Add("李四", 30);
+
+            var result = DataTableHelper.FillMissingValues(dt);
+
+            Assert.Equal("李四", result.Rows[1]["Name"]);
+            Assert.Equal(30, result.Rows[1]["Age"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_AutoFill_UsesPreviousWhenNoNextNonNull()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Name", typeof(string));
+            dt.Rows.Add("张三");
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(DBNull.Value);
+
+            var result = DataTableHelper.FillMissingValues(dt);
+
+            Assert.Equal("张三", result.Rows[1]["Name"]);
+            Assert.Equal("张三", result.Rows[2]["Name"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_AutoFill_PreferNextNonNullOverPrevious()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Value", typeof(string));
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add("X");
+
+            var result = DataTableHelper.FillMissingValues(dt);
+
+            Assert.Equal("X", result.Rows[0]["Value"]);
+            Assert.Equal("X", result.Rows[1]["Value"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_AutoFill_EmptyTable_ReturnsEmptyTable()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Name", typeof(string));
+
+            var result = DataTableHelper.FillMissingValues(dt);
+
+            Assert.Equal(0, result.Rows.Count);
+        }
+
+        [Fact]
+        public void FillMissingValues_AutoFill_NullDataTable_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => DataTableHelper.FillMissingValues(null!));
+        }
+
+        [Fact]
+        public void FillMissingValues_AutoFill_DoesNotModifyOriginalTable()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Name", typeof(string));
+            dt.Rows.Add("张三");
+            dt.Rows.Add(DBNull.Value);
+
+            var result = DataTableHelper.FillMissingValues(dt);
+
+            Assert.Equal(DBNull.Value, dt.Rows[1]["Name"]);
+            Assert.Equal("张三", result.Rows[1]["Name"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_ConstantFill_FillsWithSpecifiedValue()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("City", typeof(string));
+            dt.Rows.Add("北京");
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add("上海");
+            dt.Rows.Add(DBNull.Value);
+
+            var result = DataTableHelper.FillMissingValues(dt, "City", "未知");
+
+            Assert.Equal("北京", result.Rows[0]["City"]);
+            Assert.Equal("未知", result.Rows[1]["City"]);
+            Assert.Equal("上海", result.Rows[2]["City"]);
+            Assert.Equal("未知", result.Rows[3]["City"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_ConstantFill_NonExistentColumn_ThrowsArgumentException()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("City", typeof(string));
+
+            Assert.Throws<ArgumentException>(() => DataTableHelper.FillMissingValues(dt, "NonExistent", "值"));
+        }
+
+        [Fact]
+        public void FillMissingValues_ConstantFill_NullDataTable_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => DataTableHelper.FillMissingValues(null!, "City", "值"));
+        }
+
+        [Fact]
+        public void FillMissingValues_ConstantFill_NoMissingValues_ReturnsUnchangedTable()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("City", typeof(string));
+            dt.Rows.Add("北京");
+            dt.Rows.Add("上海");
+
+            var result = DataTableHelper.FillMissingValues(dt, "City", "未知");
+
+            Assert.Equal("北京", result.Rows[0]["City"]);
+            Assert.Equal("上海", result.Rows[1]["City"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyPrevious_FillsWithPreviousNonNull()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Age", typeof(int));
+            dt.Rows.Add(25);
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(30);
+            dt.Rows.Add(DBNull.Value);
+
+            var result = DataTableHelper.FillMissingValues(dt, "Age", FillMethod.Previous);
+
+            Assert.Equal(25, result.Rows[1]["Age"]);
+            Assert.Equal(30, result.Rows[3]["Age"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyNext_FillsWithNextNonNull()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Age", typeof(int));
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(30);
+
+            var result = DataTableHelper.FillMissingValues(dt, "Age", FillMethod.Next);
+
+            Assert.Equal(30, result.Rows[0]["Age"]);
+            Assert.Equal(30, result.Rows[1]["Age"]);
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyMean_FillsWithMeanValue()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Score", typeof(int));
+            dt.Rows.Add(80);
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(100);
+
+            var result = DataTableHelper.FillMissingValues(dt, "Score", FillMethod.Mean);
+
+            Assert.Equal(90.0, Convert.ToDouble(result.Rows[1]["Score"]), 1);
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyMedian_FillsWithMedianValue()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Score", typeof(int));
+            dt.Rows.Add(70);
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(80);
+            dt.Rows.Add(90);
+
+            var result = DataTableHelper.FillMissingValues(dt, "Score", FillMethod.Median);
+
+            Assert.Equal(80.0, Convert.ToDouble(result.Rows[1]["Score"]), 1);
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyMode_FillsWithModeValue()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Score", typeof(int));
+            dt.Rows.Add(80);
+            dt.Rows.Add(80);
+            dt.Rows.Add(DBNull.Value);
+            dt.Rows.Add(90);
+
+            var result = DataTableHelper.FillMissingValues(dt, "Score", FillMethod.Mode);
+
+            Assert.Equal(80, Convert.ToInt32(result.Rows[2]["Score"]));
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyFill_NonExistentColumn_ThrowsArgumentException()
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Score", typeof(int));
+
+            Assert.Throws<ArgumentException>(() => DataTableHelper.FillMissingValues(dt, "NonExistent", FillMethod.Mean));
+        }
+
+        [Fact]
+        public void FillMissingValues_StrategyFill_NullDataTable_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => DataTableHelper.FillMissingValues(null!, "Score", FillMethod.Mean));
+        }
+
+        [Fact]
         public void FillMissingValues_NullDataTable_ThrowsArgumentNullException()
         {
             var rules = new Dictionary<string, Func<DataTable, int, object>>();
@@ -816,6 +1203,54 @@ namespace Chet.Utils.Tests.Helpers
         }
 
         [Fact]
+        public void InnerJoin_MultipleKeys_ReturnsJoinedTable()
+        {
+            var leftTable = new DataTable();
+            leftTable.Columns.Add("DeptId", typeof(int));
+            leftTable.Columns.Add("EmpId", typeof(int));
+            leftTable.Columns.Add("Name", typeof(string));
+            leftTable.Rows.Add(1, 101, "张三");
+            leftTable.Rows.Add(1, 102, "李四");
+            leftTable.Rows.Add(2, 101, "王五");
+
+            var rightTable = new DataTable();
+            rightTable.Columns.Add("DeptId", typeof(int));
+            rightTable.Columns.Add("EmpId", typeof(int));
+            rightTable.Columns.Add("Salary", typeof(decimal));
+            rightTable.Rows.Add(1, 101, 5000m);
+            rightTable.Rows.Add(1, 102, 6000m);
+            rightTable.Rows.Add(2, 103, 7000m);
+
+            var result = DataTableHelper.InnerJoin(
+                leftTable, rightTable,
+                new[] { "DeptId", "EmpId" },
+                new[] { "DeptId", "EmpId" });
+
+            Assert.Equal(2, result.Rows.Count);
+        }
+
+        [Fact]
+        public void InnerJoin_MultipleKeys_NoMatchingRows_ReturnsEmptyTable()
+        {
+            var leftTable = new DataTable();
+            leftTable.Columns.Add("A", typeof(int));
+            leftTable.Columns.Add("B", typeof(int));
+            leftTable.Rows.Add(1, 1);
+
+            var rightTable = new DataTable();
+            rightTable.Columns.Add("A", typeof(int));
+            rightTable.Columns.Add("B", typeof(int));
+            rightTable.Rows.Add(1, 2);
+
+            var result = DataTableHelper.InnerJoin(
+                leftTable, rightTable,
+                new[] { "A", "B" },
+                new[] { "A", "B" });
+
+            Assert.Equal(0, result.Rows.Count);
+        }
+
+        [Fact]
         public void LeftJoin_ValidTables_ReturnsLeftJoinedTable()
         {
             var leftTable = new DataTable();
@@ -853,6 +1288,57 @@ namespace Chet.Utils.Tests.Helpers
         }
 
         [Fact]
+        public void LeftJoin_MultipleKeys_ReturnsLeftJoinedTable()
+        {
+            var leftTable = new DataTable();
+            leftTable.Columns.Add("DeptId", typeof(int));
+            leftTable.Columns.Add("EmpId", typeof(int));
+            leftTable.Columns.Add("Name", typeof(string));
+            leftTable.Rows.Add(1, 101, "张三");
+            leftTable.Rows.Add(1, 102, "李四");
+            leftTable.Rows.Add(2, 101, "王五");
+
+            var rightTable = new DataTable();
+            rightTable.Columns.Add("DeptId", typeof(int));
+            rightTable.Columns.Add("EmpId", typeof(int));
+            rightTable.Columns.Add("Salary", typeof(decimal));
+            rightTable.Rows.Add(1, 101, 5000m);
+
+            var result = DataTableHelper.LeftJoin(
+                leftTable, rightTable,
+                new[] { "DeptId", "EmpId" },
+                new[] { "DeptId", "EmpId" });
+
+            Assert.Equal(3, result.Rows.Count);
+        }
+
+        [Fact]
+        public void LeftJoin_MultipleKeys_UnmatchedLeftRows_HaveNullRightColumns()
+        {
+            var leftTable = new DataTable();
+            leftTable.Columns.Add("A", typeof(int));
+            leftTable.Columns.Add("B", typeof(int));
+            leftTable.Columns.Add("Name", typeof(string));
+            leftTable.Rows.Add(1, 1, "张三");
+            leftTable.Rows.Add(1, 2, "李四");
+
+            var rightTable = new DataTable();
+            rightTable.Columns.Add("A", typeof(int));
+            rightTable.Columns.Add("B", typeof(int));
+            rightTable.Columns.Add("Value", typeof(string));
+            rightTable.Rows.Add(1, 1, "匹配");
+
+            var result = DataTableHelper.LeftJoin(
+                leftTable, rightTable,
+                new[] { "A", "B" },
+                new[] { "A", "B" });
+
+            Assert.Equal(2, result.Rows.Count);
+            Assert.Equal("匹配", result.Rows[0]["Value"]);
+            Assert.Equal(DBNull.Value, result.Rows[1]["Value"]);
+        }
+
+        [Fact]
         public void FullJoin_ValidTables_ReturnsFullJoinedTable()
         {
             var leftTable = new DataTable();
@@ -868,6 +1354,54 @@ namespace Chet.Utils.Tests.Helpers
             var result = DataTableHelper.FullJoin(leftTable, rightTable, "Id", "UserId");
 
             Assert.Equal(3, result.Rows.Count);
+        }
+
+        [Fact]
+        public void FullJoin_MultipleKeys_ReturnsFullJoinedTable()
+        {
+            var leftTable = new DataTable();
+            leftTable.Columns.Add("A", typeof(int));
+            leftTable.Columns.Add("B", typeof(int));
+            leftTable.Columns.Add("Name", typeof(string));
+            leftTable.Rows.Add(1, 1, "张三");
+            leftTable.Rows.Add(1, 2, "李四");
+
+            var rightTable = new DataTable();
+            rightTable.Columns.Add("A", typeof(int));
+            rightTable.Columns.Add("B", typeof(int));
+            rightTable.Columns.Add("Value", typeof(string));
+            rightTable.Rows.Add(1, 2, "匹配");
+            rightTable.Rows.Add(2, 1, "额外");
+
+            var result = DataTableHelper.FullJoin(
+                leftTable, rightTable,
+                new[] { "A", "B" },
+                new[] { "A", "B" });
+
+            Assert.Equal(3, result.Rows.Count);
+        }
+
+        [Fact]
+        public void FullJoin_MultipleKeys_LeftOnlyAndRightOnlyRows_HaveNullOnOppositeSide()
+        {
+            var leftTable = new DataTable();
+            leftTable.Columns.Add("A", typeof(int));
+            leftTable.Columns.Add("B", typeof(int));
+            leftTable.Columns.Add("Name", typeof(string));
+            leftTable.Rows.Add(1, 1, "仅左");
+
+            var rightTable = new DataTable();
+            rightTable.Columns.Add("A", typeof(int));
+            rightTable.Columns.Add("B", typeof(int));
+            rightTable.Columns.Add("Value", typeof(string));
+            rightTable.Rows.Add(2, 2, "仅右");
+
+            var result = DataTableHelper.FullJoin(
+                leftTable, rightTable,
+                new[] { "A", "B" },
+                new[] { "A", "B" });
+
+            Assert.Equal(2, result.Rows.Count);
         }
 
         [Fact]

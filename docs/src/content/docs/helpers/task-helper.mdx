@@ -7,7 +7,7 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 ## 概述
 
-[TaskHelper](../../Chet.Utils/Helpers/TaskHelper.cs) 是一个静态帮助类，为异步任务提供了丰富的管理功能，包括任务创建、任务等待、超时控制、重试机制、断路器、并行处理、任务限流、任务队列、任务池、任务监控、任务取消、任务结果处理、任务异常处理、任务协调等，旨在简化复杂的异步编程场景，提高代码的可读性和可维护性。
+[TaskHelper](https://github.com/qiect/Chet.Utils/blob/main/Chet.Utils/Helpers/TaskHelper.cs) 是一个静态帮助类，为异步任务提供了丰富的管理功能，包括任务创建、任务等待、超时控制、重试机制、断路器、并行处理、任务限流、任务队列、任务池、任务监控、任务取消、任务结果处理、任务异常处理、任务协调等，旨在简化复杂的异步编程场景，提高代码的可读性和可维护性。
 
 ## 主要功能模块
 
@@ -17,16 +17,16 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `Run()` - 创建并启动一个异步任务
-- `Run&lt;T&gt;()` - 创建并启动一个带返回值的异步任务
+- `Run<T>()` - 创建并启动一个带返回值的异步任务
 - `RunAsync()` - 创建并启动一个异步任务（异步委托版本）
-- `RunAsync&lt;T&gt;()` - 创建并启动一个带返回值的异步任务（异步委托版本）
+- `RunAsync<T>()` - 创建并启动一个带返回值的异步任务（异步委托版本）
 - `Delay()` - 创建一个延迟任务
 - `CompletedTask()` - 创建一个已完成的任务
-- `FromResult&lt;T&gt;()` - 创建一个已完成的任务（带返回值）
+- `FromResult<T>()` - 创建一个已完成的任务（带返回值）
 - `FromException()` - 创建一个失败的任务
-- `FromException&lt;T&gt;()` - 创建一个失败的任务（带返回值类型）
+- `FromException<T>()` - 创建一个失败的任务（带返回值类型）
 - `FromCanceled()` - 创建一个已取消的任务
-- `FromCanceled&lt;T&gt;()` - 创建一个已取消的任务（带返回值类型）
+- `FromCanceled<T>()` - 创建一个已取消的任务（带返回值类型）
 
 ### 2. 任务等待
 
@@ -34,9 +34,9 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `WhenAll()` - 等待所有任务完成
-- `WhenAll&lt;T&gt;()` - 等待所有任务完成（泛型版本）
+- `WhenAll<T>()` - 等待所有任务完成（泛型版本）
 - `WhenAny()` - 等待任意一个任务完成
-- `WhenAny&lt;T&gt;()` - 等待任意一个任务完成（泛型版本）
+- `WhenAny<T>()` - 等待任意一个任务完成（泛型版本）
 - `Wait()` - 等待任务完成（同步阻塞）
 
 ### 3. 超时控制
@@ -45,9 +45,9 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `WithTimeout()` - 为任务添加超时控制
-- `WithTimeout&lt;T&gt;()` - 为任务添加超时控制（泛型版本）
+- `WithTimeout<T>()` - 为任务添加超时控制（泛型版本）
 - `TryWithTimeout()` - 尝试在超时时间内完成任务
-- `TryWithTimeout&lt;T&gt;()` - 尝试在超时时间内完成任务（泛型版本）
+- `TryWithTimeout<T>()` - 尝试在超时时间内完成任务（泛型版本）
 
 ### 4. 重试机制
 
@@ -55,7 +55,7 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `RetryAsync()` - 带重试机制的任务执行
-- `RetryAsync&lt;T&gt;()` - 带重试机制的任务执行（泛型版本）
+- `RetryAsync<T>()` - 带重试机制的任务执行（泛型版本）
 - `RetryWithExponentialBackoffAsync()` - 带指数退避重试机制的任务执行
 - `RetryWhenAsync()` - 带条件判断的重试机制
 
@@ -65,9 +65,9 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `ParallelForEachAsync()` - 并行执行多个任务
-- `ParallelForEachAsync&lt;T&gt;()` - 并行处理数据源中的每个元素
-- `ParallelSelectAsync&lt;T, TResult&gt;()` - 并行处理并返回有序结果
-- `ParallelFirstOrDefaultAsync&lt;T&gt;()` - 并行执行任务直到满足条件
+- `ParallelForEachAsync<T>()` - 并行处理数据源中的每个元素
+- `ParallelSelectAsync<T, TResult>()` - 并行处理并返回有序结果
+- `ParallelFirstOrDefaultAsync<T>()` - 并行执行任务直到满足条件
 
 ### 6. 任务限流
 
@@ -76,7 +76,7 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 **主要方法：**
 - `ThrottleAsync()` - 限流执行任务
 - `DebounceAsync()` - 节流执行任务
-- `BatchProcessAsync&lt;T&gt;()` - 批量执行任务
+- `BatchProcessAsync<T>()` - 批量执行任务
 
 ### 7. 任务链与管道
 
@@ -84,8 +84,8 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `ExecuteChainAsync()` - 顺序执行任务链
-- `ExecutePipelineAsync&lt;T, TResult&gt;()` - 顺序执行任务链（带返回值传递）
-- `PipeAsync&lt;TInput, TOutput&gt;()` - 创建任务管道
+- `ExecutePipelineAsync<T, TResult>()` - 顺序执行任务链（带返回值传递）
+- `PipeAsync<TInput, TOutput>()` - 创建任务管道
 
 ### 8. 任务监控
 
@@ -93,9 +93,9 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `MonitorAsync()` - 监控任务执行性能
-- `MonitorAsync&lt;T&gt;()` - 监控任务执行性能（泛型版本）
+- `MonitorAsync<T>()` - 监控任务执行性能（泛型版本）
 - `MeasureAsync()` - 测量任务执行时间
-- `MeasureAsync&lt;T&gt;()` - 测量任务执行时间（泛型版本）
+- `MeasureAsync<T>()` - 测量任务执行时间（泛型版本）
 
 ### 9. 任务取消
 
@@ -104,15 +104,15 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 **主要方法：**
 - `WithCancellation()` - 创建可取消的任务
 - `WithCancellationAsync()` - 创建可取消的任务（异步版本）
-- `WithCancellation&lt;T&gt;()` - 创建可取消的任务（泛型版本）
+- `WithCancellation<T>()` - 创建可取消的任务（泛型版本）
 
 ### 10. 任务结果处理
 
 提供任务结果处理功能。
 
 **主要方法：**
-- `HandleResultAsync&lt;T&gt;()` - 处理任务结果
-- `GetResultOrDefaultAsync&lt;T&gt;()` - 获取任务结果或默认值
+- `HandleResultAsync<T>()` - 处理任务结果
+- `GetResultOrDefaultAsync<T>()` - 获取任务结果或默认值
 
 ### 11. 任务异常处理
 
@@ -120,9 +120,9 @@ description: "TaskHelper 是一个静态帮助类，为异步任务提供了丰�
 
 **主要方法：**
 - `SafeExecuteAsync()` - 安全执行任务（捕获所有异常）
-- `SafeExecuteAsync&lt;T&gt;()` - 安全执行任务（泛型版本）
+- `SafeExecuteAsync<T>()` - 安全执行任务（泛型版本）
 - `IgnoreExceptionAsync()` - 忽略任务异常
-- `IgnoreExceptionAsync&lt;TException&gt;()` - 忽略指定类型的异常
+- `IgnoreExceptionAsync<TException>()` - 忽略指定类型的异常
 
 ### 12. 任务协调
 
