@@ -13,34 +13,31 @@ description: "RegexHelper 是一个静态帮助类，为正则表达式操作提
 
 该类预定义了以下常用正则表达式模式常量：
 
-<table>
-<thead><tr><th>常量名</th><th>说明</th><th>模式示例</th></tr></thead>
-<tbody>
-<tr><td><code>EmailPattern</code></td><td>电子邮件</td><td><code>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</code></td></tr>
-<tr><td><code>MobilePhonePattern</code></td><td>中国大陆手机号</td><td><code>^1[3-9]\d{9}$</code></td></tr>
-<tr><td><code>TelephonePattern</code></td><td>固定电话</td><td><code>^(\d{3,4}-)?\d{7,8}(-\d{1,4})?$</code></td></tr>
-<tr><td><code>IdCardPattern</code></td><td>身份证号码（15位或18位）</td><td>18位含校验码</td></tr>
-<tr><td><code>UrlPattern</code></td><td>URL地址</td><td><code>^(https?|ftp)://[^\s/$.?#].[^\s]*$</code></td></tr>
-<tr><td><code>IPv4Pattern</code></td><td>IPv4地址</td><td>标准 IPv4 格式</td></tr>
-<tr><td><code>IPv6Pattern</code></td><td>IPv6地址</td><td>标准 IPv6 格式</td></tr>
-<tr><td><code>IntegerPattern</code></td><td>整数</td><td><code>^-?\d+$</code></td></tr>
-<tr><td><code>PositiveIntegerPattern</code></td><td>正整数</td><td><code>^[1-9]\d*$</code></td></tr>
-<tr><td><code>FloatPattern</code></td><td>浮点数</td><td><code>^-?\d+(\.\d+)?$</code></td></tr>
-<tr><td><code>ChinesePattern</code></td><td>中文字符</td><td><code>^[\u4e00-\u9fa5]+$</code></td></tr>
-<tr><td><code>LetterPattern</code></td><td>字母</td><td><code>^[a-zA-Z]+$</code></td></tr>
-<tr><td><code>AlphanumericPattern</code></td><td>字母数字</td><td><code>^[a-zA-Z0-9]+$</code></td></tr>
-<tr><td><code>PostalCodePattern</code></td><td>中国邮政编码</td><td><code>^[1-9]\d{5}$</code></td></tr>
-<tr><td><code>BankCardPattern</code></td><td>银行卡号</td><td><code>^\d{16,19}$</code></td></tr>
-<tr><td><code>LicensePlatePattern</code></td><td>中国车牌号</td><td>含新能源车牌</td></tr>
-<tr><td><code>DatePattern</code></td><td>日期（yyyy-MM-dd）</td><td><code>^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$</code></td></tr>
-<tr><td><code>TimePattern</code></td><td>时间（HH:mm:ss）</td><td><code>^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$</code></td></tr>
-<tr><td><code>HexColorPattern</code></td><td>十六进制颜色</td><td><code>^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$</code></td></tr>
-<tr><td><code>QQPattern</code></td><td>QQ号</td><td><code>^[1-9]\d{4,10}$</code></td></tr>
-<tr><td><code>WeChatPattern</code></td><td>微信号</td><td><code>^[a-zA-Z][a-zA-Z0-9_-]{5,19}$</code></td></tr>
-<tr><td><code>UsernamePattern</code></td><td>用户名</td><td><code>^[a-zA-Z][a-zA-Z0-9_]{4,15}$</code></td></tr>
-<tr><td><code>StrongPasswordPattern</code></td><td>强密码</td><td>至少8位，含大小写字母和数字</td></tr>
-</tbody>
-</table>
+| 常量名 | 说明 | 模式示例 |
+|--------|------|----------|
+| `EmailPattern` | 电子邮件 | `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$` |
+| `MobilePhonePattern` | 中国大陆手机号 | `^1[3-9]\d{9}$` |
+| `TelephonePattern` | 固定电话 | `^(\d{3,4}-)?\d{7,8}(-\d{1,4})?$` |
+| `IdCardPattern` | 身份证号码（15位或18位） | 18位含校验码 |
+| `UrlPattern` | URL地址 | `^(https?\|ftp)://[^\s/$.?#].[^\s]*$` |
+| `IPv4Pattern` | IPv4地址 | 标准 IPv4 格式 |
+| `IPv6Pattern` | IPv6地址 | 标准 IPv6 格式 |
+| `IntegerPattern` | 整数 | `^-?\d+$` |
+| `PositiveIntegerPattern` | 正整数 | `^[1-9]\d*$` |
+| `FloatPattern` | 浮点数 | `^-?\d+(\.\d+)?$` |
+| `ChinesePattern` | 中文字符 | `^[\u4e00-\u9fa5]+$` |
+| `LetterPattern` | 字母 | `^[a-zA-Z]+$` |
+| `AlphanumericPattern` | 字母数字 | `^[a-zA-Z0-9]+$` |
+| `PostalCodePattern` | 中国邮政编码 | `^[1-9]\d{5}$` |
+| `BankCardPattern` | 银行卡号 | `^\d{16,19}$` |
+| `LicensePlatePattern` | 中国车牌号 | 含新能源车牌 |
+| `DatePattern` | 日期（yyyy-MM-dd） | `^\d{4}-(0[1-9]\|1[0-2])-(0[1-9]\|[12]\d\|3[01])$` |
+| `TimePattern` | 时间（HH:mm:ss） | `^([01]\d\|2[0-3]):[0-5]\d:[0-5]\d$` |
+| `HexColorPattern` | 十六进制颜色 | `^#?([a-fA-F0-9]{6}\|[a-fA-F0-9]{3})$` |
+| `QQPattern` | QQ号 | `^[1-9]\d{4,10}$` |
+| `WeChatPattern` | 微信号 | `^[a-zA-Z][a-zA-Z0-9_-]{5,19}$` |
+| `UsernamePattern` | 用户名 | `^[a-zA-Z][a-zA-Z0-9_]{4,15}$` |
+| `StrongPasswordPattern` | 强密码 | 至少8位，含大小写字母和数字 |
 
 ## 主要功能模块
 
