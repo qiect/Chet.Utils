@@ -106,6 +106,12 @@ public static bool IsValidIPv4(string? ip)
 public static bool IsValidIPv6(string? ip)
 public static bool IsValidIP(string? ip)
 ```
+
+#### IsValidTelephone
+验证固定电话号码。
+```csharp
+public static bool IsValidTelephone(string? telephone)
+```
 **示例：**
 ```csharp
 bool isValidUrl = RegexHelper.IsValidUrl("https://www.example.com");
@@ -378,22 +384,34 @@ public static List<string> ExtractMobilePhones(string? input)
 public static List<string> ExtractUrls(string? input)
 ```
 
-#### ExtractHtmlTags
-提取所有 HTML 标签。
+#### ExtractIPv4Addresses
+提取所有 IPv4 地址。
 ```csharp
-public static List<string> ExtractHtmlTags(string? input)
+public static List<string> ExtractIPv4Addresses(string? input)
 ```
 
-#### ExtractIPs
-提取所有 IP 地址。
+#### ExtractDates
+提取所有日期。
 ```csharp
-public static List<string> ExtractIPs(string? input)
+public static List<string> ExtractDates(string? input)
 ```
 
-#### ExtractHexColors
-提取所有十六进制颜色值。
+#### ExtractChinese
+提取所有中文字符。
 ```csharp
-public static List<string> ExtractHexColors(string? input)
+public static List<string> ExtractChinese(string? input)
+```
+
+#### ExtractWords
+提取所有英文单词。
+```csharp
+public static List<string> ExtractWords(string? input)
+```
+
+#### ExtractFirst
+提取第一个匹配的字符串。
+```csharp
+public static string? ExtractFirst(string? input, string pattern, RegexOptions options = RegexOptions.None)
 ```
 
 ### 6. 格式化操作
@@ -405,13 +423,12 @@ public static List<string> ExtractHexColors(string? input)
 #### Mask
 对字符串进行脱敏处理。
 ```csharp
-public static string Mask(string? input, int start, int length, char maskChar = '*')
+public static string Mask(string? input, int keepStart, int keepEnd)
 ```
 **参数：**
 - `input`: 输入字符串
-- `start`: 开始位置
-- `length`: 脱敏长度
-- `maskChar`: 脱敏字符
+- `keepStart`: 保留开头字符数
+- `keepEnd`: 保留结尾字符数
 
 **示例：**
 ```csharp
@@ -419,30 +436,30 @@ var masked = RegexHelper.Mask("13812345678", 3, 4);
 // masked = "138****5678"
 ```
 
-#### MaskMobilePhone / MaskEmail / MaskIdCard / MaskBankCard
+#### HideMobilePhone / HideEmail / HideIdCard / HideBankCard
 对手机号、邮箱、身份证、银行卡进行脱敏。
 ```csharp
-public static string MaskMobilePhone(string? mobile)
-public static string MaskEmail(string? email)
-public static string MaskIdCard(string? idCard)
-public static string MaskBankCard(string? bankCard)
+public static string? HideMobilePhone(string? phone)
+public static string? HideEmail(string? email)
+public static string? HideIdCard(string? idCard)
+public static string? HideBankCard(string? bankCard)
 ```
 **示例：**
 ```csharp
-var maskedPhone = RegexHelper.MaskMobilePhone("13812345678");
+var maskedPhone = RegexHelper.HideMobilePhone("13812345678");
 // maskedPhone = "138****5678"
 
-var maskedEmail = RegexHelper.MaskEmail("test@example.com");
+var maskedEmail = RegexHelper.HideEmail("test@example.com");
 // maskedEmail = "t***@example.com"
 
-var maskedIdCard = RegexHelper.MaskIdCard("110101199001011234");
+var maskedIdCard = RegexHelper.HideIdCard("110101199001011234");
 // maskedIdCard = "110101********1234"
 ```
 
 #### FormatMobilePhone
 格式化手机号（添加分隔符）。
 ```csharp
-public static string FormatMobilePhone(string? mobile)
+public static string? FormatMobilePhone(string? phone)
 ```
 **示例：**
 ```csharp
@@ -450,43 +467,64 @@ var formatted = RegexHelper.FormatMobilePhone("13812345678");
 // formatted = "138-1234-5678"
 ```
 
-#### FormatBankCardNumber
+#### FormatBankCard
 格式化银行卡号（添加空格分隔）。
 ```csharp
-public static string FormatBankCardNumber(string? bankCard)
+public static string? FormatBankCard(string? bankCard)
 ```
 **示例：**
 ```csharp
-var formatted = RegexHelper.FormatBankCardNumber("6222021234567890123");
+var formatted = RegexHelper.FormatBankCard("6222021234567890123");
 // formatted = "6222 0212 3456 7890 123"
 ```
 
-#### CamelToUnderline / UnderlineToCamel
-驼峰命名与下划线命名互转。
+#### ToCamelCase / ToPascalCase / ToSnakeCase / ToKebabCase
+命名风格转换。
 ```csharp
-public static string CamelToUnderline(string? input)
-public static string UnderlineToCamel(string? input)
+public static string ToCamelCase(string? input)
+public static string ToPascalCase(string? input)
+public static string ToSnakeCase(string? input)
+public static string ToKebabCase(string? input)
 ```
 **示例：**
 ```csharp
-var underline = RegexHelper.CamelToUnderline("userName");
-// underline = "user_name"
-
-var camel = RegexHelper.UnderlineToCamel("user_name");
-// camel = "userName"
-```
-
-#### CapitalizeFirstLetter / CapitalizeWords
-首字母大写、每个单词首字母大写。
-```csharp
-public static string CapitalizeFirstLetter(string? input)
-public static string CapitalizeWords(string? input)
+var camel = RegexHelper.ToCamelCase("user_name"); // "userName"
+var pascal = RegexHelper.ToPascalCase("user_name"); // "UserName"
+var snake = RegexHelper.ToSnakeCase("userName"); // "user_name"
+var kebab = RegexHelper.ToKebabCase("userName"); // "user-name"
 ```
 
 #### Split
 使用正则表达式分割字符串。
 ```csharp
 public static string[] Split(string? input, string pattern, RegexOptions options = RegexOptions.None)
+```
+
+### 7. 辅助方法
+
+#### Test
+测试正则表达式并返回详细结果。
+```csharp
+public static RegexTestResult Test(string? input, string pattern, RegexOptions options = RegexOptions.None)
+```
+
+#### ValidatePattern
+验证正则表达式模式是否有效。
+```csharp
+public static bool ValidatePattern(string? pattern, out string? errorMessage)
+```
+
+#### Escape / Unescape
+转义/反转义正则表达式特殊字符。
+```csharp
+public static string Escape(string? input)
+public static string Unescape(string? input)
+```
+
+#### Count
+计算匹配次数。
+```csharp
+public static int Count(string? input, string pattern, RegexOptions options = RegexOptions.None)
 ```
 
 ## 使用场景

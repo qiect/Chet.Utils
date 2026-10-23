@@ -15,12 +15,12 @@ description: "为 DataTable 类型提供了丰富的扩展方法，涵盖数据�
 
 提供 DataTable 状态相关的数据判断方法。
 
-#### IsNullOrEmpty
+#### IsNullOrEmptySafe
 
 判断 DataTable 是否为 null 或无行数据。
 
 ```csharp
-public static bool IsNullOrEmpty(this DataTable dt)
+public static bool IsNullOrEmptySafe(this DataTable dt)
 ```
 
 **参数：**
@@ -40,9 +40,9 @@ DataTable dt3 = new DataTable();
 dt3.Columns.Add("Name");
 dt3.Rows.Add("张三");
 
-bool result1 = dt1.IsNullOrEmpty(); // true
-bool result2 = dt2.IsNullOrEmpty(); // true
-bool result3 = dt3.IsNullOrEmpty(); // false
+bool result1 = dt1.IsNullOrEmptySafe(); // true
+bool result2 = dt2.IsNullOrEmptySafe(); // true
+bool result3 = dt3.IsNullOrEmptySafe(); // false
 ```
 
 #### HasRows
@@ -301,7 +301,7 @@ var names = dt.GetColumnNames(); // ["Name", "Age"]
 
 #### GetColumnTypes
 
-获取 DataTable 的所有列类型。
+获取 DataTable 的所有列名及其类型。
 
 ```csharp
 public static Dictionary<string, Type> GetColumnTypes(this DataTable dt)
@@ -313,22 +313,17 @@ public static Dictionary<string, Type> GetColumnTypes(this DataTable dt)
 
 **返回值：**
 
-- 列类型字典（列名 -> 类型）
+- 列名与类型的字典
 
 **示例：**
 
 ```csharp
-DataTable dt = new DataTable();
-dt.Columns.Add("Name", typeof(string));
-dt.Columns.Add("Age", typeof(int));
-
-var types = dt.GetColumnTypes();
-// { "Name": typeof(string), "Age": typeof(int) }
+var types = dt.GetColumnTypes(); // {"Name": typeof(string), "Age": typeof(int)}
 ```
 
 #### ToDictionaryList
 
-获取 DataTable 的所有行数据（每行为字典）。
+将 DataTable 转换为字典列表（每行一个字典）。
 
 ```csharp
 public static List<Dictionary<string, object>> ToDictionaryList(this DataTable dt)
@@ -340,23 +335,18 @@ public static List<Dictionary<string, object>> ToDictionaryList(this DataTable d
 
 **返回值：**
 
-- 字典列表
+- 字典列表，每个字典代表一行数据
 
 **示例：**
 
 ```csharp
-DataTable dt = new DataTable();
-dt.Columns.Add("Name", typeof(string));
-dt.Columns.Add("Age", typeof(int));
-dt.Rows.Add("张三", 25);
-
 var list = dt.ToDictionaryList();
-// [{ "Name": "张三", "Age": 25 }]
+// [{"Name": "张三", "Age": 25}, {"Name": "李四", "Age": 30}]
 ```
 
 #### ToArray
 
-DataTable 转为二维数组。
+将 DataTable 转换为二维数组。
 
 ```csharp
 public static object[,] ToArray(this DataTable dt)
@@ -364,24 +354,17 @@ public static object[,] ToArray(this DataTable dt)
 
 **参数：**
 
-- `dt`: 待转换的 DataTable
+- `dt`: 待处理的 DataTable
 
 **返回值：**
 
-- 二维数组
+- 二维数组，包含所有行列数据
 
 **示例：**
 
 ```csharp
-DataTable dt = new DataTable();
-dt.Columns.Add("Name", typeof(string));
-dt.Columns.Add("Age", typeof(int));
-dt.Rows.Add("张三", 25);
-dt.Rows.Add("李四", 30);
-
-var arr = dt.ToArray();
-// arr[0, 0] = "张三", arr[0, 1] = 25
-// arr[1, 0] = "李四", arr[1, 1] = 30
+var array = dt.ToArray();
+// array[0, 0] = "张三", array[0, 1] = 25
 ```
 
 #### ToCsv
@@ -882,7 +865,7 @@ int count = dt.CountNonNull("Email"); // 2
 
 #### GetStatistics
 
-获取聚合统计结果。
+获取指定列的统计信息（总和、平均值、最小值、最大值、计数）。
 
 ```csharp
 public static Dictionary<string, object> GetStatistics(this DataTable dt, string columnName, string filter = null)
@@ -890,30 +873,19 @@ public static Dictionary<string, object> GetStatistics(this DataTable dt, string
 
 **参数：**
 
-- `dt`: 待处理的 DataTable
+- `dt`: 待计算的 DataTable
 - `columnName`: 列名
 - `filter`: 筛选条件（可选）
 
 **返回值：**
 
-- 包含 Sum、Avg、Min、Max、Count 的字典
+- 包含 Sum、Average、Min、Max、Count 的统计字典
 
 **示例：**
 
 ```csharp
-DataTable dt = new DataTable();
-dt.Columns.Add("Name", typeof(string));
-dt.Columns.Add("Amount", typeof(decimal));
-dt.Rows.Add("张三", 100m);
-dt.Rows.Add("李四", 200m);
-dt.Rows.Add("王五", 150m);
-
-var stats = dt.GetStatistics("Amount");
-// stats["Sum"] = 450
-// stats["Avg"] = 150
-// stats["Min"] = 100
-// stats["Max"] = 200
-// stats["Count"] = 3
+var stats = dt.GetStatistics("Age");
+// stats["Sum"] = 55, stats["Average"] = 27.5, stats["Min"] = 25, stats["Max"] = 30
 ```
 
 ### 5. 行列操作
@@ -1259,7 +1231,7 @@ DataTable merged = dt1.Merge(dt2); // 包含张三和李四
 
 #### AsEnumerableDictionary
 
-DataTable 转为一行一字典的枚举（便于遍历）。
+将 DataTable 转为一行一字典的枚举（便于遍历，延迟执行）。
 
 ```csharp
 public static IEnumerable<IDictionary<string, object>> AsEnumerableDictionary(this DataTable dt)
@@ -1271,20 +1243,41 @@ public static IEnumerable<IDictionary<string, object>> AsEnumerableDictionary(th
 
 **返回值：**
 
-- 字典枚举
+- 字典枚举，每个字典代表一行数据
 
 **示例：**
 
 ```csharp
-DataTable dt = new DataTable();
-dt.Columns.Add("Name", typeof(string));
-dt.Columns.Add("Age", typeof(int));
-dt.Rows.Add("张三", 25);
-dt.Rows.Add("李四", 30);
-
 foreach (var row in dt.AsEnumerableDictionary())
 {
-    Console.WriteLine($"Name: {row["Name"]}, Age: {row["Age"]}");
+    Console.WriteLine(row["Name"]); // 逐行访问
+}
+```
+
+#### GroupBy
+
+按指定列对 DataRow 进行分组。
+
+```csharp
+public static Dictionary<object, List<DataRow>> GroupBy(this DataTable dt, string groupColumn)
+```
+
+**参数：**
+
+- `dt`: 待分组的 DataTable
+- `groupColumn`: 分组列名
+
+**返回值：**
+
+- 分组字典，键为分组列值，值为该组的行列表
+
+**示例：**
+
+```csharp
+var groups = dt.GroupBy("City");
+foreach (var group in groups)
+{
+    Console.WriteLine($"城市: {group.Key}, 人数: {group.Value.Count}");
 }
 ```
 
@@ -1314,38 +1307,6 @@ dt.ConvertDbNullToNull();
 ### 7. 分组操作
 
 提供数据分组和聚合功能。
-
-#### GroupBy
-
-DataTable 按指定列分组。
-
-```csharp
-public static Dictionary<object, List<DataRow>> GroupBy(this DataTable dt, string groupColumn)
-```
-
-**参数：**
-
-- `dt`: 待分组的 DataTable
-- `groupColumn`: 分组列名
-
-**返回值：**
-
-- 分组字典（分组键 -> 行列表）
-
-**示例：**
-
-```csharp
-DataTable dt = new DataTable();
-dt.Columns.Add("Department", typeof(string));
-dt.Columns.Add("Name", typeof(string));
-dt.Rows.Add("研发部", "张三");
-dt.Rows.Add("研发部", "李四");
-dt.Rows.Add("市场部", "王五");
-
-var groups = dt.GroupBy("Department");
-// groups["研发部"] = [张三, 李四]
-// groups["市场部"] = [王五]
-```
 
 #### GroupBySum
 

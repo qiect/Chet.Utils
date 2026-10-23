@@ -36,16 +36,16 @@ public static bool CanWriteSafe(this Stream stream)
 public static bool CanSeekSafe(this Stream stream)
 ```
 
-#### IsNullOrEmpty
+#### IsNullOrEmptySafe
 判断流是否为空或长度为零。
 ```csharp
-public static bool IsNullOrEmpty(this Stream stream)
+public static bool IsNullOrEmptySafe(this Stream stream)
 ```
 
-#### IsNotNullOrEmpty
+#### IsNotNullOrEmptySafe
 判断流是否不为空且长度大于零。
 ```csharp
-public static bool IsNotNullOrEmpty(this Stream stream)
+public static bool IsNotNullOrEmptySafe(this Stream stream)
 ```
 
 #### IsNullStream
@@ -306,6 +306,24 @@ public static async Task SaveToFileAsync(this Stream stream, string filePath, Ca
 public static Stream ToFileStream(this string filePath)
 ```
 
+#### ToFileStreamAsync
+异步从文件数据读取为流。
+```csharp
+public static async Task<Stream> ToFileStreamAsync(this string filePath, CancellationToken cancellationToken = default)
+```
+
+#### AppendToFile
+将流内容追加到文件。
+```csharp
+public static void AppendToFile(this Stream stream, string filePath)
+```
+
+#### AppendToFileAsync
+异步将流内容追加到文件。
+```csharp
+public static async Task AppendToFileAsync(this Stream stream, string filePath, CancellationToken cancellationToken = default)
+```
+
 ---
 
 ### 8. 流操作
@@ -364,6 +382,22 @@ public static void SeekToStart(this Stream stream)
 public static void SeekToEnd(this Stream stream)
 ```
 
+#### SeekTo
+定位流到指定位置。
+```csharp
+public static void SeekTo(this Stream stream, long offset, SeekOrigin origin = SeekOrigin.Begin)
+```
+**参数：**
+- `stream`: 流
+- `offset`: 偏移量
+- `origin`: 起始位置，默认为 Begin
+
+**示例：**
+```csharp
+using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello World"));
+stream.SeekTo(6); // 定位到第 7 个字节
+```
+
 ---
 
 ### 9. 转换操作
@@ -395,6 +429,24 @@ var stream = bytes.ToStream();
 public static MemoryStream ToMemoryStream(this Stream stream)
 ```
 
+#### ToBufferedStream
+将流转换为 BufferedStream。
+```csharp
+public static BufferedStream ToBufferedStream(this Stream stream, int bufferSize = 4096)
+```
+**参数：**
+- `stream`: 流
+- `bufferSize`: 缓冲区大小，默认为 4096
+
+**返回值：**
+- BufferedStream 实例
+
+**示例：**
+```csharp
+using var stream = File.OpenRead("largefile.dat");
+using var buffered = stream.ToBufferedStream(8192);
+```
+
 ---
 
 ### 10. 哈希计算
@@ -410,16 +462,34 @@ using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello World"));
 var md5 = stream.ComputeMd5();
 ```
 
+#### ComputeMd5Async
+异步计算流的 MD5 哈希值。
+```csharp
+public static async Task<string> ComputeMd5Async(this Stream stream, CancellationToken cancellationToken = default)
+```
+
 #### ComputeSha256
 计算流的 SHA256 哈希值。
 ```csharp
 public static string ComputeSha256(this Stream stream)
 ```
 
+#### ComputeSha256Async
+异步计算流的 SHA256 哈希值。
+```csharp
+public static async Task<string> ComputeSha256Async(this Stream stream, CancellationToken cancellationToken = default)
+```
+
 #### ComputeHash
 计算流的指定算法哈希值。
 ```csharp
 public static string ComputeHash(this Stream stream, HashAlgorithm algorithm)
+```
+
+#### ComputeHashAsync
+异步计算流的指定算法哈希值。
+```csharp
+public static async Task<string> ComputeHashAsync(this Stream stream, HashAlgorithm algorithm, CancellationToken cancellationToken = default)
 ```
 
 ---
@@ -453,6 +523,90 @@ public static async Task<byte[]> CompressAsync(this Stream stream, CancellationT
 异步解压流数据（GZip）。
 ```csharp
 public static async Task<byte[]> DecompressAsync(this Stream stream, CancellationToken cancellationToken = default)
+```
+
+---
+
+### 12. 资源管理
+
+#### CloseSafe
+安全关闭流（不抛出异常）。
+```csharp
+public static void CloseSafe(this Stream stream)
+```
+**示例：**
+```csharp
+Stream stream = GetStream();
+stream.CloseSafe(); // 即使流为 null 也不会抛出异常
+```
+
+#### DisposeSafe
+安全释放流资源（不抛出异常）。
+```csharp
+public static void DisposeSafe(this Stream stream)
+```
+**示例：**
+```csharp
+Stream stream = GetStream();
+stream.DisposeSafe(); // 即使流为 null 也不会抛出异常
+```
+
+---
+
+### 13. 流比较与信息
+
+#### Clone
+克隆流（创建流的副本）。
+```csharp
+public static Stream Clone(this Stream stream)
+```
+**返回值：**
+- 流的副本
+
+**示例：**
+```csharp
+using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello World"));
+using var clone = stream.Clone();
+```
+
+#### ContentEquals
+比较两个流的内容是否相等。
+```csharp
+public static bool ContentEquals(this Stream stream1, Stream stream2)
+```
+**参数：**
+- `stream1`: 第一个流
+- `stream2`: 第二个流
+
+**返回值：**
+- 如果内容相等返回 true；否则返回 false
+
+**示例：**
+```csharp
+using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes("Hello"));
+using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes("Hello"));
+var equals = stream1.ContentEquals(stream2); // true
+```
+
+#### GetFriendlySize
+获取流大小的友好字符串（如 "1.23 MB"）。
+```csharp
+public static string GetFriendlySize(this Stream stream)
+```
+**示例：**
+```csharp
+using var stream = new MemoryStream(new byte[1024 * 1024]); // 1 MB
+var size = stream.GetFriendlySize(); // "1.00 MB"
+```
+
+#### GetFriendlySize (long)
+获取字节数的友好字符串（如 "1.23 MB"）。
+```csharp
+public static string GetFriendlySize(this long bytes)
+```
+**示例：**
+```csharp
+var size = (1024L * 1024 * 5).GetFriendlySize(); // "5.00 MB"
 ```
 
 ---

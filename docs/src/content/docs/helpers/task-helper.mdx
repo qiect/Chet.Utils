@@ -275,6 +275,21 @@ public static Task<T> FromException<T>(Exception exception)
 **返回值：**
 - 失败的 Task 实例
 
+### FromCanceled
+
+创建一个已取消的任务。
+
+```csharp
+public static Task FromCanceled(CancellationToken cancellationToken)
+public static Task<T> FromCanceled<T>(CancellationToken cancellationToken)
+```
+
+**参数：**
+- `cancellationToken`: 取消令牌
+
+**返回值：**
+- 已取消的 Task 实例
+
 ## 任务等待
 
 ### WhenAll
@@ -350,6 +365,25 @@ var task = TaskHelper.Delay(1000);
 var completed = TaskHelper.Wait(task, TimeSpan.FromSeconds(2));
 Console.WriteLine($"任务完成: {completed}");
 ```
+
+### WaitAll
+
+等待所有任务完成。
+
+```csharp
+public static bool WaitAll(Task[] tasks, TimeSpan? timeout = null)
+```
+
+### WaitAny
+
+等待任意一个任务完成。
+
+```csharp
+public static int WaitAny(Task[] tasks, TimeSpan? timeout = null)
+```
+
+**返回值：**
+- 完成的任务索引
 
 ## 超时控制
 
@@ -494,6 +528,22 @@ await TaskHelper.RetryWhenAsync(
     delay: TimeSpan.FromSeconds(1)
 );
 ```
+
+### RetryWithTimeoutAsync
+
+带超时的重试机制。
+
+```csharp
+public static async Task RetryWithTimeoutAsync(Func<Task> taskFactory, int maxRetries, TimeSpan retryTimeout, TimeSpan totalTimeout, CancellationToken cancellationToken = default)
+public static async Task<T> RetryWithTimeoutAsync<T>(Func<Task<T>> taskFactory, int maxRetries, TimeSpan retryTimeout, TimeSpan totalTimeout, CancellationToken cancellationToken = default)
+```
+
+**参数：**
+- `taskFactory`: 任务工厂函数
+- `maxRetries`: 最大重试次数
+- `retryTimeout`: 单次重试超时
+- `totalTimeout`: 总超时时间
+- `cancellationToken`: 取消令牌
 
 ## 并行处理
 
@@ -658,6 +708,29 @@ await TaskHelper.BatchProcessAsync(items, 10, TimeSpan.FromMilliseconds(100), as
 });
 ```
 
+### WithSemaphoreAsync
+
+使用信号量限流执行任务。
+
+```csharp
+public static async Task<T> WithSemaphoreAsync<T>(SemaphoreSlim semaphore, Func<Task<T>> taskFactory, CancellationToken cancellationToken = default)
+public static async Task WithSemaphoreAsync(SemaphoreSlim semaphore, Func<Task> taskFactory, CancellationToken cancellationToken = default)
+```
+
+**参数：**
+- `semaphore`: 信号量实例
+- `taskFactory`: 任务工厂函数
+- `cancellationToken`: 取消令牌
+
+**返回值：**
+- 任务返回值或 Task 实例
+
+**示例：**
+```csharp
+using var semaphore = new SemaphoreSlim(5); // 最多 5 个并发
+var result = await TaskHelper.WithSemaphoreAsync(semaphore, async () => await CallApi());
+```
+
 ## 任务链与管道
 
 ### ExecuteChainAsync
@@ -683,34 +756,6 @@ await TaskHelper.ExecuteChainAsync(new List<Func<Task>>
     () => TaskHelper.Run(() => Console.WriteLine("步骤2")),
     () => TaskHelper.Run(() => Console.WriteLine("步骤3"))
 });
-```
-
-### ExecutePipelineAsync
-
-顺序执行任务链（带返回值传递）。
-
-```csharp
-public static async Task<TResult> ExecutePipelineAsync<T, TResult>(T initialValue, IEnumerable<Func<object?, Task<object?>>> pipeline, CancellationToken cancellationToken = default)
-```
-
-**参数：**
-- `initialValue`: 初始值
-- `pipeline`: 处理管道
-- `cancellationToken`: 取消令牌
-
-**返回值：**
-- 最终结果
-
-**示例：**
-```csharp
-var pipeline = new List<Func<object?, Task<object?>>>
-{
-    async x => await Task.FromResult((object)((int)x! + 1)),
-    async x => await Task.FromResult((object)((int)x! * 2)),
-    async x => await Task.FromResult((object)((int)x! + 3))
-};
-var result = await TaskHelper.ExecutePipelineAsync<int, int>(1, pipeline);
-// result = 7
 ```
 
 ### PipeAsync
@@ -807,12 +852,14 @@ Console.WriteLine($"执行时间: {duration}, 结果: {result}");
 public static Task WithCancellation(Action<CancellationToken> action, CancellationToken cancellationToken = default)
 public static Task WithCancellationAsync(Func<CancellationToken, Task> asyncAction, CancellationToken cancellationToken = default)
 public static Task<T> WithCancellation<T>(Func<CancellationToken, T> function, CancellationToken cancellationToken = default)
+public static Task<T> WithCancellationAsync<T>(Func<CancellationToken, Task<T>> asyncFunction, CancellationToken cancellationToken = default)
 ```
 
 **参数：**
 - `action`: 要执行的操作
 - `asyncAction`: 要执行的异步操作
 - `function`: 要执行的函数
+- `asyncFunction`: 要执行的异步函数
 - `cancellationToken`: 取消令牌
 
 **返回值：**
@@ -827,6 +874,8 @@ await TaskHelper.WithCancellation(ct =>
         // 执行操作
     }
 });
+
+var result = await TaskHelper.WithCancellationAsync(async ct => await FetchDataWithCancel(ct), cts.Token);
 ```
 
 ## 任务结果处理
@@ -1012,6 +1061,221 @@ public static AutoResetEvent CreateAutoResetEvent(bool initialState = false)
 **返回值：**
 - 自动重置事件实例
 
+## 断路器
+
+### CreateCircuitBreaker
+
+创建断路器实例。
+
+```csharp
+public static CircuitBreaker CreateCircuitBreaker(int failureThreshold, TimeSpan resetTimeout)
+```
+
+**参数：**
+- `failureThreshold`: 失败阈值（连续失败多少次后熔断）
+- `resetTimeout`: 重置超时时间（熔断后多久尝试恢复）
+
+**返回值：**
+- CircuitBreaker 实例
+
+**示例：**
+```csharp
+var breaker = TaskHelper.CreateCircuitBreaker(3, TimeSpan.FromSeconds(30));
+await breaker.ExecuteAsync(async () => await CallExternalApi());
+```
+
+### ExecuteWithCircuitBreakerAsync
+
+使用断路器执行任务。
+
+```csharp
+public static async Task ExecuteWithCircuitBreakerAsync(Func<Task> action, int failureThreshold, TimeSpan resetTimeout, CancellationToken cancellationToken = default)
+public static async Task<T> ExecuteWithCircuitBreakerAsync<T>(Func<Task<T>> action, int failureThreshold, TimeSpan resetTimeout, CancellationToken cancellationToken = default)
+```
+
+**参数：**
+- `action`: 要执行的操作
+- `failureThreshold`: 失败阈值
+- `resetTimeout`: 重置超时时间
+- `cancellationToken`: 取消令牌
+
+**返回值：**
+- Task 实例或任务返回值
+
+**异常：**
+- `CircuitBreakerOpenException`: 断路器处于打开状态时抛出
+
+**示例：**
+```csharp
+try
+{
+    await TaskHelper.ExecuteWithCircuitBreakerAsync(
+        async () => await CallExternalApi(),
+        failureThreshold: 3,
+        resetTimeout: TimeSpan.FromSeconds(30));
+}
+catch (CircuitBreakerOpenException)
+{
+    Console.WriteLine("断路器已打开，服务暂时不可用");
+}
+```
+
+## 任务队列
+
+### CreateTaskQueue
+
+创建任务队列。
+
+```csharp
+public static TaskQueue<T> CreateTaskQueue<T>(Func<T, Task> processor, int maxDegreeOfParallelism = 1, int capacity = 1000)
+```
+
+**参数：**
+- `processor`: 任务处理函数
+- `maxDegreeOfParallelism`: 最大并行度
+- `capacity`: 队列容量
+
+**返回值：**
+- TaskQueue\<T\> 实例
+
+**示例：**
+```csharp
+var queue = TaskHelper.CreateTaskQueue<string>(async item => await ProcessItemAsync(item));
+await queue.EnqueueAsync("item1");
+await queue.EnqueueAsync("item2");
+await queue.CompleteAsync();
+```
+
+### CreatePriorityTaskQueue
+
+创建优先级任务队列。
+
+```csharp
+public static PriorityTaskQueue<T> CreatePriorityTaskQueue<T>(Func<T, Task> processor, IComparer<T> comparer, int maxDegreeOfParallelism = 1)
+```
+
+**参数：**
+- `processor`: 任务处理函数
+- `comparer`: 优先级比较器
+- `maxDegreeOfParallelism`: 最大并行度
+
+**返回值：**
+- PriorityTaskQueue\<T\> 实例
+
+**示例：**
+```csharp
+var queue = TaskHelper.CreatePriorityTaskQueue<int>(
+    async item => await ProcessItemAsync(item),
+    Comparer<int>.Default);
+await queue.EnqueueAsync(5); // 低优先级
+await queue.EnqueueAsync(1); // 高优先级
+```
+
+### CreateProducerConsumerQueue
+
+创建生产者-消费者队列。
+
+```csharp
+public static ProducerConsumerQueue<T> CreateProducerConsumerQueue<T>(Func<T, Task> consumer, int boundedCapacity = 1000)
+```
+
+**参数：**
+- `consumer`: 消费者函数
+- `boundedCapacity`: 有界容量
+
+**返回值：**
+- ProducerConsumerQueue\<T\> 实例
+
+**示例：**
+```csharp
+var producerConsumer = TaskHelper.CreateProducerConsumerQueue<string>(
+    async item => await ProcessItemAsync(item),
+    boundedCapacity: 100);
+await producerConsumer.WriteAsync("item1");
+await producerConsumer.Completion;
+```
+
+## 任务池
+
+### CreateTaskPool
+
+创建任务池。
+
+```csharp
+public static TaskPool<T, TResult> CreateTaskPool<T, TResult>(Func<T, Task<TResult>> processor, int maxDegreeOfParallelism = 10)
+```
+
+**参数：**
+- `processor`: 任务处理函数
+- `maxDegreeOfParallelism`: 最大并行度
+
+**返回值：**
+- TaskPool\<T, TResult\> 实例
+
+**示例：**
+```csharp
+using var pool = TaskHelper.CreateTaskPool<string, int>(
+    async item => await ProcessItemAsync(item),
+    maxDegreeOfParallelism: 10);
+var result1 = await pool.ExecuteAsync("item1");
+var result2 = await pool.ExecuteAsync("item2");
+```
+
+### CreateResourcePool
+
+创建资源池。
+
+```csharp
+public static ResourcePool<T> CreateResourcePool<T>(Func<T> factory, int maxPoolSize = 10) where T : class
+```
+
+**参数：**
+- `factory`: 资源工厂函数
+- `maxPoolSize`: 最大池大小
+
+**返回值：**
+- ResourcePool\<T\> 实例
+
+**示例：**
+```csharp
+using var pool = TaskHelper.CreateResourcePool(() => new HttpClient(), maxPoolSize: 10);
+var client = await pool.RentAsync();
+try
+{
+    var response = await client.GetAsync("https://example.com");
+}
+finally
+{
+    pool.Return(client);
+}
+```
+
+## 重试与计时
+
+### TimeWithRetryAsync
+
+带重试机制的任务执行并计时。
+
+```csharp
+public static async Task<TaskExecutionResult> TimeWithRetryAsync(Func<Task> action, int maxRetries = 3, TimeSpan? delay = null, CancellationToken cancellationToken = default)
+public static async Task<TaskExecutionResult<T>> TimeWithRetryAsync<T>(Func<Task<T>> action, int maxRetries = 3, TimeSpan? delay = null, CancellationToken cancellationToken = default)
+```
+
+**参数：**
+- `action`: 要执行的操作
+- `maxRetries`: 最大重试次数
+- `delay`: 重试间隔，默认为 1 秒
+- `cancellationToken`: 取消令牌
+
+**返回值：**
+- TaskExecutionResult 实例，包含 IsSuccess、Exception、Duration 属性
+
+**示例：**
+```csharp
+var result = await TaskHelper.TimeWithRetryAsync(async () => await CallApi(), maxRetries: 3);
+Console.WriteLine($"成功: {result.IsSuccess}, 耗时: {result.Duration}");
+```
+
 ## 辅助数据结构
 
 ### TaskExecutionStatus 枚举
@@ -1052,8 +1316,18 @@ public static AutoResetEvent CreateAutoResetEvent(bool initialState = false)
 - `Duration`: 执行时长
 
 **静态方法：**
-- `Success(TimeSpan duration)`: 创建成功结果
-- `Failure(Exception exception, TimeSpan duration)`: 创建失败结果
+
+#### Success
+创建成功结果。
+```csharp
+public static TaskExecutionResult Success(TimeSpan duration)
+```
+
+#### Failure
+创建失败结果。
+```csharp
+public static TaskExecutionResult Failure(Exception exception, TimeSpan duration)
+```
 
 ### TaskExecutionResult\<T\>
 
@@ -1063,8 +1337,35 @@ public static AutoResetEvent CreateAutoResetEvent(bool initialState = false)
 - `Result`: 返回结果
 
 **静态方法：**
-- `Success(T result, TimeSpan duration)`: 创建成功结果
-- `Failure(Exception exception, TimeSpan duration)`: 创建失败结果
+
+#### Success
+创建成功结果。
+```csharp
+public static TaskExecutionResult<T> Success(T result, TimeSpan duration)
+```
+
+#### Failure
+创建失败结果。
+```csharp
+public static TaskExecutionResult<T> Failure(Exception exception, TimeSpan duration)
+```
+
+### CircuitBreakerState 枚举
+
+断路器状态。
+
+**值：**
+- `Closed`: 关闭状态（正常执行）
+- `Open`: 打开状态（熔断）
+- `HalfOpen`: 半开状态（测试恢复）
+
+### CircuitBreakerOpenException
+
+断路器打开异常。当断路器处于打开状态拒绝执行任务时抛出。
+
+```csharp
+public class CircuitBreakerOpenException : Exception
+```
 
 ## 使用建议
 

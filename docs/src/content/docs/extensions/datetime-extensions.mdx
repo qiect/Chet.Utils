@@ -11,154 +11,13 @@ description: "为 DateTime 类型提供了丰富的扩展方法，包括日期�
 
 ## 主要功能模块
 
-### 1. 基础判断方法
+### 1. 基础判断
 
 提供 DateTime 状态判断的便捷方法。
 
-**主要方法：**
-- `IsDefault()` - 判断 DateTime 是否为默认值（未初始化）
-- `IsMinValue()` - 判断 DateTime 是否为最小值
-- `IsMaxValue()` - 判断 DateTime 是否为最大值
-- `IsToday()` - 判断 DateTime 是否为今天
-- `IsYesterday()` - 判断 DateTime 是否为昨天
-- `IsTomorrow()` - 判断 DateTime 是否为明天
-- `IsNullOrDefault()` - 判断 DateTime 是否为 null 或默认值（针对 Nullable&lt;DateTime&gt;）
-
-### 2. 日期属性判断方法
-
-提供 DateTime 日期属性判断的便捷方法。
-
-**主要方法：**
-- `IsLeapYear()` - 判断 DateTime 是否为闰年
-- `IsWeekend()` - 判断 DateTime 是否为周末（周六或周日）
-- `IsWeekday()` - 判断 DateTime 是否为工作日（周一到周五）
-- `IsAM()` - 判断 DateTime 是否为上午
-- `IsPM()` - 判断 DateTime 是否为下午
-- `IsFirstDayOfMonth()` - 判断 DateTime 是否为指定月份的第一天
-- `IsLastDayOfMonth()` - 判断 DateTime 是否为指定月份的最后一天
-
-### 3. 季度和周计算方法
-
-提供季度和周相关的计算功能。
-
-**主要方法：**
-- `GetQuarter()` - 获取 DateTime 所在的季度（1-4）
-- `ToQuarter()` - 获取 DateTime 所在季度（GetQuarter 的别名方法）
-- `ToQuarterString()` - 获取 DateTime 所在季度的字符串表示（如 "Q1"）
-- `GetWeekOfYear()` - 获取 DateTime 所在年份的第几周
-- `GetWeekOfMonth()` - 获取 DateTime 所在月份的第几周
-- `GetFirstDayOfQuarter()` - 获取 DateTime 所在季度的第一天
-- `GetLastDayOfQuarter()` - 获取 DateTime 所在季度的最后一天
-
-### 4. 时间转换方法
-
-提供 DateTime 与 Unix 时间戳之间的相互转换。
-
-**主要方法：**
-- `ToUnixTimestamp()` - DateTime 转为 Unix 时间戳（秒）
-- `ToUnixTimestampMs()` - DateTime 转为 Unix 时间戳（毫秒）
-- `FromUnixTimestamp()` - Unix 时间戳（秒）转为 DateTime
-- `FromUnixTimestampMs()` - Unix 时间戳（毫秒）转为 DateTime
-- `ToLocalTimeSafe()` - DateTime 转为本地时间
-- `ToUtcTimeSafe()` - DateTime 转为 UTC 时间
-- `ToTimeZone(string timeZoneId)` - DateTime 转为指定时区时间
-- `ToDateTimeOffset()` - DateTime 转为 DateTimeOffset
-
-### 5. 格式化输出方法
-
-提供日期时间到各种格式字符串的转换。
-
-**主要方法：**
-- `ToFormatString(string format)` - DateTime 转为指定格式字符串
-- `ToIso8601String()` - DateTime 转为 ISO8601 格式字符串
-- `ToRfc1123String()` - DateTime 转为 RFC1123 格式字符串
-- `ToChineseDateString()` - DateTime 转为中文日期字符串
-- `ToChineseDateTimeString()` - DateTime 转为中文日期时间字符串
-- `ToTimestampString()` - DateTime 转为时间戳字符串
-- `ToCustomTimestamp()` - DateTime 转为时间戳（自定义格式，精确到毫秒）
-- `ToDateString()` - DateTime 转为日期字符串
-- `ToTimeString()` - DateTime 转为时间字符串
-- `ToShortTimeString()` - DateTime 转为短时间字符串
-- `ToChineseWeekday()` - DateTime 转为星期中文名称
-- `ToEnglishWeekday()` - DateTime 转为星期英文名称
-- `ToWeekdayNumber()` - DateTime 转为星期数字
-
-### 6. 日期计算方法
-
-提供日期时间加减和时间差计算功能。
-
-**主要方法：**
-- `AddDaysSafe(double days)` - 安全增加指定天数
-- `AddHoursSafe(double hours)` - 安全增加指定小时数
-- `AddMinutesSafe(double minutes)` - 安全增加指定分钟数
-- `AddSecondsSafe(double seconds)` - 安全增加指定秒数
-- `AddMonthsSafe(int months)` - 安全增加指定月份数
-- `AddYearsSafe(int years)` - 安全增加指定年份数
-- `DaysBetween(DateTime other)` - 获取两个 DateTime 之间的天数差
-- `HoursBetween(DateTime other)` - 获取两个 DateTime 之间的小时差
-- `MinutesBetween(DateTime other)` - 获取两个 DateTime 之间的分钟差
-- `SecondsBetween(DateTime other)` - 获取两个 DateTime 之间的秒数差
-- `SpanBetween(DateTime other)` - 获取两个 DateTime 之间的时间差（TimeSpan）
-
-### 7. 时间比较方法
-
-提供时间比较和范围判断功能。
-
-**主要方法：**
-- `IsBetween(DateTime start, DateTime end)` - 判断 DateTime 是否在指定范围内（包含边界）
-- `IsBefore(DateTime other)` - 判断 DateTime 是否早于指定时间
-- `IsAfter(DateTime other)` - 判断 DateTime 是否晚于指定时间
-
-### 8. 时间范围方法
-
-提供获取时间范围的功能。
-
-**主要方法：**
-- `GetStartOfDay()` - 获取当天的开始时间（00:00:00）
-- `GetEndOfDay()` - 获取当天的结束时间（23:59:59）
-- `GetStartOfWeek()` - 获取当周的开始时间
-- `GetEndOfWeek()` - 获取当周的结束时间
-- `GetStartOfMonth()` - 获取当月的开始时间
-- `GetEndOfMonth()` - 获取当月的结束时间
-- `GetStartOfYear()` - 获取当年的开始时间
-- `GetEndOfYear()` - 获取当年的结束时间
-
-### 9. 年龄计算方法
-
-提供年龄计算和日历系统转换功能。
-
-**主要方法：**
-- `GetAge(DateTime? referenceDate = null)` - 计算年龄（根据生日计算）
-- `ToAge(DateTime? referenceDate = null)` - DateTime 转为 Age（年龄，根据生日计算）
-- `ToJulianDayNumber()` - DateTime 转为 JDN（儒略日数）
-
-### 10. 数据结构转换方法
-
-提供 DateTime 与其他数据结构之间的转换功能。
-
-**主要方法：**
-- `ToYMD()` - DateTime 转为年月日元组
-- `ToHMS()` - DateTime 转为时分秒元组
-- `ToDateOnly()` - DateTime 转为 DateOnly（.NET 6+）
-- `ToTimeOnly()` - DateTime 转为 TimeOnly（.NET 6+）
-
-### 11. 特殊功能方法
-
-提供农历转换、友好显示等特殊功能。
-
-**主要方法：**
-- `ToChineseLunarDate()` - DateTime 转为农历日期字符串
-- `ToFriendlyString()` - DateTime 转为友好时间描述
-- `ToMinguoString()` - DateTime 转为民国日期字符串
-
----
-
-## 方法详细说明
-
-### 基础判断
-
 #### IsDefault
-判断 DateTime 是否为默认值。
+
+判断 DateTime 是否为默认值（0001-01-01 00:00:00）。
 
 ```csharp
 public static bool IsDefault(this DateTime dt)
@@ -179,7 +38,48 @@ bool result1 = dt1.IsDefault(); // true
 bool result2 = dt2.IsDefault(); // false
 ```
 
+#### IsMinValue
+
+判断 DateTime 是否为最小值（0001-01-01 00:00:00）。
+
+```csharp
+public static bool IsMinValue(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果 DateTime 等于 DateTime.MinValue，返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = DateTime.MinValue;
+bool result = dt.IsMinValue(); // true
+```
+
+#### IsMaxValue
+
+判断 DateTime 是否为最大值（9999-12-31 23:59:59.9999999）。
+
+```csharp
+public static bool IsMaxValue(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果 DateTime 等于 DateTime.MaxValue，返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = DateTime.MaxValue;
+bool result = dt.IsMaxValue(); // true
+```
+
 #### IsToday
+
 判断 DateTime 是否为今天。
 
 ```csharp
@@ -198,9 +98,75 @@ DateTime dt = DateTime.Now;
 bool result = dt.IsToday(); // true
 ```
 
-### 日期属性判断
+#### IsYesterday
+
+判断 DateTime 是否为昨天。
+
+```csharp
+public static bool IsYesterday(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果 DateTime 的日期部分等于昨天的日期，返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now.AddDays(-1);
+bool result = dt.IsYesterday(); // true
+```
+
+#### IsTomorrow
+
+判断 DateTime 是否为明天。
+
+```csharp
+public static bool IsTomorrow(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果 DateTime 的日期部分等于明天的日期，返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now.AddDays(1);
+bool result = dt.IsTomorrow(); // true
+```
+
+#### IsNullOrDefault
+
+判断 DateTime 是否为 null 或默认值（针对 Nullable&lt;DateTime&gt;）。
+
+```csharp
+public static bool IsNullOrDefault(this DateTime? dt)
+```
+
+**参数：**
+- `dt`: 待判断的可空 DateTime
+
+**返回值：**
+- 如果 DateTime 为 null 或等于默认值，返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime? dt1 = null;
+DateTime? dt2 = default(DateTime);
+
+bool result1 = dt1.IsNullOrDefault(); // true
+bool result2 = dt2.IsNullOrDefault(); // true
+```
+
+### 2. 日期属性判断
+
+提供 DateTime 日期属性判断的便捷方法。
 
 #### IsLeapYear
+
 判断 DateTime 所在年份是否为闰年。
 
 ```csharp
@@ -220,7 +186,8 @@ bool result = dt.IsLeapYear(); // true (2024年是闰年)
 ```
 
 #### IsWeekend
-判断 DateTime 是否为周末。
+
+判断 DateTime 是否为周末（周六或周日）。
 
 ```csharp
 public static bool IsWeekend(this DateTime dt)
@@ -238,10 +205,113 @@ DateTime dt = new DateTime(2024, 1, 6); // 周六
 bool result = dt.IsWeekend(); // true
 ```
 
-### 季度和周计算
+#### IsWeekday
+
+判断 DateTime 是否为工作日（周一到周五）。
+
+```csharp
+public static bool IsWeekday(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果是周一到周五返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 8); // 周一
+bool result = dt.IsWeekday(); // true
+```
+
+#### IsAM
+
+判断 DateTime 是否为上午（0:00 - 11:59）。
+
+```csharp
+public static bool IsAM(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果小时数小于 12 返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 1, 9, 0, 0);
+bool result = dt.IsAM(); // true
+```
+
+#### IsPM
+
+判断 DateTime 是否为下午（12:00 - 23:59）。
+
+```csharp
+public static bool IsPM(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果小时数大于等于 12 返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 1, 14, 0, 0);
+bool result = dt.IsPM(); // true
+```
+
+#### IsFirstDayOfMonth
+
+判断 DateTime 是否为指定月份的第一天。
+
+```csharp
+public static bool IsFirstDayOfMonth(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果是当月第一天返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 1);
+bool result = dt.IsFirstDayOfMonth(); // true
+```
+
+#### IsLastDayOfMonth
+
+判断 DateTime 是否为指定月份的最后一天。
+
+```csharp
+public static bool IsLastDayOfMonth(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+
+**返回值：**
+- 如果是当月最后一天返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 31);
+bool result = dt.IsLastDayOfMonth(); // true
+```
+
+### 3. 季度和周计算
+
+提供季度和周相关的计算功能。
 
 #### GetQuarter
-获取 DateTime 所在的季度。
+
+获取 DateTime 所在的季度（1-4）。
 
 ```csharp
 public static int GetQuarter(this DateTime dt)
@@ -259,7 +329,48 @@ DateTime dt = new DateTime(2024, 5, 15);
 int quarter = dt.GetQuarter(); // 2
 ```
 
+#### ToQuarter
+
+获取 DateTime 所在季度（GetQuarter 的别名方法）。
+
+```csharp
+public static int ToQuarter(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 季度数，范围 1-4
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 5, 15);
+int quarter = dt.ToQuarter(); // 2
+```
+
+#### ToQuarterString
+
+获取 DateTime 所在季度的字符串表示（如 "Q1"）。
+
+```csharp
+public static string ToQuarterString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 季度字符串，格式为 "Q1"、"Q2"、"Q3" 或 "Q4"
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 5, 15);
+string result = dt.ToQuarterString(); // "Q2"
+```
+
 #### GetWeekOfYear
+
 获取 DateTime 所在年份的第几周。
 
 ```csharp
@@ -279,9 +390,72 @@ DateTime dt = new DateTime(2024, 1, 15);
 int week = dt.GetWeekOfYear(); // 返回该日期是当年的第几周
 ```
 
-### 时间转换
+#### GetWeekOfMonth
+
+获取 DateTime 所在月份的第几周。
+
+```csharp
+public static int GetWeekOfMonth(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 当月周数，范围 1-6
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 15);
+int week = dt.GetWeekOfMonth(); // 当月第几周
+```
+
+#### GetFirstDayOfQuarter
+
+获取 DateTime 所在季度的第一天。
+
+```csharp
+public static DateTime GetFirstDayOfQuarter(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 季度第一天的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 5, 15);
+DateTime firstDay = dt.GetFirstDayOfQuarter(); // 2024-04-01
+```
+
+#### GetLastDayOfQuarter
+
+获取 DateTime 所在季度的最后一天。
+
+```csharp
+public static DateTime GetLastDayOfQuarter(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 季度最后一天的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 5, 15);
+DateTime lastDay = dt.GetLastDayOfQuarter(); // 2024-06-30
+```
+
+### 4. 时间转换
+
+提供 DateTime 与 Unix 时间戳之间的相互转换。
 
 #### ToUnixTimestamp
+
 将 DateTime 转换为 Unix 时间戳（秒）。
 
 ```csharp
@@ -300,7 +474,28 @@ DateTime dt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 long timestamp = dt.ToUnixTimestamp(); // 1704067200
 ```
 
+#### ToUnixTimestampMs
+
+将 DateTime 转换为 Unix 时间戳（毫秒）。
+
+```csharp
+public static long ToUnixTimestampMs(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待转换的 DateTime
+
+**返回值：**
+- Unix 时间戳（自 1970-01-01 00:00:00 UTC 以来的毫秒数）
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+long timestamp = dt.ToUnixTimestampMs(); // 1704067200000
+```
+
 #### FromUnixTimestamp
+
 将 Unix 时间戳（秒）转换为 DateTime。
 
 ```csharp
@@ -319,7 +514,68 @@ long timestamp = 1704067200;
 DateTime dt = timestamp.FromUnixTimestamp();
 ```
 
+#### FromUnixTimestampMs
+
+将 Unix 时间戳（毫秒）转换为 DateTime。
+
+```csharp
+public static DateTime FromUnixTimestampMs(this long timestampMs)
+```
+
+**参数：**
+- `timestampMs`: Unix 时间戳（毫秒）
+
+**返回值：**
+- 本地时间的 DateTime
+
+**示例：**
+```csharp
+long timestampMs = 1704067200000;
+DateTime dt = timestampMs.FromUnixTimestampMs();
+```
+
+#### ToLocalTimeSafe
+
+将 DateTime 转换为本地时间。
+
+```csharp
+public static DateTime ToLocalTimeSafe(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待转换的 DateTime
+
+**返回值：**
+- 本地时间的 DateTime
+
+**示例：**
+```csharp
+DateTime utcTime = DateTime.UtcNow;
+DateTime localTime = utcTime.ToLocalTimeSafe();
+```
+
+#### ToUtcTimeSafe
+
+将 DateTime 转换为 UTC 时间。
+
+```csharp
+public static DateTime ToUtcTimeSafe(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待转换的 DateTime
+
+**返回值：**
+- UTC 时间的 DateTime
+
+**示例：**
+```csharp
+DateTime localTime = DateTime.Now;
+DateTime utcTime = localTime.ToUtcTimeSafe();
+```
+
 #### ToTimeZone
+
 将 DateTime 转换为指定时区的时间。
 
 ```csharp
@@ -342,9 +598,32 @@ DateTime dt = DateTime.UtcNow;
 DateTime chinaTime = dt.ToTimeZone("China Standard Time");
 ```
 
-### 格式化输出
+#### ToDateTimeOffset
+
+将 DateTime 转换为 DateTimeOffset。
+
+```csharp
+public static DateTimeOffset ToDateTimeOffset(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待转换的 DateTime
+
+**返回值：**
+- DateTimeOffset 对象
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTimeOffset dto = dt.ToDateTimeOffset();
+```
+
+### 5. 格式化输出
+
+提供日期时间到各种格式字符串的转换。
 
 #### ToFormatString
+
 将 DateTime 格式化为指定格式的字符串。
 
 ```csharp
@@ -364,7 +643,48 @@ DateTime dt = DateTime.Now;
 string result = dt.ToFormatString("yyyy年MM月dd日 HH:mm:ss");
 ```
 
+#### ToIso8601String
+
+将 DateTime 转换为 ISO8601 格式字符串。
+
+```csharp
+public static string ToIso8601String(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- ISO8601 格式的字符串（如 "2024-01-15T14:30:00.0000000+08:00"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToIso8601String();
+```
+
+#### ToRfc1123String
+
+将 DateTime 转换为 RFC1123 格式字符串。
+
+```csharp
+public static string ToRfc1123String(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- RFC1123 格式的字符串（如 "Mon, 15 Jan 2024 14:30:00 GMT"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToRfc1123String();
+```
+
 #### ToChineseDateString
+
 将 DateTime 转换为中文日期字符串。
 
 ```csharp
@@ -383,7 +703,128 @@ DateTime dt = DateTime.Now;
 string result = dt.ToChineseDateString(); // "2024年01月15日"
 ```
 
+#### ToChineseDateTimeString
+
+将 DateTime 转换为中文日期时间字符串。
+
+```csharp
+public static string ToChineseDateTimeString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 中文日期时间字符串（如 "2024年01月15日 14时30分"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToChineseDateTimeString(); // "2024年01月15日 14时30分"
+```
+
+#### ToTimestampString
+
+将 DateTime 转换为时间戳字符串。
+
+```csharp
+public static string ToTimestampString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 时间戳字符串（如 "20240115143000"）
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 15, 14, 30, 0);
+string result = dt.ToTimestampString(); // "20240115143000"
+```
+
+#### ToCustomTimestamp
+
+将 DateTime 转换为精确到毫秒的时间戳字符串。
+
+```csharp
+public static string ToCustomTimestamp(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 时间戳字符串（如 "20240115143000123"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToCustomTimestamp(); // "20240115143000123"
+```
+
+#### ToDateString
+
+将 DateTime 转换为日期字符串。
+
+```csharp
+public static string ToDateString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 日期字符串（如 "2024-01-15"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToDateString(); // "2024-01-15"
+```
+
+#### ToTimeString
+
+将 DateTime 转换为时间字符串。
+
+```csharp
+public static string ToTimeString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 时间字符串（如 "14:30:00"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToTimeString(); // "14:30:00"
+```
+
+#### ToShortTimeString
+
+将 DateTime 转换为短时间字符串。
+
+```csharp
+public static string ToShortTimeString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 短时间字符串（如 "14:30"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToShortTimeString(); // "14:30"
+```
+
 #### ToChineseWeekday
+
 将 DateTime 转换为星期中文名称。
 
 ```csharp
@@ -402,34 +843,415 @@ DateTime dt = DateTime.Now;
 string result = dt.ToChineseWeekday(); // "星期一"
 ```
 
-### 日期计算
+#### ToEnglishWeekday
 
-#### DaysBetween
-获取两个 DateTime 之间的天数差。
+将 DateTime 转换为星期英文名称。
 
 ```csharp
-public static int DaysBetween(this DateTime dt, DateTime other)
+public static string ToEnglishWeekday(this DateTime dt)
 ```
 
 **参数：**
-- `dt`: 第一个 DateTime
-- `other`: 第二个 DateTime
+- `dt`: 待格式化的 DateTime
 
 **返回值：**
-- 天数差（绝对值）
+- 星期英文名称（如 "Monday"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+string result = dt.ToEnglishWeekday(); // "Monday"
+```
+
+#### ToWeekdayNumber
+
+将 DateTime 转换为星期数字（周日为 0，周一为 1，依此类推）。
+
+```csharp
+public static int ToWeekdayNumber(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 星期数字，范围 0-6
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 15); // 周一
+int result = dt.ToWeekdayNumber(); // 1
+```
+
+### 6. 日期计算
+
+提供日期时间加减和时间差计算功能。
+
+#### AddDaysSafe
+
+安全地增加指定天数。
+
+```csharp
+public static DateTime AddDaysSafe(this DateTime dt, double days)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `days`: 要增加的天数，可为负数
+
+**返回值：**
+- 增加天数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime result = dt.AddDaysSafe(7);
+```
+
+#### AddHoursSafe
+
+安全地增加指定小时数。
+
+```csharp
+public static DateTime AddHoursSafe(this DateTime dt, double hours)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `hours`: 要增加的小时数，可为负数
+
+**返回值：**
+- 增加小时数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime result = dt.AddHoursSafe(2);
+```
+
+#### AddMinutesSafe
+
+安全地增加指定分钟数。
+
+```csharp
+public static DateTime AddMinutesSafe(this DateTime dt, double minutes)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `minutes`: 要增加的分钟数，可为负数
+
+**返回值：**
+- 增加分钟数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime result = dt.AddMinutesSafe(30);
+```
+
+#### AddSecondsSafe
+
+安全地增加指定秒数。
+
+```csharp
+public static DateTime AddSecondsSafe(this DateTime dt, double seconds)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `seconds`: 要增加的秒数，可为负数
+
+**返回值：**
+- 增加秒数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime result = dt.AddSecondsSafe(60);
+```
+
+#### AddMonthsSafe
+
+安全地增加指定月份数。
+
+```csharp
+public static DateTime AddMonthsSafe(this DateTime dt, int months)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `months`: 要增加的月份数，可为负数
+
+**返回值：**
+- 增加月份数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime result = dt.AddMonthsSafe(3);
+```
+
+#### AddYearsSafe
+
+安全地增加指定年份数。
+
+```csharp
+public static DateTime AddYearsSafe(this DateTime dt, int years)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `years`: 要增加的年份数，可为负数
+
+**返回值：**
+- 增加年份数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime result = dt.AddYearsSafe(1);
+```
+
+#### AddWorkDays
+
+安全地增加指定工作日数（跳过周末）。
+
+```csharp
+public static DateTime AddWorkDays(this DateTime dt, int workDays)
+```
+
+**参数：**
+- `dt`: 原始 DateTime
+- `workDays`: 要增加的工作日数，可为负数
+
+**返回值：**
+- 增加工作日数后的 DateTime
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 5); // 周五
+DateTime result = dt.AddWorkDays(1); // 返回下周一
+DateTime result2 = dt.AddWorkDays(5); // 下周五
+```
+
+#### DaysBetween
+
+获取两个 DateTime 之间的天数差。
+
+```csharp
+public static double DaysBetween(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 起始 DateTime
+- `other`: 结束 DateTime
+
+**返回值：**
+- 两个日期之间的天数差的绝对值
 
 **示例：**
 ```csharp
 DateTime dt1 = new DateTime(2024, 1, 1);
 DateTime dt2 = new DateTime(2024, 1, 10);
 
-int days = dt1.DaysBetween(dt2); // 9
+double days = dt1.DaysBetween(dt2); // 9
 ```
 
-### 时间范围
+#### HoursBetween
+
+获取两个 DateTime 之间的小时差。
+
+```csharp
+public static double HoursBetween(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 起始 DateTime
+- `other`: 结束 DateTime
+
+**返回值：**
+- 两个日期时间之间的小时差的绝对值
+
+**示例：**
+```csharp
+DateTime dt1 = new DateTime(2024, 1, 1, 0, 0, 0);
+DateTime dt2 = new DateTime(2024, 1, 1, 5, 30, 0);
+
+double hours = dt1.HoursBetween(dt2); // 5.5
+```
+
+#### MinutesBetween
+
+获取两个 DateTime 之间的分钟差。
+
+```csharp
+public static double MinutesBetween(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 起始 DateTime
+- `other`: 结束 DateTime
+
+**返回值：**
+- 两个日期时间之间的分钟差的绝对值
+
+**示例：**
+```csharp
+DateTime dt1 = new DateTime(2024, 1, 1, 0, 0, 0);
+DateTime dt2 = new DateTime(2024, 1, 1, 0, 30, 0);
+
+double minutes = dt1.MinutesBetween(dt2); // 30
+```
+
+#### SecondsBetween
+
+获取两个 DateTime 之间的秒数差。
+
+```csharp
+public static double SecondsBetween(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 起始 DateTime
+- `other`: 结束 DateTime
+
+**返回值：**
+- 两个日期时间之间的秒数差的绝对值
+
+**示例：**
+```csharp
+DateTime dt1 = new DateTime(2024, 1, 1, 0, 0, 0);
+DateTime dt2 = new DateTime(2024, 1, 1, 0, 0, 45);
+
+double seconds = dt1.SecondsBetween(dt2); // 45
+```
+
+#### SpanBetween
+
+获取两个 DateTime 之间的时间间隔。
+
+```csharp
+public static TimeSpan SpanBetween(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 起始 DateTime
+- `other`: 结束 DateTime
+
+**返回值：**
+- 两个日期时间之间的时间间隔（绝对值）
+
+**示例：**
+```csharp
+DateTime dt1 = new DateTime(2024, 1, 1);
+DateTime dt2 = new DateTime(2024, 1, 3, 12, 0, 0);
+
+TimeSpan span = dt1.SpanBetween(dt2); // 2.5 天
+```
+
+#### ToAge
+
+根据出生日期计算年龄。
+
+```csharp
+public static int ToAge(this DateTime birthDate)
+```
+
+**参数：**
+- `birthDate`: 出生日期
+
+**返回值：**
+- 年龄（周岁），如果出生日期在未来则返回 0
+
+**示例：**
+```csharp
+DateTime birthDate = new DateTime(1990, 5, 15);
+int age = birthDate.ToAge(); // 返回当前年龄
+```
+
+### 7. 时间比较
+
+提供时间比较和范围判断功能。
+
+#### IsBetween
+
+判断 DateTime 是否在指定范围内（包含边界）。
+
+```csharp
+public static bool IsBetween(this DateTime dt, DateTime start, DateTime end)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+- `start`: 起始时间
+- `end`: 结束时间
+
+**返回值：**
+- 如果 DateTime 在范围内返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime start = new DateTime(2024, 1, 1);
+DateTime end = new DateTime(2024, 12, 31);
+
+bool result = dt.IsBetween(start, end); // true
+```
+
+#### IsBefore
+
+判断 DateTime 是否早于指定时间。
+
+```csharp
+public static bool IsBefore(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+- `other`: 比较的时间
+
+**返回值：**
+- 如果早于指定时间返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 1);
+DateTime other = new DateTime(2024, 6, 1);
+
+bool result = dt.IsBefore(other); // true
+```
+
+#### IsAfter
+
+判断 DateTime 是否晚于指定时间。
+
+```csharp
+public static bool IsAfter(this DateTime dt, DateTime other)
+```
+
+**参数：**
+- `dt`: 待判断的 DateTime
+- `other`: 比较的时间
+
+**返回值：**
+- 如果晚于指定时间返回 true；否则返回 false
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 6, 1);
+DateTime other = new DateTime(2024, 1, 1);
+
+bool result = dt.IsAfter(other); // true
+```
+
+### 8. 时间范围
+
+提供获取时间范围的功能。
 
 #### GetStartOfDay
-获取当天的开始时间。
+
+获取当天的开始时间（00:00:00）。
 
 ```csharp
 public static DateTime GetStartOfDay(this DateTime dt)
@@ -439,7 +1261,7 @@ public static DateTime GetStartOfDay(this DateTime dt)
 - `dt`: 待处理的 DateTime
 
 **返回值：**
-- 当天的开始时间（00:00:00）
+- 当天的开始时间
 
 **示例：**
 ```csharp
@@ -447,8 +1269,91 @@ DateTime dt = DateTime.Now;
 DateTime start = dt.GetStartOfDay(); // 2024-01-15 00:00:00
 ```
 
+#### GetEndOfDay
+
+获取当天的结束时间（23:59:59.9999999）。
+
+```csharp
+public static DateTime GetEndOfDay(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 当天的结束时间
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateTime end = dt.GetEndOfDay(); // 2024-01-15 23:59:59.9999999
+```
+
+#### GetStartOfWeek
+
+获取当周的第一天（周一）。
+
+```csharp
+public static DateTime GetStartOfWeek(this DateTime dt, DayOfWeek startOfWeek = DayOfWeek.Monday)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+- `startOfWeek`: 每周的第一天，默认为周一
+
+**返回值：**
+- 当周第一天的日期
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 17); // 周三
+DateTime start = dt.GetStartOfWeek(); // 2024-01-15 (周一)
+```
+
+#### GetEndOfWeek
+
+获取当周的最后一天（周日）。
+
+```csharp
+public static DateTime GetEndOfWeek(this DateTime dt, DayOfWeek startOfWeek = DayOfWeek.Monday)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+- `startOfWeek`: 每周的第一天，默认为周一
+
+**返回值：**
+- 当周最后一天的日期
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 17); // 周三
+DateTime end = dt.GetEndOfWeek(); // 2024-01-21 (周日)
+```
+
+#### GetStartOfMonth
+
+获取当月的第一天。
+
+```csharp
+public static DateTime GetStartOfMonth(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 当月第一天的日期
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 15);
+DateTime start = dt.GetStartOfMonth(); // 2024-01-01
+```
+
 #### GetEndOfMonth
-获取当月的结束时间。
+
+获取当月的最后一天。
 
 ```csharp
 public static DateTime GetEndOfMonth(this DateTime dt)
@@ -458,58 +1363,60 @@ public static DateTime GetEndOfMonth(this DateTime dt)
 - `dt`: 待处理的 DateTime
 
 **返回值：**
-- 当月的结束时间（最后一秒）
+- 当月最后一天的日期
 
 **示例：**
 ```csharp
 DateTime dt = new DateTime(2024, 1, 15);
-DateTime end = dt.GetEndOfMonth(); // 2024-01-31 23:59:59
+DateTime end = dt.GetEndOfMonth(); // 2024-01-31
 ```
 
-### 年龄计算
+#### GetStartOfYear
 
-#### GetAge
-计算年龄。
+获取当年的第一天。
 
 ```csharp
-public static int GetAge(this DateTime birthDate, DateTime? referenceDate = null)
+public static DateTime GetStartOfYear(this DateTime dt)
 ```
 
 **参数：**
-- `birthDate`: 出生日期
-- `referenceDate`: 参考日期，默认为当前日期
+- `dt`: 待处理的 DateTime
 
 **返回值：**
-- 年龄
+- 当年第一天的日期
 
 **示例：**
 ```csharp
-DateTime birthDate = new DateTime(1990, 5, 15);
-int age = birthDate.GetAge(); // 根据当前日期计算年龄
+DateTime dt = DateTime.Now;
+DateTime start = dt.GetStartOfYear(); // 2024-01-01
 ```
 
-### 特殊功能
+#### GetEndOfYear
 
-#### ToFriendlyString
-将 DateTime 转换为友好时间描述。
+获取当年的最后一天。
 
 ```csharp
-public static string ToFriendlyString(this DateTime dt)
+public static DateTime GetEndOfYear(this DateTime dt)
 ```
 
 **参数：**
-- `dt`: 待格式化的 DateTime
+- `dt`: 待处理的 DateTime
 
 **返回值：**
-- 友好时间描述（如 "刚刚"、"5分钟前"、"昨天"）
+- 当年最后一天的日期
 
 **示例：**
 ```csharp
-DateTime dt = DateTime.Now.AddMinutes(-5);
-string result = dt.ToFriendlyString(); // "5分钟前"
+DateTime dt = DateTime.Now;
+DateTime end = dt.GetEndOfYear(); // 2024-12-31
 ```
+
+### 9. 特殊功能
+
+提供农历转换、友好显示等特殊功能。
 
 #### ToChineseLunarDate
+
 将 DateTime 转换为农历日期字符串。
 
 ```csharp
@@ -520,12 +1427,116 @@ public static string ToChineseLunarDate(this DateTime dt)
 - `dt`: 待格式化的 DateTime
 
 **返回值：**
-- 农历日期字符串（如 "甲辰年腊月初五"）
+- 农历日期字符串（如 "正月初一"）
 
 **示例：**
 ```csharp
 DateTime dt = new DateTime(2024, 1, 15);
 string result = dt.ToChineseLunarDate(); // 农历日期
+```
+
+#### ToFriendlyString
+
+将 DateTime 转换为友好时间描述。
+
+```csharp
+public static string ToFriendlyString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 友好时间描述（如 "刚刚"、"5分钟前"、"昨天"、"3天前"）
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now.AddMinutes(-5);
+string result = dt.ToFriendlyString(); // "5分钟前"
+```
+
+#### ToMinguoString
+
+将 DateTime 转换为民国纪年字符串。
+
+```csharp
+public static string ToMinguoString(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待格式化的 DateTime
+
+**返回值：**
+- 民国纪年字符串（如 "民国113年01月15日"）
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 15);
+string result = dt.ToMinguoString(); // "民国113年01月15日"
+```
+
+#### ToJulianDayNumber
+
+将 DateTime 转换为儒略日号（Julian Day Number）。
+
+```csharp
+public static double ToJulianDayNumber(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待处理的 DateTime
+
+**返回值：**
+- 儒略日号
+
+**示例：**
+```csharp
+DateTime dt = new DateTime(2024, 1, 15, 12, 0, 0);
+double jdn = dt.ToJulianDayNumber(); // 2460325.0
+```
+
+### 10. .NET 6+ 类型转换
+
+提供 DateTime 与 DateOnly/TimeOnly 之间的转换功能。
+
+#### ToDateOnly
+
+将 DateTime 转换为 DateOnly。
+
+```csharp
+public static DateOnly ToDateOnly(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待转换的 DateTime
+
+**返回值：**
+- DateOnly 对象
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+DateOnly date = dt.ToDateOnly();
+```
+
+#### ToTimeOnly
+
+将 DateTime 转换为 TimeOnly。
+
+```csharp
+public static TimeOnly ToTimeOnly(this DateTime dt)
+```
+
+**参数：**
+- `dt`: 待转换的 DateTime
+
+**返回值：**
+- TimeOnly 对象
+
+**示例：**
+```csharp
+DateTime dt = DateTime.Now;
+TimeOnly time = dt.ToTimeOnly();
 ```
 
 ---

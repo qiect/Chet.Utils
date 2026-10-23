@@ -512,7 +512,7 @@ var responses = await httpClient.SendSequentialAsync(requests);
 #### 设置默认请求头
 
 ```csharp
-// 设置默认请求头
+// 批量设置默认请求头
 httpClient.SetDefaultHeaders(new Dictionary<string, string>
 {
     { "User-Agent", "MyApp/1.0" },
@@ -520,7 +520,13 @@ httpClient.SetDefaultHeaders(new Dictionary<string, string>
     { "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8" }
 });
 
-// 清除默认请求头
+// 添加单个默认请求头
+httpClient.AddDefaultHeader("X-App-Version", "1.0.0");
+
+// 移除单个默认请求头
+httpClient.RemoveDefaultHeader("X-App-Version");
+
+// 清除所有默认请求头
 httpClient.ClearDefaultHeaders();
 ```
 
@@ -534,6 +540,17 @@ httpClient.ConfigureJsonOptions(options =>
     options.PropertyNameCaseInsensitive = true;
     options.WriteIndented = true;
 });
+```
+
+#### JSON 序列化/反序列化工具
+
+```csharp
+// 序列化对象为 JSON 字符串
+string json = httpClient.SerializeToJson(new { Name = "Alice", Age = 30 });
+// json: {"Name":"Alice","Age":30}
+
+// 从 JSON 字符串反序列化为对象
+User user = httpClient.DeserializeFromJson<User>("{\"Name\":\"Alice\",\"Age\":30}");
 ```
 
 #### Cookie 管理
@@ -551,13 +568,26 @@ var sessionCookie = cookies.GetCookies(new Uri("https://api.example.com"))["sess
 #### 代理设置
 
 ```csharp
-// 通过 HttpClientHandler 设置代理
+// 方式1：通过 SetProxy 方法设置代理
+httpClient.SetProxy(new WebProxy("http://proxy.example.com:8080"));
+
+// 方式2：通过 HttpClientHandler 设置代理
 var handler = new HttpClientHandler
 {
     Proxy = new WebProxy("http://proxy.example.com:8080"),
     UseProxy = true
 };
 var httpClient = new HttpClientHelper(new HttpClient(handler));
+```
+
+#### 自动解压缩
+
+```csharp
+// 启用自动解压缩（GZip + Deflate）
+httpClient.SetAutomaticDecompression(true);
+
+// 禁用自动解压缩
+httpClient.SetAutomaticDecompression(false);
 ```
 
 #### SSL/TLS 配置
@@ -569,6 +599,89 @@ var handler = new HttpClientHandler
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
 };
 var httpClient = new HttpClientHelper(new HttpClient(handler));
+```
+
+#### 获取内部 HttpClient
+
+```csharp
+// 获取内部 HttpClient 实例（用于需要直接访问 HttpClient 的场景）
+var innerClient = httpClient.GetHttpClient();
+```
+
+### 其他 HTTP 方法
+
+#### PATCH 请求（原始内容）
+
+```csharp
+// PATCH 请求（返回 HttpResponseMessage）
+var content = new StringContent("{\"name\":\"Updated\"}", Encoding.UTF8, "application/json");
+var response = await httpClient.PatchAsync("https://api.example.com/users/1", content);
+
+// PATCH 请求（返回反序列化对象）
+var result = await httpClient.PatchAsync<User>("https://api.example.com/users/1", content);
+```
+
+#### 通用请求发送
+
+```csharp
+// 使用 SendAsync 发送任意 HTTP 方法的请求
+var response = await httpClient.SendAsync(HttpMethod.Get, "https://api.example.com/users/1");
+
+// 带请求体
+var content = new StringContent("{\"name\":\"John\"}", Encoding.UTF8, "application/json");
+var response = await httpClient.SendAsync(HttpMethod.Post, "https://api.example.com/users", content);
+
+// 返回反序列化对象
+var result = await httpClient.SendAsync<User>(HttpMethod.Get, "https://api.example.com/users/1");
+```
+
+#### 获取字节数组
+
+```csharp
+// 获取响应内容的字节数组
+byte[] data = await httpClient.GetByteArrayAsync("https://example.com/image.png");
+```
+
+#### POST 重试
+
+```csharp
+// POST 请求带重试（默认3次）
+var content = new StringContent("{\"name\":\"John\"}", Encoding.UTF8, "application/json");
+var response = await httpClient.PostWithRetryAsync("https://api.example.com/users", content);
+
+// 自定义重试次数和延迟
+var response = await httpClient.PostWithRetryAsync(
+    "https://api.example.com/users",
+    content,
+    maxRetries: 5,
+    retryDelay: TimeSpan.FromSeconds(2)
+);
+
+// 返回反序列化对象
+var result = await httpClient.PostWithRetryAsync<User>(
+    "https://api.example.com/users",
+    content,
+    maxRetries: 3
+);
+```
+
+#### POST 超时控制
+
+```csharp
+// POST 请求带超时
+var content = new StringContent("{\"name\":\"John\"}", Encoding.UTF8, "application/json");
+var response = await httpClient.PostWithTimeoutAsync(
+    "https://api.example.com/users",
+    content,
+    timeout: TimeSpan.FromSeconds(10)
+);
+
+// 返回反序列化对象
+var result = await httpClient.PostWithTimeoutAsync<User>(
+    "https://api.example.com/users",
+    content,
+    timeout: TimeSpan.FromSeconds(30)
+);
 ```
 
 ### 统计和监控
@@ -585,6 +698,13 @@ Console.WriteLine($"成功率: {(stats.TotalRequests > 0 ? (double)stats.Success
 Console.WriteLine($"平均响应时间: {stats.AverageResponseTimeMs:F2} ms");
 Console.WriteLine($"自动解压缩: {stats.SupportsAutomaticDecompression}");
 Console.WriteLine($"使用 Cookie: {stats.UseCookies}");
+```
+
+#### 重置统计信息
+
+```csharp
+// 重置所有统计数据（总请求数、成功数、失败数等归零）
+httpClient.ResetStatistics();
 ```
 
 #### 启用/禁用日志

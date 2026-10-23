@@ -759,6 +759,44 @@ double value = Math.PI / 4;
 double result = value.Tan(); // 1
 ```
 
+#### ToRadians
+将角度转换为弧度。
+
+```csharp
+public static double ToRadians(this double degrees)
+```
+
+**参数：**
+- `degrees`: 角度值
+
+**返回值：**
+- 弧度值
+
+**示例：**
+```csharp
+double degrees = 180d;
+double radians = degrees.ToRadians(); // 3.14159265358979 (π)
+```
+
+#### ToDegrees
+将弧度转换为角度。
+
+```csharp
+public static double ToDegrees(this double radians)
+```
+
+**参数：**
+- `radians`: 弧度值
+
+**返回值：**
+- 角度值
+
+**示例：**
+```csharp
+double radians = Math.PI;
+double degrees = radians.ToDegrees(); // 180
+```
+
 ### 6. 四则运算
 
 提供安全的四则运算方法。

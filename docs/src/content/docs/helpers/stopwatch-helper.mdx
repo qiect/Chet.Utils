@@ -120,6 +120,23 @@ Console.WriteLine($"耗时: {result.TotalMilliseconds} 毫秒");
 Console.WriteLine($"耗时: {result.TotalMicroseconds} 微秒");
 ```
 
+### TimeDetailedAsync
+
+异步执行操作并返回详细计时结果。
+
+```csharp
+public static async Task<TimeSpan> TimeDetailedAsync(Func<Task> action)
+```
+
+**示例：**
+```csharp
+var result = await StopwatchHelper.TimeDetailedAsync(async () =>
+{
+    await Task.Delay(100);
+});
+Console.WriteLine($"耗时: {result.TotalMilliseconds} 毫秒");
+```
+
 ### Time（带返回值）
 
 执行带返回值的操作并返回结果和耗时。
@@ -212,6 +229,21 @@ public static List<long> TimeEach(Action action, int iterations)
 
 **参数：**
 - `action`: 要执行的操作
+- `iterations`: 执行次数
+
+**返回值：**
+- 每次执行的耗时列表（毫秒）
+
+### TimeEachAsync
+
+异步多次执行操作并返回每次的耗时列表。
+
+```csharp
+public static async Task<List<long>> TimeEachAsync(Func<Task> action, int iterations)
+```
+
+**参数：**
+- `action`: 要异步执行的操作
 - `iterations`: 执行次数
 
 **返回值：**
@@ -357,6 +389,21 @@ long elapsedMs = StopwatchHelper.TimeIf(() =>
 }, shouldExecute);
 ```
 
+### TimeIfAsync
+
+异步条件执行的计时。
+
+```csharp
+public static async Task<long> TimeIfAsync(Func<Task> action, bool condition)
+```
+
+**参数：**
+- `action`: 要异步执行的操作
+- `condition`: 执行条件
+
+**返回值：**
+- 执行耗时（毫秒），条件不满足时返回 0
+
 ### TimeWithRetry
 
 带重试机制的计时。
@@ -384,49 +431,28 @@ Console.WriteLine($"耗时: {elapsedMs}ms, 重试: {retryCount}次, 成功: {suc
 
 ## 范围计时方法
 
-### Scope
+### StartScope
 
 创建范围计时器（使用 using 语句）。
 
 ```csharp
-public static IDisposable Scope(Action<long> onDispose)
+public static ScopeTimer StartScope(Action<TimeSpan> action)
+public static ScopeTimer StartScope(string label)
+public static ScopeTimer StartScope()
 ```
 
 **参数：**
-- `onDispose`: 范围结束时执行的回调（参数为耗时毫秒）
+- `action`: 范围结束时执行的回调（参数为耗时 TimeSpan）
+- `label`: 计时器标签
 
 **返回值：**
-- 可释放的范围计时器
+- 范围计时器（ScopeTimer）
 
 **示例：**
 ```csharp
-using (StopwatchHelper.Scope(ms => Console.WriteLine($"耗时: {ms}ms")))
+using (StopwatchHelper.StartScope(ts => Console.WriteLine($"耗时: {ts.TotalMilliseconds}ms")))
 {
-    // 执行一些操作
     Thread.Sleep(100);
-}
-```
-
-### ScopeAsync
-
-创建异步范围计时器（使用 using 语句）。
-
-```csharp
-public static IAsyncDisposable ScopeAsync(Action<long> onDispose)
-```
-
-**参数：**
-- `onDispose`: 范围结束时执行的回调（参数为耗时毫秒）
-
-**返回值：**
-- 可异步释放的范围计时器
-
-**示例：**
-```csharp
-await using (StopwatchHelper.ScopeAsync(ms => Console.WriteLine($"耗时: {ms}ms")))
-{
-    // 执行一些异步操作
-    await Task.Delay(100);
 }
 ```
 
@@ -460,12 +486,28 @@ Console.WriteLine($"最大: {result.MaxMilliseconds}ms");
 Console.WriteLine($"P95: {result.P95Milliseconds}ms");
 ```
 
+### BenchmarkAsync
+
+异步执行基准测试。
+
+```csharp
+public static async Task<BenchmarkResult> BenchmarkAsync(Func<Task> action, int iterations = 100, int warmupIterations = 10)
+```
+
+**参数：**
+- `action`: 要异步测试的操作
+- `iterations`: 测试迭代次数，默认 100
+- `warmupIterations`: 预热迭代次数，默认 10
+
+**返回值：**
+- 基准测试结果
+
 ### Compare
 
 比较两个操作的性能。
 
 ```csharp
-public static (BenchmarkResult First, BenchmarkResult Second) Compare(Action first, Action second, int iterations = 100)
+public static ComparisonResult Compare(Action first, Action second, int iterations = 100)
 ```
 
 **参数：**
@@ -527,6 +569,20 @@ public static string FormatTime(double milliseconds)
 var formatted = StopwatchHelper.FormatTime(1234.5);
 // 输出: "1.23 秒"
 ```
+
+### FormatStatistics
+
+格式化计时统计信息。
+
+```csharp
+public static string FormatStatistics(TimingStatistics stats)
+```
+
+**参数：**
+- `stats`: 计时统计信息
+
+**返回值：**
+- 格式化后的统计信息字符串
 
 ## 辅助类
 

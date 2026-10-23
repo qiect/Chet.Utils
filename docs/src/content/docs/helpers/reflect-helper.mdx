@@ -361,6 +361,7 @@ public static bool IsInstantiable(Type type)
 ```csharp
 public static ConstructorInfo[] GetConstructors(Type type)
 public static ConstructorInfo[] GetAllConstructors(Type type)
+public static bool HasParameterlessConstructor(Type type)
 ```
 
 ### 6. 表达式树操作
@@ -400,10 +401,22 @@ public static Func<T, TProperty> CreatePropertyGetter<T, TProperty>(Expression<F
 public static Action<T, TProperty> CreatePropertySetter<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
 ```
 
-#### CreateMethodCaller
-创建方法调用器。
+#### CreateMethodInvoker
+创建方法调用器（通过表达式树编译，提升反射调用性能）。
 ```csharp
-public static Func<T, object?[], object?> CreateMethodCaller<T>(Expression<Action<T>> methodExpression)
+public static Func<object?[], object?> CreateMethodInvoker(MethodInfo method)
+```
+
+**参数：**
+- `method`: 方法信息
+
+**返回值：** 方法调用器函数，接收参数数组，返回方法调用结果
+
+**示例：**
+```csharp
+var methodInfo = typeof(Math).GetMethod("Max", new[] { typeof(int), typeof(int) });
+var invoker = ReflectHelper.CreateMethodInvoker(methodInfo);
+var result = invoker(new object[] { 10, 20 }); // result: 20
 ```
 
 ### 7. 类型转换与检查
@@ -412,13 +425,17 @@ public static Func<T, object?[], object?> CreateMethodCaller<T>(Expression<Actio
 
 **主要方法：**
 
-#### IsNumericType / IsBooleanType / IsStringType / IsCollectionType
+#### IsNumericType / IsIntegerType / IsFloatingPointType / IsBooleanType / IsStringType / IsDateTimeType / IsCollectionType / IsDictionaryType
 类型检查方法。
 ```csharp
 public static bool IsNumericType(Type type)
+public static bool IsIntegerType(Type type)
+public static bool IsFloatingPointType(Type type)
 public static bool IsBooleanType(Type type)
 public static bool IsStringType(Type type)
+public static bool IsDateTimeType(Type type)
 public static bool IsCollectionType(Type type)
+public static bool IsDictionaryType(Type type)
 ```
 
 #### IsNullableType / GetNullableUnderlyingType
@@ -428,12 +445,14 @@ public static bool IsNullableType(Type type)
 public static Type? GetNullableUnderlyingType(Type type)
 ```
 
-#### IsEnumType / GetEnumValues / GetEnumNames
-枚举类型操作。
+#### IsEnumType / GetEnumValues / GetEnumNames / GetEnumDisplayName
+获取枚举值、枚举名称或枚举显示名称。
 ```csharp
 public static bool IsEnumType(Type type)
 public static Array GetEnumValues(Type enumType)
 public static string[] GetEnumNames(Type enumType)
+public static string? GetEnumDisplayName(object enumValue)
+```
 ```
 
 #### IsCompatibleType
@@ -469,10 +488,10 @@ public static Assembly LoadAssembly(string assemblyName)
 public static Assembly LoadAssemblyFromFile(string assemblyPath)
 ```
 
-#### GetTypeInfo
+#### GetDetailedTypeInfo
 获取类型的详细信息。
 ```csharp
-public static Dictionary<string, object?> GetTypeInfo(Type type)
+public static TypeDetailedInfo GetDetailedTypeInfo(Type type)
 ```
 
 #### IsAnonymousType
@@ -494,24 +513,7 @@ public static EventInfo[] GetEvents(Type type)
 
 **主要方法：**
 
-#### CreateFastPropertyGetter / CreateFastPropertySetter
-创建高性能的属性访问器。
-```csharp
-public static Func<T, TProperty?> CreateFastPropertyGetter<T, TProperty>(PropertyInfo property)
-public static Action<T, TProperty?> CreateFastPropertySetter<T, TProperty>(PropertyInfo property)
-```
-
-#### CreateFastMethodCaller
-创建高性能的方法调用器。
-```csharp
-public static Func<T, object?[], object?> CreateFastMethodCaller<T>(MethodInfo method)
-```
-
-#### CreatePropertyAccessor
-获取属性的快速访问委托。
-```csharp
-public static (Func<T, object?>? Getter, Action<T, object?>? Setter) CreatePropertyAccessor<T>(string propertyName)
-```
+已在上方"6. 表达式树操作"部分介绍。
 
 ## 辅助类
 

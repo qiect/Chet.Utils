@@ -330,13 +330,37 @@ public static string GetDisplayDescription<TEnum>(this TEnum value) where TEnum 
 #### GetAttribute
 获取枚举值的指定特性。
 ```csharp
-public static TAttribute GetAttribute<TEnum, TAttribute>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
+public static TAttribute GetAttribute<TAttribute, TEnum>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
 ```
 
 #### GetAttributes
-获取枚举值的所有指定特性。
+获取枚举值的所有指定类型特性。
 ```csharp
-public static IEnumerable<TAttribute> GetAttributes<TEnum, TAttribute>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
+public static TAttribute[] GetAttributes<TAttribute, TEnum>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
+```
+
+#### HasAttribute
+判断枚举值是否具有指定类型特性。
+```csharp
+public static bool HasAttribute<TAttribute, TEnum>(this TEnum value) where TEnum : struct, Enum where TAttribute : Attribute
+```
+**示例：**
+```csharp
+enum Status
+{
+    [Description("激活")]
+    Active = 1,
+    Inactive = 2
+}
+
+var hasDesc = Status.Active.HasAttribute<DescriptionAttribute, Status>(); // true
+var hasDesc2 = Status.Inactive.HasAttribute<DescriptionAttribute, Status>(); // false
+```
+
+#### GetDisplayShortName
+获取枚举值的显示短名称（DisplayAttribute.ShortName），无特性则返回枚举名称。
+```csharp
+public static string GetDisplayShortName<TEnum>(this TEnum value) where TEnum : struct, Enum
 ```
 
 ---
@@ -374,6 +398,25 @@ public static Dictionary<TEnum, string> GetValueDescriptionDict<TEnum>() where T
 public static Dictionary<string, string> GetNameDescriptionDict<TEnum>() where TEnum : struct, Enum
 ```
 
+#### GetValueDisplayNameDict
+获取枚举类型所有值及显示名称的字典。
+```csharp
+public static Dictionary<TEnum, string> GetValueDisplayNameDict<TEnum>() where TEnum : struct, Enum
+```
+
+**返回值：** 枚举值与显示名称的字典
+
+**示例：**
+```csharp
+[Display(Name = "激活")]
+Active = 1,
+[Display(Name = "停用")]
+Inactive = 2
+
+var dict = EnumExtensions.GetValueDisplayNameDict<Status>();
+// dict: { [Active] = "激活", [Inactive] = "停用" }
+```
+
 #### GetUnderlyingType
 获取枚举类型的基础类型（如 int、byte）。
 ```csharp
@@ -384,10 +427,10 @@ public static Type GetUnderlyingType<TEnum>() where TEnum : struct, Enum
 
 ### 7. 标志操作
 
-#### HasFlag
-判断枚举值是否包含指定标志。
+#### HasFlagSafe
+判断枚举值是否包含指定标志（安全）。
 ```csharp
-public static bool HasFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
+public static bool HasFlagSafe<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
 ```
 **示例：**
 ```csharp
@@ -395,8 +438,38 @@ public static bool HasFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : st
 enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
 
 var perm = Permissions.Read | Permissions.Write;
-var hasRead = perm.HasFlag(Permissions.Read); // true
-var hasExecute = perm.HasFlag(Permissions.Execute); // false
+var hasRead = perm.HasFlagSafe(Permissions.Read); // true
+var hasExecute = perm.HasFlagSafe(Permissions.Execute); // false
+```
+
+#### HasAllFlags
+判断枚举值是否包含所有指定标志。
+```csharp
+public static bool HasAllFlags<TEnum>(this TEnum value, params TEnum[] flags) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read | Permissions.Write;
+var hasAll = perm.HasAllFlags(Permissions.Read, Permissions.Write); // true
+var hasAll2 = perm.HasAllFlags(Permissions.Read, Permissions.Execute); // false
+```
+
+#### HasAnyFlag
+判断枚举值是否包含任意一个指定标志。
+```csharp
+public static bool HasAnyFlag<TEnum>(this TEnum value, params TEnum[] flags) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read;
+var hasAny = perm.HasAnyFlag(Permissions.Write, Permissions.Execute); // false
+var hasAny2 = perm.HasAnyFlag(Permissions.Read, Permissions.Write); // true
 ```
 
 #### AddFlag
@@ -413,10 +486,38 @@ var perm = Permissions.Read;
 perm = perm.AddFlag(Permissions.Write); // Permissions.Read | Permissions.Write
 ```
 
+#### AddFlags
+枚举值添加多个标志。
+```csharp
+public static TEnum AddFlags<TEnum>(this TEnum value, params TEnum[] flags) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read;
+perm = perm.AddFlags(Permissions.Write, Permissions.Execute); // Read | Write | Execute
+```
+
 #### RemoveFlag
 枚举值移除标志。
 ```csharp
 public static TEnum RemoveFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
+```
+
+#### RemoveFlags
+枚举值移除多个标志。
+```csharp
+public static TEnum RemoveFlags<TEnum>(this TEnum value, params TEnum[] flags) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read | Permissions.Write | Permissions.Execute;
+perm = perm.RemoveFlags(Permissions.Write, Permissions.Execute); // Read
 ```
 
 #### ToggleFlag
@@ -424,11 +525,20 @@ public static TEnum RemoveFlag<TEnum>(this TEnum value, TEnum flag) where TEnum 
 ```csharp
 public static TEnum ToggleFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : struct, Enum
 ```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read;
+perm = perm.ToggleFlag(Permissions.Read); // None (移除 Read)
+perm = perm.ToggleFlag(Permissions.Write); // Write (添加 Write)
+```
 
 #### GetFlags
 获取枚举值包含的所有标志。
 ```csharp
-public static IEnumerable<TEnum> GetFlags<TEnum>(this TEnum value) where TEnum : struct, Enum
+public static List<TEnum> GetFlags<TEnum>(this TEnum value) where TEnum : struct, Enum
 ```
 **示例：**
 ```csharp
@@ -438,6 +548,20 @@ enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
 var perm = Permissions.Read | Permissions.Write | Permissions.Execute;
 var flags = perm.GetFlags();
 // [Permissions.Read, Permissions.Write, Permissions.Execute]
+```
+
+#### ClearFlags
+清除枚举值的所有标志（返回默认值）。
+```csharp
+public static TEnum ClearFlags<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+[Flags]
+enum Permissions { None = 0, Read = 1, Write = 2, Execute = 4 }
+
+var perm = Permissions.Read | Permissions.Write;
+perm = perm.ClearFlags(); // Permissions.None
 ```
 
 ---
@@ -462,11 +586,119 @@ var result = status.EqualsAny(Status.Active, Status.Pending); // true
 ```csharp
 public static bool EqualsNone<TEnum>(this TEnum value, params TEnum[] values) where TEnum : struct, Enum
 ```
-
-#### In
-判断枚举值是否在指定集合中。
+**示例：**
 ```csharp
-public static bool In<TEnum>(this TEnum value, IEnumerable<TEnum> values) where TEnum : struct, Enum
+enum Status { Active = 1, Inactive = 2, Pending = 3 }
+
+var status = Status.Active;
+var result = status.EqualsNone(Status.Inactive, Status.Pending); // true
+```
+
+#### IsBetween
+判断枚举值是否在指定范围内（包含边界）。
+```csharp
+public static bool IsBetween<TEnum>(this TEnum value, TEnum min, TEnum max) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 待判断的枚举值
+- `min`: 最小值
+- `max`: 最大值
+
+**返回值：**
+- 如果值在范围内返回 true；否则返回 false
+
+**示例：**
+```csharp
+enum Priority { Low = 1, Medium = 2, High = 3, Critical = 4 }
+
+var priority = Priority.Medium;
+var result = priority.IsBetween(Priority.Low, Priority.High); // true
+```
+
+#### IsBetweenExclusive
+判断枚举值是否在指定范围内（不包含边界）。
+```csharp
+public static bool IsBetweenExclusive<TEnum>(this TEnum value, TEnum min, TEnum max) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Priority { Low = 1, Medium = 2, High = 3, Critical = 4 }
+
+var priority = Priority.Medium;
+var result = priority.IsBetweenExclusive(Priority.Low, Priority.Critical); // true
+var result2 = priority.IsBetweenExclusive(Priority.Medium, Priority.High); // false
+```
+
+#### Max
+获取两个枚举值中的较大值。
+```csharp
+public static TEnum Max<TEnum>(this TEnum value, TEnum other) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Priority { Low = 1, Medium = 2, High = 3 }
+
+var result = Priority.Low.Max(Priority.High); // Priority.High
+```
+
+#### Min
+获取两个枚举值中的较小值。
+```csharp
+public static TEnum Min<TEnum>(this TEnum value, TEnum other) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Priority { Low = 1, Medium = 2, High = 3 }
+
+var result = Priority.High.Min(Priority.Low); // Priority.Low
+```
+
+#### GetIndex
+获取枚举值在枚举定义中的索引位置。
+```csharp
+public static int GetIndex<TEnum>(this TEnum value) where TEnum : struct, Enum
+```
+**示例：**
+```csharp
+enum Status { Active = 1, Inactive = 2, Pending = 3 }
+
+var index = Status.Inactive.GetIndex(); // 1 (第二个值)
+```
+
+#### Next
+获取枚举值的下一个值。
+```csharp
+public static TEnum Next<TEnum>(this TEnum value, bool wrap = true) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 当前枚举值
+- `wrap`: 是否循环，如果为 true 则最后一个值的下一个为第一个值；否则返回最后一个值
+
+**示例：**
+```csharp
+enum Status { Active, Inactive, Pending }
+
+var next = Status.Active.Next(); // Status.Inactive
+var next2 = Status.Pending.Next(); // Status.Active (循环)
+var next3 = Status.Pending.Next(wrap: false); // Status.Pending (不循环)
+```
+
+#### Previous
+获取枚举值的上一个值。
+```csharp
+public static TEnum Previous<TEnum>(this TEnum value, bool wrap = true) where TEnum : struct, Enum
+```
+**参数：**
+- `value`: 当前枚举值
+- `wrap`: 是否循环，如果为 true 则第一个值的上一个为最后一个值；否则返回第一个值
+
+**示例：**
+```csharp
+enum Status { Active, Inactive, Pending }
+
+var prev = Status.Inactive.Previous(); // Status.Active
+var prev2 = Status.Active.Previous(); // Status.Pending (循环)
+var prev3 = Status.Active.Previous(wrap: false); // Status.Active (不循环)
 ```
 
 ---

@@ -552,28 +552,37 @@ int count = 5;
 var sequence = count.Times(); // [0, 1, 2, 3, 4]
 ```
 
-#### Range
-生成从 value 开始的整数序列。
+#### To
+生成从 value 到 end 的整数序列。
 ```csharp
-public static IEnumerable<int> Range(this int start, int count)
+public static IEnumerable<int> To(this int value)
+public static IEnumerable<int> To(this int value, int end)
 ```
 **示例：**
 ```csharp
-int start = 10;
-var sequence = start.Range(5); // [10, 11, 12, 13, 14]
+var sequence1 = 5.To();     // [5, 6, 7, 8, 9]
+var sequence2 = 1.To(5);    // [1, 2, 3, 4, 5]
 ```
 
-#### ToEnum
-将 int 转换为枚举类型。
+#### StepTo
+生成从 value 到 end 的整数序列（指定步长）。
 ```csharp
-public static TEnum ToEnum<TEnum>(this int value, TEnum defaultValue = default) where TEnum : struct, Enum
+public static IEnumerable<int> StepTo(this int value, int end, int step)
 ```
+**参数：**
+- `value`: 起始值
+- `end`: 结束值
+- `step`: 步长
+
+**返回值：**
+- 整数序列
+
 **示例：**
 ```csharp
-enum Status { Active = 1, Inactive = 2 }
-
-int value = 1;
-Status status = value.ToEnum<Status>(); // Status.Active
+int start = 0;
+var sequence1 = start.StepTo(10, 2); // [0, 2, 4, 6, 8, 10]
+var sequence2 = start.StepTo(10, 3); // [0, 3, 6, 9]
+var sequence3 = 10.StepTo(0, -2);    // [10, 8, 6, 4, 2, 0]
 ```
 
 ---

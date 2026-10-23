@@ -284,9 +284,42 @@ public static string GetUserDomainName()
 public static string GetSystemDirectory()
 ```
 
+### GetTickCount
+
+获取系统启动以来的毫秒数。
+
+```csharp
+public static long GetTickCount()
+```
+
+**返回值：** 系统启动以来的毫秒数。
+
+**示例：**
+```csharp
+var tickCount = ApplicationHelper.GetTickCount();
+Console.WriteLine($"系统运行时间: {tickCount / 1000 / 60} 分钟");
+```
+
 ---
 
 ## 硬件信息
+
+### GetProcessorInfo
+
+获取处理器信息。
+
+```csharp
+public static ProcessorInfo GetProcessorInfo()
+```
+
+**返回值：** ProcessorInfo 对象，包含 ProcessorCount、ProcessorArchitecture、OSArchitecture 属性。
+
+**示例：**
+```csharp
+var cpuInfo = ApplicationHelper.GetProcessorInfo();
+Console.WriteLine($"处理器数量: {cpuInfo.ProcessorCount}");
+Console.WriteLine($"架构: {cpuInfo.ProcessorArchitecture}");
+```
 
 ### GetProcessorCount
 
@@ -294,14 +327,6 @@ public static string GetSystemDirectory()
 
 ```csharp
 public static int GetProcessorCount()
-```
-
-### GetTotalMemory
-
-获取系统总内存（字节）。
-
-```csharp
-public static long GetTotalMemory()
 ```
 
 ### GetAvailableMemory
@@ -312,6 +337,8 @@ public static long GetTotalMemory()
 public static long GetAvailableMemory()
 ```
 
+**注意：** 此方法返回的是 GCMemoryInfo 中可用的内存大小，可能与实际系统可用内存不同。
+
 ### GetDiskDriveInfo
 
 获取磁盘驱动器信息列表。
@@ -320,40 +347,93 @@ public static long GetAvailableMemory()
 public static List<DiskDriveInfo> GetDiskDriveInfo()
 ```
 
-### GetNetworkInterfaces
+### GetDiskDriveInfo (指定驱动器)
+
+获取指定磁盘驱动器信息。
+
+```csharp
+public static DiskDriveInfo? GetDiskDriveInfo(string driveName)
+```
+
+**参数：**
+- `driveName`: 驱动器名称（如 "C:\"）
+
+**返回值：** 指定驱动器的信息，如果不存在则返回 null。
+
+### GetNetworkInterfaceInfo
 
 获取网络接口信息列表。
 
 ```csharp
-public static List<NetworkInterfaceInfo> GetNetworkInterfaces()
+public static List<NetworkInterfaceInfo> GetNetworkInterfaceInfo()
+```
+
+### HasNetworkConnection
+
+检查是否有网络连接。
+
+```csharp
+public static bool HasNetworkConnection()
+```
+
+**返回值：** 如果有网络连接返回 true；否则返回 false。
+
+**示例：**
+```csharp
+if (ApplicationHelper.HasNetworkConnection())
+{
+    Console.WriteLine("网络已连接");
+}
+else
+{
+    Console.WriteLine("网络未连接");
+}
 ```
 
 ---
 
 ## 运行时监控
 
-### GetWorkingSet
+### GetRuntimeInfo
 
-获取工作集内存大小（字节）。
+获取运行时信息。
 
 ```csharp
-public static long GetWorkingSet()
+public static RuntimeInfo GetRuntimeInfo()
 ```
 
-### GetPeakWorkingSet
+**返回值：** RuntimeInfo 对象，包含 WorkingSet、PeakWorkingSet、VirtualMemorySize、ThreadCount、HandleCount 等属性。
 
-获取峰值工作集内存大小（字节）。
+### GetGCInfo
+
+获取 GC 信息。
 
 ```csharp
-public static long GetPeakWorkingSet()
+public static GCInfo GetGCInfo()
 ```
 
-### GetVirtualMemorySize
+**返回值：** GCInfo 对象，包含 CollectionCountGen0、CollectionCountGen1、CollectionCountGen2、TotalMemory、MaxGeneration 属性。
 
-获取虚拟内存大小（字节）。
+### GetMemoryUsage
+
+获取当前内存使用量（字节）。
 
 ```csharp
-public static long GetVirtualMemorySize()
+public static long GetMemoryUsage()
+```
+
+**示例：**
+```csharp
+var memUsage = ApplicationHelper.GetMemoryUsage();
+Console.WriteLine($"内存使用: {memUsage / 1024 / 1024} MB");
+```
+
+### GetPeakMemoryUsage
+
+获取峰值内存使用量（字节）。
+
+```csharp
+public static long GetPeakMemoryUsage()
 ```
 
 ### GetThreadCount
@@ -372,49 +452,84 @@ public static int GetThreadCount()
 public static int GetHandleCount()
 ```
 
-### GetGCTotalMemory
-
-获取 GC 总内存（字节）。
-
-```csharp
-public static long GetGCTotalMemory()
-```
-
-### GetGCGenerationInfo
-
-获取 GC 代信息。
-
-```csharp
-public static GCGenerationInfo GetGCGenerationInfo()
-```
-
-### ForceGC
+### ForceGarbageCollection
 
 强制执行垃圾回收。
 
 ```csharp
-public static void ForceGC(int generation = 2)
+public static void ForceGarbageCollection(int generation = -1, bool blocking = false, bool compacting = false)
+```
+
+**参数：**
+- `generation`: 回收代数（0-2），-1 表示最大代数
+- `blocking`: 是否阻塞直到回收完成
+- `compacting`: 是否执行内存压缩
+
+**示例：**
+```csharp
+// 执行完整垃圾回收并压缩内存
+ApplicationHelper.ForceGarbageCollection(blocking: true, compacting: true);
+```
+
+### MonitorPerformanceAsync
+
+异步监控应用程序性能。
+
+```csharp
+public static async Task MonitorPerformanceAsync(
+    TimeSpan duration,
+    TimeSpan interval,
+    Action<ResourceUsageSnapshot> callback,
+    CancellationToken cancellationToken = default)
+```
+
+**参数：**
+- `duration`: 监控持续时间
+- `interval`: 采样间隔
+- `callback`: 每次采样的回调
+- `cancellationToken`: 取消令牌
+
+**示例：**
+```csharp
+await ApplicationHelper.MonitorPerformanceAsync(
+    TimeSpan.FromSeconds(30),
+    TimeSpan.FromSeconds(1),
+    snapshot => Console.WriteLine($"CPU: {snapshot.CpuUsage}%, Memory: {snapshot.MemoryUsage}"));
+```
+
+### GetResourceUsageSnapshot
+
+获取应用程序资源使用情况快照。
+
+```csharp
+public static ResourceUsageSnapshot GetResourceUsageSnapshot()
+```
+
+**返回值：** ResourceUsageSnapshot 对象，包含 Timestamp、CpuUsage、MemoryUsage、ThreadCount、HandleCount 属性。
+
+**示例：**
+```csharp
+var snapshot = ApplicationHelper.GetResourceUsageSnapshot();
+Console.WriteLine($"CPU: {snapshot.CpuUsage:F1}%");
+Console.WriteLine($"内存: {snapshot.MemoryUsage / 1024 / 1024} MB");
 ```
 
 ---
 
 ## 应用程序控制
 
-### IsAdministrator
-
-检查当前进程是否以管理员权限运行。
-
-```csharp
-public static bool IsAdministrator()
-```
-
 ### Restart
 
 重启应用程序。
 
 ```csharp
-public static void Restart(int exitCode = 0)
+public static void Restart(string[]? args = null)
 ```
+
+**参数：**
+- `args`: 启动参数，可选
+
+**注意：** 此方法会终止当前进程并启动新进程。
 
 ### Exit
 
@@ -424,34 +539,133 @@ public static void Restart(int exitCode = 0)
 public static void Exit(int exitCode = 0)
 ```
 
-### EnsureSingleInstance
+### IsRunningAsAdministrator
 
-确保应用程序单实例运行。
+检查当前进程是否以管理员权限运行（仅 Windows）。
 
 ```csharp
-public static bool EnsureSingleInstance(string mutexName)
+public static bool IsRunningAsAdministrator()
 ```
 
-**返回值：** 如果是第一个实例返回 true，否则返回 false。
+**返回值：** 如果以管理员权限运行返回 true；否则返回 false。
+
+**注意：** 在非 Windows 系统上，此方法始终返回 false。
+
+**示例：**
+```csharp
+if (!ApplicationHelper.IsRunningAsAdministrator())
+{
+    Console.WriteLine("请以管理员权限运行此程序");
+}
+```
+
+### RestartAsAdministrator
+
+以管理员权限重新启动应用程序（仅 Windows）。
+
+```csharp
+public static bool RestartAsAdministrator()
+```
+
+**返回值：** 是否成功启动新进程。如果已经以管理员权限运行，则不执行任何操作并返回 false。
+
+### SetSingleInstance
+
+设置应用程序为单实例运行。
+
+```csharp
+public static bool SetSingleInstance(string applicationName)
+public static bool SetSingleInstance(string applicationName, out Mutex? mutex)
+```
+
+**参数：**
+- `applicationName`: 应用程序唯一标识名称
+- `mutex`: 创建的 Mutex 对象（需要保持引用防止被 GC 回收）
+
+**返回值：** 如果是第一个实例返回 true；否则返回 false。
+
+**示例：**
+```csharp
+if (!ApplicationHelper.SetSingleInstance("MyUniqueAppName", out var mutex))
+{
+    Console.WriteLine("应用程序已在运行");
+    return;
+}
+// 保持 mutex 引用直到程序退出
+GC.KeepAlive(mutex);
+```
+
+### SetProcessPriority
+
+设置进程优先级。
+
+```csharp
+public static bool SetProcessPriority(ProcessPriorityClass priority)
+```
+
+**参数：**
+- `priority`: 进程优先级
+
+**返回值：** 是否设置成功
+
+**示例：**
+```csharp
+ApplicationHelper.SetProcessPriority(ProcessPriorityClass.High);
+```
+
+### EnableHighPerformanceMode
+
+启用高性能模式（提高进程优先级并禁止系统睡眠）。
+
+```csharp
+public static bool EnableHighPerformanceMode()
+```
+
+**返回值：** 是否成功启用
+
+**注意：** 此方法仅影响当前进程，不会永久修改系统设置。
 
 ---
 
 ## 环境变量管理
+
+### GetStartupArguments
+
+获取应用程序启动参数。
+
+```csharp
+public static string[] GetStartupArguments()
+```
+
+**返回值：** 启动参数数组
+
+**示例：**
+```csharp
+var args = ApplicationHelper.GetStartupArguments();
+foreach (var arg in args)
+{
+    Console.WriteLine($"参数: {arg}");
+}
+```
 
 ### GetEnvironmentVariable
 
 获取环境变量值。
 
 ```csharp
-public static string GetEnvironmentVariable(string variableName)
+public static string? GetEnvironmentVariable(string variableName, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
 ```
+
+**参数：**
+- `variableName`: 环境变量名称
+- `target`: 环境变量目标，默认为 Process
 
 ### SetEnvironmentVariable
 
 设置环境变量值。
 
 ```csharp
-public static void SetEnvironmentVariable(string variableName, string value)
+public static void SetEnvironmentVariable(string variableName, string? value, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
 ```
 
 ### GetEnvironmentVariables
@@ -459,8 +673,99 @@ public static void SetEnvironmentVariable(string variableName, string value)
 获取所有环境变量。
 
 ```csharp
-public static Dictionary<string, string> GetEnvironmentVariables()
+public static Dictionary<string, string> GetEnvironmentVariables(EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
 ```
+
+### HasEnvironmentVariable
+
+检查环境变量是否存在。
+
+```csharp
+public static bool HasEnvironmentVariable(string variableName, EnvironmentVariableTarget target = EnvironmentVariableTarget.Process)
+```
+
+**示例：**
+```csharp
+if (ApplicationHelper.HasEnvironmentVariable("MY_VAR"))
+{
+    Console.WriteLine("MY_VAR 已设置");
+}
+```
+
+---
+
+## 特殊文件夹
+
+### GetSpecialFolderPath
+
+获取特殊文件夹路径。
+
+```csharp
+public static string GetSpecialFolderPath(Environment.SpecialFolder folder)
+```
+
+**参数：**
+- `folder`: 特殊文件夹枚举
+
+**返回值：** 文件夹路径
+
+**示例：**
+```csharp
+var desktop = ApplicationHelper.GetSpecialFolderPath(Environment.SpecialFolder.Desktop);
+Console.WriteLine($"桌面: {desktop}");
+```
+
+### GetApplicationDataDirectory
+
+获取应用程序数据目录（如果不存在会自动创建）。
+
+```csharp
+public static string GetApplicationDataDirectory()
+```
+
+**返回值：** 应用程序数据目录路径
+
+**示例：**
+```csharp
+var appDataDir = ApplicationHelper.GetApplicationDataDirectory();
+Console.WriteLine($"应用数据目录: {appDataDir}");
+```
+
+### GetLocalApplicationDataDirectory
+
+获取本地应用程序数据目录（如果不存在会自动创建）。
+
+```csharp
+public static string GetLocalApplicationDataDirectory()
+```
+
+### GetTempDirectory
+
+获取临时目录路径。
+
+```csharp
+public static string GetTempDirectory()
+```
+
+### CreateTempFile
+
+创建临时文件并返回路径。
+
+```csharp
+public static string CreateTempFile()
+```
+
+**返回值：** 临时文件路径
+
+### GetLogDirectory
+
+获取日志目录（如果不存在会自动创建）。
+
+```csharp
+public static string GetLogDirectory()
+```
+
+**返回值：** 日志目录路径
 
 ---
 

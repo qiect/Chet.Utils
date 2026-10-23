@@ -583,6 +583,22 @@ foreach (var file in logFiles)
 }
 ```
 
+#### SearchDirectories
+
+递归搜索目录。
+
+```csharp
+public static IEnumerable<string> SearchDirectories(string directoryPath, string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
+```
+
+#### DetectFileEncoding
+
+检测文件编码。
+
+```csharp
+public static Encoding DetectFileEncoding(string filePath)
+```
+
 ---
 
 ## 与 FileExtensions 的区别

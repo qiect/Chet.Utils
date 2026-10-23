@@ -76,6 +76,8 @@ description: "为 bool 类型提供了丰富的扩展方法，包括基础判断
 - `ToValue&lt;T&gt;(T trueValue, T falseValue)` - 转换为指定类型的值
 - `ToEnum&lt;TEnum&gt;(TEnum trueEnum, TEnum falseEnum)` - 转换为枚举值
 - `ToNullable(bool nullable = false)` - 转换为可空布尔值
+- `Match&lt;T&gt;(T trueValue, T falseValue)` - 根据布尔值返回对应的值
+- `Match&lt;T&gt;(Func&lt;T&gt; trueFunc, Func&lt;T&gt; falseFunc)` - 根据布尔值执行对应函数并返回结果
 
 ### 6. 条件执行方法
 
@@ -251,6 +253,48 @@ bool value2 = false;
 bool result = value1.Xor(value2); // true
 ```
 
+#### Xnor
+
+对两个布尔值进行同或运算（等价于相等比较）。
+
+```csharp
+public static bool Xnor(this bool value, bool other)
+```
+
+**示例：**
+```csharp
+true.Xnor(true);   // true
+true.Xnor(false);  // false
+```
+
+#### Nand
+
+对两个布尔值进行与非运算。
+
+```csharp
+public static bool Nand(this bool value, bool other)
+```
+
+**示例：**
+```csharp
+true.Nand(true);   // false
+true.Nand(false);  // true
+```
+
+#### Nor
+
+对两个布尔值进行或非运算。
+
+```csharp
+public static bool Nor(this bool value, bool other)
+```
+
+**示例：**
+```csharp
+false.Nor(false);  // true
+true.Nor(false);   // false
+```
+
 ### 数值转换
 
 #### ToInt
@@ -261,50 +305,174 @@ bool result = value1.Xor(value2); // true
 public static int ToInt(this bool value)
 ```
 
-**参数：**
+**返回值：** true 返回 1，false 返回 0
 
-- `value`: 待转换的布尔值
+#### ToLong
 
-**返回值：**
-
-- true 返回 1，false 返回 0
-
-**示例：**
+将布尔值转换为 long。
 
 ```csharp
-bool value1 = true;
-bool value2 = false;
-
-int result1 = value1.ToInt(); // 1
-int result2 = value2.ToInt(); // 0
+public static long ToLong(this bool value)
 ```
+
+**返回值：** true 返回 1L，false 返回 0L
+
+#### ToByte
+
+将布尔值转换为 byte。
+
+```csharp
+public static byte ToByte(this bool value)
+```
+
+**返回值：** true 返回 1，false 返回 0
+
+#### ToShort
+
+将布尔值转换为 short。
+
+```csharp
+public static short ToShort(this bool value)
+```
+
+**返回值：** true 返回 1，false 返回 0
+
+#### ToFloat
+
+将布尔值转换为 float。
+
+```csharp
+public static float ToFloat(this bool value)
+```
+
+**返回值：** true 返回 1f，false 返回 0f
+
+#### ToDouble
+
+将布尔值转换为 double。
+
+```csharp
+public static double ToDouble(this bool value)
+```
+
+**返回值：** true 返回 1d，false 返回 0d
+
+#### ToDecimal
+
+将布尔值转换为 decimal。
+
+```csharp
+public static decimal ToDecimal(this bool value)
+```
+
+**返回值：** true 返回 1m，false 返回 0m
 
 ### 字符串转换
 
+#### ToStringValue
+
+将布尔值转换为标准字符串（"True"/"False"）。
+
+```csharp
+public static string ToStringValue(this bool value)
+```
+
+#### ToLowerString
+
+将布尔值转换为小写字符串（"true"/"false"）。
+
+```csharp
+public static string ToLowerString(this bool value)
+```
+
 #### ToChineseString
 
-将布尔值转换为中文字符串。
+将布尔值转换为中文字符串（"是"/"否"）。
 
 ```csharp
 public static string ToChineseString(this bool value)
 ```
 
-**参数：**
-
-- `value`: 待转换的布尔值
-
-**返回值：**
-
-- true 返回 "是"，false 返回 "否"
-
 **示例：**
+```csharp
+true.ToChineseString(); // "是"
+false.ToChineseString(); // "否"
+```
+
+#### ToYesNo
+
+将布尔值转换为 Yes/No 字符串。
 
 ```csharp
-bool value1 = true;
-bool value2 = false;
+public static string ToYesNo(this bool value)
+```
 
-string result1 = value1.ToChineseString(); // "是"
-string result2 = value2.ToChineseString(); // "否"
+#### ToOnOff
+
+将布尔值转换为 On/Off 字符串。
+
+```csharp
+public static string ToOnOff(this bool value)
+```
+
+#### ToYN
+
+将布尔值转换为 Y/N 字符串。
+
+```csharp
+public static string ToYN(this bool value)
+```
+
+#### ToOneZero
+
+将布尔值转换为 1/0 字符串。
+
+```csharp
+public static string ToOneZero(this bool value)
+```
+
+#### ToReverseString
+
+将布尔值转换为反向字符串（true→"False"，false→"True"）。
+
+```csharp
+public static string ToReverseString(this bool value)
+```
+
+#### ToReverseChineseString
+
+将布尔值转换为反向中文字符串（true→"否"，false→"是"）。
+
+```csharp
+public static string ToReverseChineseString(this bool value)
+```
+
+#### ToEnabledDisabled
+
+将布尔值转换为启用/禁用字符串。
+
+```csharp
+public static string ToEnabledDisabled(this bool value)
+```
+
+**示例：**
+```csharp
+true.ToEnabledDisabled(); // "启用"
+false.ToEnabledDisabled(); // "禁用"
+```
+
+#### ToSuccessFailed
+
+将布尔值转换为成功/失败字符串。
+
+```csharp
+public static string ToSuccessFailed(this bool value)
+```
+
+**示例：**
+```csharp
+true.ToSuccessFailed(); // "成功"
+false.ToSuccessFailed(); // "失败"
 ```
 
 #### ToCustomString
@@ -316,20 +484,95 @@ public static string ToCustomString(this bool value, string trueString, string f
 ```
 
 **参数：**
-
 - `value`: 待转换的布尔值
 - `trueString`: true 时的字符串
 - `falseString`: false 时的字符串
 
+**示例：**
+```csharp
+bool value = true;
+string result = value.ToCustomString("通过", "不通过"); // "通过"
+```
+
+### 自定义转换
+
+#### ToValue\<T\>
+
+根据布尔值返回指定类型的值。
+
+```csharp
+public static T ToValue<T>(this bool value, T trueValue, T falseValue)
+```
+
+**参数：**
+- `trueValue`: true 时返回的值
+- `falseValue`: false 时返回的值
+
+**示例：**
+```csharp
+var result = true.ToValue("成功", "失败"); // "成功"
+```
+
+#### ToEnum\<TEnum\>
+
+根据布尔值返回对应的枚举值。
+
+```csharp
+public static TEnum ToEnum<TEnum>(this bool value, TEnum trueEnum, TEnum falseEnum) where TEnum : Enum
+```
+
+**示例：**
+```csharp
+var status = true.ToEnum(Status.Active, Status.Inactive); // Status.Active
+```
+
+#### ToNullable
+
+将布尔值转换为可空布尔值。
+
+```csharp
+public static bool? ToNullable(this bool value, bool nullable = false)
+```
+
+**参数：**
+- `nullable`: 是否返回 null，默认为 false
+
+**示例：**
+```csharp
+var result1 = true.ToNullable(); // true
+var result2 = true.ToNullable(nullable: true); // null
+```
+
+### 值匹配
+
+#### Match
+
+根据布尔值返回对应的值。
+
+```csharp
+public static T Match<T>(this bool value, T trueValue, T falseValue)
+public static T Match<T>(this bool value, Func<T> trueFunc, Func<T> falseFunc)
+```
+
+**参数：**
+
+- `value`: 待判断的布尔值
+- `trueValue`: true 时返回的值
+- `falseValue`: false 时返回的值
+- `trueFunc`: true 时执行的函数
+- `falseFunc`: false 时执行的函数
+
 **返回值：**
 
-- 自定义字符串
+- 对应条件的值
 
 **示例：**
 
 ```csharp
 bool value = true;
-string result = value.ToCustomString("通过", "不通过"); // "通过"
+
+var result1 = value.Match("成功", "失败"); // "成功"
+var result2 = value.Match(() => ComputeSuccess(), () => ComputeFailure());
 ```
 
 ### 条件执行
@@ -342,16 +585,24 @@ string result = value.ToCustomString("通过", "不通过"); // "通过"
 public static void IfTrue(this bool value, Action action)
 ```
 
-**参数：**
-
-- `value`: 待判断的布尔值
-- `action`: 要执行的操作
-
 **示例：**
-
 ```csharp
 bool value = true;
 value.IfTrue(() => Console.WriteLine("值为 true"));
+```
+
+#### IfFalse
+
+如果布尔值为 false，则执行指定操作。
+
+```csharp
+public static void IfFalse(this bool value, Action action)
+```
+
+**示例：**
+```csharp
+bool value = false;
+value.IfFalse(() => Console.WriteLine("值为 false"));
 ```
 
 #### IfElse

@@ -738,12 +738,12 @@ var tb = UnitHelper.ConvertDataStorage(1024, DataStorageUnit.Gigabyte, DataStora
 // tb = 1
 ```
 
-### FormatDataSize
+### FormatDataStorage
 
 格式化数据大小（自动选择合适的单位）。
 
 ```csharp
-public static string FormatDataSize(double bytes, int decimalPlaces = 2)
+public static string FormatDataStorage(double bytes, int decimalPlaces = 2)
 ```
 
 **参数：**
@@ -755,13 +755,13 @@ public static string FormatDataSize(double bytes, int decimalPlaces = 2)
 
 **示例：**
 ```csharp
-var size1 = UnitHelper.FormatDataSize(1024);
+var size1 = UnitHelper.FormatDataStorage(1024);
 // size1 = "1.00 KB"
 
-var size2 = UnitHelper.FormatDataSize(1536);
+var size2 = UnitHelper.FormatDataStorage(1536);
 // size2 = "1.50 KB"
 
-var size3 = UnitHelper.FormatDataSize(1048576);
+var size3 = UnitHelper.FormatDataStorage(1048576);
 // size3 = "1.00 MB"
 ```
 
@@ -807,31 +807,72 @@ var days = UnitHelper.ConvertTime(1, TimeUnit.Week, TimeUnit.Day);
 // days = 7
 ```
 
-### FormatDuration
+### FormatTime
 
 格式化时长（自动选择合适的单位）。
 
 ```csharp
-public static string FormatDuration(double seconds, int decimalPlaces = 2)
+public static string FormatTime(double seconds, int decimalPlaces = 0)
 ```
 
 **参数：**
 - `seconds`: 秒数
-- `decimalPlaces`: 小数位数，默认 2
+- `decimalPlaces`: 小数位数，默认 0
 
 **返回值：**
 - 格式化后的时长字符串
 
 **示例：**
 ```csharp
-var duration1 = UnitHelper.FormatDuration(90);
-// duration1 = "1.50 分钟"
+var duration1 = UnitHelper.FormatTime(90);
+// duration1 = "1 分钟"
 
-var duration2 = UnitHelper.FormatDuration(3661);
-// duration2 = "1.02 小时"
+var duration2 = UnitHelper.FormatTime(3661);
+// duration2 = "1 小时"
 
-var duration3 = UnitHelper.FormatDuration(0.5);
-// duration3 = "500.00 毫秒"
+var duration3 = UnitHelper.FormatTime(0.5);
+// duration3 = "500 毫秒"
+```
+
+## 通用方法
+
+### GetUnitSymbol
+
+获取单位符号。
+
+```csharp
+public static string GetUnitSymbol(Enum unit)
+```
+
+**示例：**
+```csharp
+var symbol = UnitHelper.GetUnitSymbol(LengthUnit.Meter); // "m"
+```
+
+### GetUnitName
+
+获取单位名称。
+
+```csharp
+public static string GetUnitName(Enum unit)
+```
+
+**示例：**
+```csharp
+var name = UnitHelper.GetUnitName(LengthUnit.Meter); // "米"
+```
+
+### FormatWithUnit
+
+格式化数值并附带单位符号。
+
+```csharp
+public static string FormatWithUnit(double value, Enum unit, int decimalPlaces = 2)
+```
+
+**示例：**
+```csharp
+var formatted = UnitHelper.FormatWithUnit(25.5, LengthUnit.Meter); // "25.50 m"
 ```
 
 ## 使用建议

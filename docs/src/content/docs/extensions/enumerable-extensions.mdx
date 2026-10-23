@@ -32,11 +32,11 @@ description: "为 IEnumerable<T> 和 ICollection<T> 类型提供了丰富的扩�
 
 #### 集合操作方法
 - `ContainsSafe<T>(T item)` - 判断集合是否包含指定元素（支持 null 集合）
-- `Contains<T>(Func<T, bool> predicate)` - 判断集合是否包含满足指定条件的元素
+- `ContainsWhere<T>(Func<T, bool> predicate)` - 判断集合是否包含满足指定条件的元素
 - `ToListSafe<T>()` - 将集合转换为 List（安全）
 - `ToArraySafe<T>()` - 将集合转换为数组（安全）
 - `DistinctSafe<T>()` - 集合去重（安全）
-- `DistinctBy<TSource, TKey>(Func<TSource, TKey> keySelector)` - 根据指定键去重
+- `DistinctBySafe<TSource, TKey>(Func<TSource, TKey> keySelector)` - 根据指定键去重（安全）
 - `WhereSafe<T>(Func<T, bool> predicate)` - 集合过滤（安全）
 - `SelectSafe<TSource, TResult>(Func<TSource, TResult> selector)` - 集合投影（安全）
 - `GroupBySafe<TSource, TKey>(Func<TSource, TKey> keySelector)` - 集合分组（安全）
@@ -45,9 +45,22 @@ description: "为 IEnumerable<T> 和 ICollection<T> 类型提供了丰富的扩�
 - `ReverseSafe<T>()` - 集合反转（安全）
 - `Shuffle<T>()` - 集合随机排序（洗牌）
 
+#### 集合判断方法
+- `AllSafe<T>(Func<T, bool> predicate)` - 判断是否全部满足条件（安全）
+- `AnySafe<T>(Func<T, bool> predicate)` - 判断是否存在满足条件的元素（安全）
+- `SequenceEqualSafe<T>(IEnumerable<T> second)` - 判断两个集合是否相等（安全）
+- `ContainsSameElements<T>(IEnumerable<T> second)` - 判断两个集合是否包含相同元素（忽略顺序）
+- `ContainsNull<T>()` - 判断集合是否包含 null 元素
+
+#### 集合合并方法
+- `ConcatSafe<T>(IEnumerable<T> second)` - 合并两个集合（安全）
+- `ConcatMany<T>(params IEnumerable<T>[] sources)` - 合并多个集合
+- `IntersectSafe<T>(IEnumerable<T> second)` - 获取两个集合的交集（安全）
+- `UnionSafe<T>(IEnumerable<T> second)` - 获取两个集合的并集（安全）
+- `ExceptSafe<T>(IEnumerable<T> second)` - 获取两个集合的差集（安全）
+
 #### 分页方法
 - `Page<T>(int pageIndex, int pageSize)` - 集合分页（安全）
-- `GetPaged<T>(int pageIndex, int pageSize)` - 获取分页信息（包含分页数据和分页信息）
 
 #### 统计方法
 - `SumSafe()` - 集合求和（安全）- 支持 int、double、decimal、float
@@ -59,32 +72,31 @@ description: "为 IEnumerable<T> 和 ICollection<T> 类型提供了丰富的扩�
 
 #### 批量操作方法
 - `ForEachSafe<T>(Action<T> action)` - 集合遍历执行操作（安全）
+- `ForEachIndexed<T>(Action<T, int> action)` - 集合遍历执行操作（带索引）
 - `ForEachAsync<T>(Func<T, Task> action)` - 集合遍历执行异步操作
-- `Chunk<T>(int size)` - 集合分块（按指定大小分组）
-- `Batch<T>(int batchSize)` - 集合分批（与 Chunk 类似）
-
-#### 集合判断方法
-- `AllSafe<T>(Func<T, bool> predicate)` - 判断是否全部满足条件（安全）
-- `AnySafe<T>(Func<T, bool> predicate)` - 判断是否存在满足条件的元素（安全）
-- `SequenceEqualSafe<T>(IEnumerable<T> other)` - 判断两个集合是否相等（安全）
+- `ChunkSafe<T>(int size)` - 集合分块（按指定大小分组）
+- `Batch<T>(int batchSize, Action<IEnumerable<T>> action)` - 集合分批处理
+- `BatchAsync<T>(int batchSize, Func<IEnumerable<T>, Task> action)` - 集合分批异步处理
 
 #### 集合转换方法
 - `ToDictionarySafe<TSource, TKey, TValue>(Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)` - 集合转换为字典（安全）
 - `ToHashSetSafe<T>()` - 集合转换为 HashSet（安全）
-- `ToDataTable<T>()` - IEnumerable 转换为 DataTable
-- `ToConcurrentDictionary<TKey, TValue>()` - `IEnumerable<KeyValuePair>` 转换为 ConcurrentDictionary
-- `ToConcurrentDictionary<TSource, TKey, TValue>(Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)` - IEnumerable 转换为 ConcurrentDictionary（自定义键值选择器）
+- `ToDataTable<T>()` - 集合转换为 DataTable（自动推断列名和类型）
+- `ToConcurrentDictionary<TKey, TValue>()` - 集合转换为 ConcurrentDictionary
 
 #### 其他方法
 - `RemoveNulls<T>()` - 集合去除 null 元素
-- `Join<T>(string separator)` - 将集合元素连接为字符串
+- `JoinToString<T>(string separator)` - 将集合元素连接为字符串
+- `JoinToString<T>(Func<T, string> selector, string separator)` - 将集合元素连接为字符串（带选择器）
 
 ### 2. ICollection 扩展方法
 
 提供对集合类型的安全操作方法。
 
 #### 状态判断方法
-- `IsNullOrEmpty<T>()` - 判断集合是否为 null 或空
+- `IsNullOrEmptySafe<T>()` - 判断集合是否为 null 或空（IEnumerable）
+- `IsNullOrEmptySafe<T>()` - 判断集合是否为 null 或空（ICollection）
+- `IsNotEmpty<T>()` - 判断集合是否不为空
 
 #### 元素操作方法
 - `AddSafe<T>(T item)` - 安全添加元素到集合
@@ -99,11 +111,12 @@ description: "为 IEnumerable<T> 和 ICollection<T> 类型提供了丰富的扩�
 
 ### 状态判断
 
-#### IsNullOrEmpty
+#### IsNullOrEmptySafe
 判断集合是否为 null 或空。
 
 ```csharp
-public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
+public static bool IsNullOrEmptySafe<T>(this IEnumerable<T> source)
+public static bool IsNullOrEmptySafe<T>(this ICollection<T> collection)
 ```
 
 **参数：**
@@ -118,9 +131,25 @@ List<int> list1 = null;
 List<int> list2 = new List<int>();
 List<int> list3 = new List<int> { 1, 2, 3 };
 
-bool result1 = list1.IsNullOrEmpty(); // true
-bool result2 = list2.IsNullOrEmpty(); // true
-bool result3 = list3.IsNullOrEmpty(); // false
+bool result1 = list1.IsNullOrEmptySafe(); // true
+bool result2 = list2.IsNullOrEmptySafe(); // true
+bool result3 = list3.IsNullOrEmptySafe(); // false
+```
+
+#### IsNotEmpty
+判断集合是否不为空。
+
+```csharp
+public static bool IsNotEmpty<T>(this IEnumerable<T> source)
+```
+
+**返回值：**
+- 如果集合不为 null 且包含元素，返回 true；否则返回 false
+
+**示例：**
+```csharp
+List<int> list = new List<int> { 1, 2, 3 };
+bool result = list.IsNotEmpty(); // true
 ```
 
 #### SafeCount
@@ -128,6 +157,26 @@ bool result3 = list3.IsNullOrEmpty(); // false
 
 ```csharp
 public static int SafeCount<T>(this IEnumerable<T> source)
+```
+
+#### CountIf
+获取满足条件的元素数量。
+
+```csharp
+public static int CountIf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**参数：**
+- `source`: 集合
+- `predicate`: 条件判断函数
+
+**返回值：**
+- 满足条件的元素数量
+
+**示例：**
+```csharp
+var list = new List<int> { 1, 2, 3, 4, 5 };
+var count = list.CountIf(x => x > 3); // 2
 ```
 
 **参数：**
@@ -194,6 +243,49 @@ int result1 = list.ElementAtOrDefaultSafe(1); // 2
 int result2 = list.ElementAtOrDefaultSafe(10); // 0 (default)
 ```
 
+#### LastOrDefaultSafe
+获取集合最后一个元素，若集合为空则返回默认值。
+
+```csharp
+public static T LastOrDefaultSafe<T>(this IEnumerable<T> source)
+public static T LastOrDefaultSafe<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**参数：**
+- `source`: 集合
+- `predicate`: 过滤条件（可选）
+
+**返回值：**
+- 最后一个元素或默认值
+
+**示例：**
+```csharp
+List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+int result = list.LastOrDefaultSafe(); // 5
+int result2 = list.LastOrDefaultSafe(x => x < 3); // 2
+```
+
+#### SingleOrDefaultSafe
+获取集合唯一元素，若集合为空或包含多个元素则返回默认值。
+
+```csharp
+public static T SingleOrDefaultSafe<T>(this IEnumerable<T> source)
+public static T SingleOrDefaultSafe<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**参数：**
+- `source`: 集合
+- `predicate`: 过滤条件（可选）
+
+**返回值：**
+- 唯一元素或默认值
+
+**示例：**
+```csharp
+List<int> list = new List<int> { 5 };
+int result = list.SingleOrDefaultSafe(); // 5
+```
+
 ### 集合操作
 
 #### ContainsSafe
@@ -219,11 +311,11 @@ bool result1 = list1.ContainsSafe(2); // false
 bool result2 = list2.ContainsSafe(2); // true
 ```
 
-#### DistinctBy
-根据指定键去重。
+#### DistinctBySafe
+根据指定键去重（安全）。
 
 ```csharp
-public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+public static IEnumerable<TSource> DistinctBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
 ```
 
 **参数：**
@@ -242,8 +334,233 @@ var list = new List<Person>
     new Person { Id = 1, Name = "Alice2" }
 };
 
-var distinct = list.DistinctBy(x => x.Id).ToList();
+var distinct = list.DistinctBySafe(x => x.Id).ToList();
 // 结果：Id=1 (Alice), Id=2 (Bob)
+```
+
+#### ContainsWhere
+判断集合是否包含满足指定条件的元素（支持 null 集合）。
+
+```csharp
+public static bool ContainsWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**参数：**
+- `source`: 集合
+- `predicate`: 条件谓词
+
+**返回值：**
+- 如果集合包含满足条件的元素返回 true；否则返回 false
+
+**示例：**
+```csharp
+List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+
+bool result = list.ContainsWhere(x => x > 3); // true
+```
+
+### 集合转换
+
+#### ToListSafe
+安全地将集合转换为 List（支持 null 集合）。
+
+```csharp
+public static List<T> ToListSafe<T>(this IEnumerable<T> source)
+```
+
+**返回值：** List 实例，如果源为 null 则返回空 List
+
+#### ToArraySafe
+安全地将集合转换为数组（支持 null 集合）。
+
+```csharp
+public static T[] ToArraySafe<T>(this IEnumerable<T> source)
+```
+
+**返回值：** 数组，如果源为 null 则返回空数组
+
+#### ToHashSetSafe
+安全地将集合转换为 HashSet（支持 null 集合）。
+
+```csharp
+public static HashSet<T> ToHashSetSafe<T>(this IEnumerable<T> source)
+```
+
+**返回值：** HashSet 实例，如果源为 null 则返回空 HashSet
+
+#### ToDictionarySafe
+安全地将集合转换为字典（支持 null 集合和选择器）。
+
+```csharp
+public static Dictionary<TKey, TValue> ToDictionarySafe<TSource, TKey, TValue>(
+    this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)
+```
+
+**参数：**
+- `source`: 源集合
+- `keySelector`: 键选择器
+- `valueSelector`: 值选择器
+
+**返回值：** 字典实例，如果源为 null 或选择器为 null 则返回空字典
+
+**示例：**
+```csharp
+var users = new[] { new { Id = 1, Name = "Alice" }, new { Id = 2, Name = "Bob" } };
+var dict = users.ToDictionarySafe(u => u.Id, u => u.Name);
+// dict: { [1] = "Alice", [2] = "Bob" }
+```
+
+#### ToDataTable
+将集合转换为 DataTable（自动推断列名和类型）。
+
+```csharp
+public static System.Data.DataTable ToDataTable<T>(this IEnumerable<T> source)
+```
+
+**参数：**
+- `source`: 源集合
+
+**返回值：** DataTable 实例，列名和类型根据 T 的属性自动推断
+
+**示例：**
+```csharp
+var users = new[] { new { Id = 1, Name = "Alice" }, new { Id = 2, Name = "Bob" } };
+var table = users.ToDataTable();
+// table 包含 Id (Int32) 和 Name (String) 两列
+```
+
+#### ToConcurrentDictionary
+将集合转换为 ConcurrentDictionary（线程安全字典）。
+
+```csharp
+public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>(
+    this IEnumerable<KeyValuePair<TKey, TValue>> source)
+
+public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TSource, TKey, TValue>(
+    this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)
+```
+
+**参数：**
+- `source`: 源集合
+- `keySelector`: 键选择器（第二个重载）
+- `valueSelector`: 值选择器（第二个重载）
+
+**返回值：** ConcurrentDictionary 实例，如果源为 null 则返回空 ConcurrentDictionary
+
+**示例：**
+```csharp
+var pairs = new[] { KeyValuePair.Create("a", 1), KeyValuePair.Create("b", 2) };
+var dict = pairs.ToConcurrentDictionary();
+
+var users = new[] { new { Id = 1, Name = "Alice" } };
+var userDict = users.ToConcurrentDictionary(u => u.Id, u => u.Name);
+```
+
+#### GroupBySafe
+安全地对集合进行分组（支持 null 集合和选择器）。
+
+```csharp
+public static IEnumerable<IGrouping<TKey, TSource>> GroupBySafe<TSource, TKey>(
+    this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+```
+
+**参数：**
+- `source`: 源集合
+- `keySelector`: 分组键选择器
+
+**返回值：** 分组后的集合，如果源为 null 或选择器为 null 则返回空集合
+
+**示例：**
+```csharp
+var numbers = new[] { 1, 2, 3, 4, 5, 6 };
+var groups = numbers.GroupBySafe(n => n % 2 == 0 ? "偶数" : "奇数");
+// groups: { "奇数": [1, 3, 5], "偶数": [2, 4, 6] }
+```
+
+#### DistinctSafe
+安全去重（支持 null 集合）。
+
+```csharp
+public static IEnumerable<T> DistinctSafe<T>(this IEnumerable<T> source)
+```
+
+**返回值：** 去重后的集合
+
+### 排序与筛选
+
+#### WhereSafe
+安全筛选（支持 null 集合）。
+
+```csharp
+public static IEnumerable<T> WhereSafe<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**返回值：** 筛选后的集合
+
+#### SelectSafe
+安全投影（支持 null 集合）。
+
+```csharp
+public static IEnumerable<TResult> SelectSafe<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+```
+
+**返回值：** 投影后的集合
+
+#### OrderBySafe
+安全升序排序（支持 null 集合）。
+
+```csharp
+public static IEnumerable<TSource> OrderBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+```
+
+**返回值：** 排序后的集合
+
+#### OrderByDescendingSafe
+安全降序排序（支持 null 集合）。
+
+```csharp
+public static IEnumerable<TSource> OrderByDescendingSafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+```
+
+**返回值：** 降序排序后的集合
+
+#### ReverseSafe
+安全反转集合（支持 null 集合）。
+
+```csharp
+public static IEnumerable<T> ReverseSafe<T>(this IEnumerable<T> source)
+```
+
+**返回值：** 反转后的集合
+
+#### Shuffle
+随机打乱集合元素顺序。
+
+```csharp
+public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+```
+
+**返回值：** 随机排序后的集合
+
+**示例：**
+```csharp
+var list = Enumerable.Range(1, 10).Shuffle().ToList();
+// 结果：随机顺序的 1-10
+```
+
+#### RemoveNulls
+移除集合中的 null 元素。
+
+```csharp
+public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T> source)
+```
+
+**返回值：** 不含 null 的集合
+
+**示例：**
+```csharp
+var list = new List<string?> { "a", null, "b", null, "c" };
+var nonNull = list.RemoveNulls().ToList(); // ["a", "b", "c"]
 ```
 
 ### 分页
@@ -268,29 +585,6 @@ public static IEnumerable<T> Page<T>(this IEnumerable<T> source, int pageIndex, 
 var list = Enumerable.Range(1, 100);
 var page1 = list.Page(0, 10); // 第1页，包含1-10
 var page2 = list.Page(1, 10); // 第2页，包含11-20
-```
-
-#### GetPaged
-获取分页信息。
-
-```csharp
-public static (IEnumerable<T> Items, int TotalCount, int TotalPages, int CurrentPage) GetPaged<T>(
-    this IEnumerable<T> source, int pageIndex, int pageSize)
-```
-
-**参数：**
-- `source`: 集合
-- `pageIndex`: 页索引（从 0 开始）
-- `pageSize`: 每页大小
-
-**返回值：**
-- 包含分页数据和分页信息的元组
-
-**示例：**
-```csharp
-var list = Enumerable.Range(1, 100);
-var (items, totalCount, totalPages, currentPage) = list.GetPaged(0, 10);
-// items: 1-10, totalCount: 100, totalPages: 10, currentPage: 1
 ```
 
 ### 统计计算
@@ -341,11 +635,11 @@ List<int> list = new List<int> { 1, 2, 3, 4, 5 };
 double avg = list.AverageSafe(); // 3
 ```
 
-#### MaxBy
-获取集合中最大值对应的元素。
+#### MaxBySafe
+获取集合中最大值对应的元素（安全）。
 
 ```csharp
-public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+public static TSource MaxBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     where TKey : IComparable<TKey>
 ```
 
@@ -365,8 +659,43 @@ var list = new List<Person>
     new Person { Id = 3, Age = 25 }
 };
 
-var oldest = list.MaxBy(x => x.Age); // Id=2, Age=30
+var oldest = list.MaxBySafe(x => x.Age); // Id=2, Age=30
 ```
+
+#### MinBySafe
+获取集合中最小值对应的元素（安全）。
+
+```csharp
+public static TSource MinBySafe<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    where TKey : IComparable<TKey>
+```
+
+**返回值：**
+- 最小值对应的元素，如果集合为空则返回默认值
+
+#### MaxSafe
+集合最大值（安全）。
+
+```csharp
+public static int MaxSafe(this IEnumerable<int> source)
+public static double MaxSafe(this IEnumerable<double> source)
+public static decimal MaxSafe(this IEnumerable<decimal> source)
+public static float MaxSafe(this IEnumerable<float> source)
+```
+
+**返回值：** 集合最大值，如果集合为 null 或空则返回默认值
+
+#### MinSafe
+集合最小值（安全）。
+
+```csharp
+public static int MinSafe(this IEnumerable<int> source)
+public static double MinSafe(this IEnumerable<double> source)
+public static decimal MinSafe(this IEnumerable<decimal> source)
+public static float MinSafe(this IEnumerable<float> source)
+```
+
+**返回值：** 集合最小值，如果集合为 null 或空则返回默认值
 
 ### 批量操作
 
@@ -410,11 +739,11 @@ await urls.ForEachAsync(async url =>
 });
 ```
 
-#### Chunk
-集合分块（按指定大小分组）。
+#### ChunkSafe
+集合分块（按指定大小分组，安全）。
 
 ```csharp
-public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int size)
+public static IEnumerable<IEnumerable<T>> ChunkSafe<T>(this IEnumerable<T> source, int size)
 ```
 
 **参数：**
@@ -427,93 +756,301 @@ public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, i
 **示例：**
 ```csharp
 var list = Enumerable.Range(1, 10);
-var chunks = list.Chunk(3).ToList();
+var chunks = list.ChunkSafe(3).ToList();
 // 结果：[1,2,3], [4,5,6], [7,8,9], [10]
 ```
 
-### 集合转换
-
-#### ToDictionarySafe
-集合转换为字典（安全）。
+#### Batch
+集合分批处理。
 
 ```csharp
-public static Dictionary<TKey, TValue> ToDictionarySafe<TSource, TKey, TValue>(
-    this IEnumerable<TSource> source,
-    Func<TSource, TKey> keySelector,
-    Func<TSource, TValue> valueSelector)
+public static void Batch<T>(this IEnumerable<T> source, int batchSize, Action<IEnumerable<T>> action)
 ```
 
 **参数：**
 - `source`: 集合
-- `keySelector`: 键选择器
-- `valueSelector`: 值选择器
-
-**返回值：**
-- 字典，如果源集合为 null 则返回空字典
+- `batchSize`: 批次大小
+- `action`: 批次处理操作
 
 **示例：**
 ```csharp
-var list = new List<Person>
+var list = Enumerable.Range(1, 100);
+list.Batch(10, batch =>
 {
-    new Person { Id = 1, Name = "Alice" },
-    new Person { Id = 2, Name = "Bob" }
-};
-
-var dict = list.ToDictionarySafe(x => x.Id, x => x.Name);
-// { 1: "Alice", 2: "Bob" }
+    ProcessBatch(batch);
+});
 ```
 
-#### ToDataTable
-IEnumerable 转换为 DataTable。
+#### BatchAsync
+集合分批异步处理。
 
 ```csharp
-public static DataTable ToDataTable<T>(this IEnumerable<T> source)
+public static async Task BatchAsync<T>(this IEnumerable<T> source, int batchSize, Func<IEnumerable<T>, Task> action)
+```
+
+**参数：**
+- `source`: 集合
+- `batchSize`: 批次大小
+- `action`: 批次异步处理操作
+
+**示例：**
+```csharp
+var list = Enumerable.Range(1, 100);
+await list.BatchAsync(10, async batch =>
+{
+    await ProcessBatchAsync(batch);
+});
+```
+
+### 集合判断
+
+#### AllSafe
+判断集合是否全部满足条件（安全）。
+
+```csharp
+public static bool AllSafe<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**参数：**
+- `source`: 集合
+- `predicate`: 条件谓词
+
+**返回值：**
+- 如果集合为 null 或所有元素都满足条件返回 true；否则返回 false
+
+**示例：**
+```csharp
+List<int> list = new List<int> { 2, 4, 6, 8 };
+bool result = list.AllSafe(x => x % 2 == 0); // true
+```
+
+#### AnySafe
+判断集合是否有任意元素满足条件（安全）。
+
+```csharp
+public static bool AnySafe<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+```
+
+**参数：**
+- `source`: 集合
+- `predicate`: 条件谓词
+
+**返回值：**
+- 如果集合不为 null 且有任意元素满足条件返回 true；否则返回 false
+
+**示例：**
+```csharp
+List<int> list = new List<int> { 1, 2, 3 };
+bool result = list.AnySafe(x => x > 2); // true
+```
+
+#### SequenceEqualSafe
+判断两个集合是否相等（顺序和元素都相同，安全）。
+
+```csharp
+public static bool SequenceEqualSafe<T>(this IEnumerable<T> first, IEnumerable<T> second)
+```
+
+**参数：**
+- `first`: 第一个集合
+- `second`: 第二个集合
+
+**返回值：**
+- 如果两个集合相等返回 true；否则返回 false
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1, 2, 3 };
+var list2 = new List<int> { 1, 2, 3 };
+bool result = list1.SequenceEqualSafe(list2); // true
+```
+
+#### ContainsSameElements
+判断两个集合是否包含相同的元素（忽略顺序）。
+
+```csharp
+public static bool ContainsSameElements<T>(this IEnumerable<T> first, IEnumerable<T> second)
+```
+
+**参数：**
+- `first`: 第一个集合
+- `second`: 第二个集合
+
+**返回值：**
+- 如果两个集合包含相同的元素返回 true；否则返回 false
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1, 2, 3 };
+var list2 = new List<int> { 3, 2, 1 };
+bool result = list1.ContainsSameElements(list2); // true
+```
+
+#### ContainsNull
+判断集合是否包含 null 元素。
+
+```csharp
+public static bool ContainsNull<T>(this IEnumerable<T> source)
 ```
 
 **参数：**
 - `source`: 集合
 
 **返回值：**
-- DataTable
+- 如果集合包含 null 元素返回 true；否则返回 false
 
 **示例：**
 ```csharp
-var list = new List<Person>
-{
-    new Person { Id = 1, Name = "Alice" },
-    new Person { Id = 2, Name = "Bob" }
-};
-
-DataTable table = list.ToDataTable();
+var list = new List<string> { "a", null, "b" };
+bool result = list.ContainsNull(); // true
 ```
 
-#### ToConcurrentDictionary
-IEnumerable 转换为 ConcurrentDictionary。
+### 集合合并
+
+#### ConcatSafe
+合并两个集合（安全）。
 
 ```csharp
-public static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TSource, TKey, TValue>(
-    this IEnumerable<TSource> source,
-    Func<TSource, TKey> keySelector,
-    Func<TSource, TValue> valueSelector)
+public static IEnumerable<T> ConcatSafe<T>(this IEnumerable<T> first, IEnumerable<T> second)
+```
+
+**参数：**
+- `first`: 第一个集合
+- `second`: 第二个集合
+
+**返回值：**
+- 合并后的集合
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1, 2 };
+var list2 = new List<int> { 3, 4 };
+var result = list1.ConcatSafe(list2); // [1, 2, 3, 4]
+```
+
+#### ConcatMany
+合并多个集合。
+
+```csharp
+public static IEnumerable<T> ConcatMany<T>(params IEnumerable<T>[] sources)
+```
+
+**参数：**
+- `sources`: 集合数组
+
+**返回值：**
+- 合并后的集合
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1 };
+var list2 = new List<int> { 2 };
+var list3 = new List<int> { 3 };
+var result = EnumerableExtensions.ConcatMany(list1, list2, list3); // [1, 2, 3]
+```
+
+#### IntersectSafe
+获取两个集合的交集（安全）。
+
+```csharp
+public static IEnumerable<T> IntersectSafe<T>(this IEnumerable<T> first, IEnumerable<T> second)
+```
+
+**参数：**
+- `first`: 第一个集合
+- `second`: 第二个集合
+
+**返回值：**
+- 交集
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1, 2, 3 };
+var list2 = new List<int> { 2, 3, 4 };
+var result = list1.IntersectSafe(list2); // [2, 3]
+```
+
+#### UnionSafe
+获取两个集合的并集（安全）。
+
+```csharp
+public static IEnumerable<T> UnionSafe<T>(this IEnumerable<T> first, IEnumerable<T> second)
+```
+
+**参数：**
+- `first`: 第一个集合
+- `second`: 第二个集合
+
+**返回值：**
+- 并集
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1, 2 };
+var list2 = new List<int> { 2, 3 };
+var result = list1.UnionSafe(list2); // [1, 2, 3]
+```
+
+#### ExceptSafe
+获取两个集合的差集（安全）。
+
+```csharp
+public static IEnumerable<T> ExceptSafe<T>(this IEnumerable<T> first, IEnumerable<T> second)
+```
+
+**参数：**
+- `first`: 第一个集合
+- `second`: 第二个集合
+
+**返回值：**
+- 差集（在第一个集合但不在第二个集合的元素）
+
+**示例：**
+```csharp
+var list1 = new List<int> { 1, 2, 3 };
+var list2 = new List<int> { 2, 3, 4 };
+var result = list1.ExceptSafe(list2); // [1]
+```
+
+#### JoinToString
+将集合元素连接为字符串。
+
+```csharp
+public static string JoinToString<T>(this IEnumerable<T> source, string separator = ",")
+public static string JoinToString<T>(this IEnumerable<T> source, Func<T, string> selector, string separator = ",")
 ```
 
 **参数：**
 - `source`: 集合
-- `keySelector`: 键选择器
-- `valueSelector`: 值选择器
+- `separator`: 分隔符，默认为逗号
+- `selector`: 字符串选择器（可选）
 
 **返回值：**
-- ConcurrentDictionary
+- 连接后的字符串
 
 **示例：**
 ```csharp
-var list = new List<Person>
-{
-    new Person { Id = 1, Name = "Alice" },
-    new Person { Id = 2, Name = "Bob" }
-};
+var list = new List<int> { 1, 2, 3 };
+string result1 = list.JoinToString(); // "1,2,3"
+string result2 = list.JoinToString(x => $"#{x}", " | "); // "#1 | #2 | #3"
+```
 
-var dict = list.ToConcurrentDictionary(x => x.Id, x => x.Name);
+#### ForEachIndexed
+集合遍历执行操作（带索引）。
+
+```csharp
+public static void ForEachIndexed<T>(this IEnumerable<T> source, Action<T, int> action)
+```
+
+**参数：**
+- `source`: 集合
+- `action`: 操作委托，参数为元素和索引
+
+**示例：**
+```csharp
+var list = new List<string> { "a", "b", "c" };
+list.ForEachIndexed((item, index) => Console.WriteLine($"{index}: {item}"));
+// 输出: 0: a, 1: b, 2: c
 ```
 
 ### ICollection 扩展
@@ -535,6 +1072,36 @@ List<int> list = null;
 list.AddSafe(1); // 不会抛出异常
 ```
 
+#### RemoveSafe
+安全移除元素。
+
+```csharp
+public static void RemoveSafe<T>(this ICollection<T> collection, T item)
+```
+
+**参数：**
+- `collection`: 集合
+- `item`: 要移除的元素
+
+**示例：**
+```csharp
+var list = new List<int> { 1, 2, 3 };
+list.RemoveSafe(2); // [1, 3]
+```
+
+#### ClearSafe
+安全清空集合。
+
+```csharp
+public static void ClearSafe<T>(this ICollection<T> collection)
+```
+
+**示例：**
+```csharp
+List<int> list = null;
+list.ClearSafe(); // 不会抛出异常
+```
+
 #### AddRangeSafe
 批量添加元素（安全）。
 
@@ -551,6 +1118,24 @@ public static void AddRangeSafe<T>(this ICollection<T> collection, IEnumerable<T
 List<int> list = new List<int> { 1, 2 };
 list.AddRangeSafe(new[] { 3, 4, 5 });
 // list: [1, 2, 3, 4, 5]
+```
+
+#### RemoveRangeSafe
+批量移除元素（安全）。
+
+```csharp
+public static void RemoveRangeSafe<T>(this ICollection<T> collection, IEnumerable<T> items)
+```
+
+**参数：**
+- `collection`: 集合
+- `items`: 要移除的元素集合
+
+**示例：**
+```csharp
+var list = new List<int> { 1, 2, 3, 4, 5 };
+list.RemoveRangeSafe(new[] { 2, 4 });
+// list: [1, 3, 5]
 ```
 
 ---
@@ -574,8 +1159,7 @@ list.AddRangeSafe(new[] { 3, 4, 5 });
 2. 带有 "Safe" 后缀的方法对 null 值做了安全处理，不会抛出异常
 3. 大部分方法在集合为 null 时会返回空集合或默认值，而不是抛出异常
 4. `Page<T>()` 方法使用 0 作为起始页索引
-5. `ToDataTable<T>()` 方法基于反射实现，可能不支持某些字段映射
-6. `Chunk<T>()` 方法使用延迟执行，内存效率较高
-7. 统计方法在集合为空时会返回默认值（通常为 0），而不是抛出异常
-8. 转换方法在选择器委托为 null 时，使用默认委托进行处理
-9. 集合操作方法都进行了空值有效性检查，使代码更健壮
+5. `Chunk<T>()` 方法使用延迟执行，内存效率较高
+6. 统计方法在集合为空时会返回默认值（通常为 0），而不是抛出异常
+7. 转换方法在选择器委托为 null 时，使用默认委托进行处理
+8. 集合操作方法都进行了空值有效性检查，使代码更健壮

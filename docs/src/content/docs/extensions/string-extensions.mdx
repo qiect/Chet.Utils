@@ -1,32 +1,24 @@
 ---
 title: "StringExtensions"
-description: "为 string 类型提供了丰富的扩展方法，包括空值判断、类型验证、类型转换、编码解码、字符串操作等功能，旨在简化字符串处理，提高代码的安全性和可读性，特别是用于处理可能为空的字符串类型的日常操作场景。"
+description: "为 string 类型提供了丰富的扩展方法，包括空值判断、类型验证、类型转换、编码解码、字符串操作、掩码脱敏、格式转换、分割连接等功能，旨在简化字符串处理，提高代码的安全性和可读性。"
 ---
 
 # StringExtensions 扩展类文档
 
 ## 概述
 
-[StringExtensions](https://github.com/qiect/Chet.Utils/blob/main/Chet.Utils/Extensions/StringExtensions.cs) 是一个静态扩展类，为 `string` 类型提供了丰富的扩展方法，包括空值判断、类型验证、类型转换、编码解码、字符串操作等功能，旨在简化字符串处理，提高代码的安全性和可读性，特别是用于处理可能为空的字符串类型的日常操作场景。
+[StringExtensions](https://github.com/qiect/Chet.Utils/blob/main/Chet.Utils/Extensions/StringExtensions.cs) 是一个静态扩展类，为 `string` 类型提供了丰富的扩展方法，包括空值判断、类型验证、类型转换、编码解码、字符串操作、掩码脱敏、格式转换、分割连接等功能，旨在简化字符串处理，提高代码的安全性和可读性，特别是用于处理可能为空的字符串类型的日常操作场景。
 
 ## 主要功能模块
 
 ### 1. 空值判断方法
-
-提供字符串状态判断和空值验证的便捷方法。
-
-**主要方法：**
-- `IsNullOrEmpty()` - 判断字符串是否为 null 或空字符串
-- `IsNullOrWhiteSpace()` - 判断字符串是否为 null 或仅包含空白字符
-- `IsNotNullOrEmpty()` - 判断字符串是否不为空
-- `IsNotNullOrWhiteSpace()` - 判断字符串是否不为空白
+- `IsNullOrEmptySafe()` - 判断字符串是否为 null 或空字符串
+- `IsNullOrWhiteSpaceSafe()` - 判断字符串是否为 null 或仅包含空白字符
+- `IsNotNullOrEmptySafe()` - 判断字符串是否不为空
+- `IsNotNullOrWhiteSpaceSafe()` - 判断字符串是否不为空白
 - `IsNull(string nullStrings, bool isTrim)` - 判断字符串是否为空（支持自定义空值判断）
 
 ### 2. 类型判断方法
-
-提供字符串类型验证的便捷方法。
-
-**主要方法：**
 - `IsNumeric()` - 判断字符串是否为数字
 - `IsInt()` - 判断字符串是否为整数
 - `IsLong()` - 判断字符串是否为长整数
@@ -44,10 +36,6 @@ description: "为 string 类型提供了丰富的扩展方法，包括空值判�
 - `IsHex()` - 判断字符串是否为十六进制字符串
 
 ### 3. 正则表达式验证
-
-提供基于正则表达式的字符串格式验证功能。
-
-**主要方法：**
 - `IsEmail()` - 验证字符串是否为有效的电子邮件地址
 - `IsMobile()` - 验证字符串是否为有效的手机号码（中国大陆）
 - `IsTel()` - 验证字符串是否为有效的固定电话号码
@@ -63,77 +51,116 @@ description: "为 string 类型提供了丰富的扩展方法，包括空值判�
 - `IsDate()` - 验证字符串是否为有效的日期格式
 - `IsTime()` - 验证字符串是否为有效的时间格式
 
-### 4. 类型转换方法
+### 4. 正则别名方法
+- `IsUrlByRegex()` - IsUrl 的别名方法
+- `IsDateByRegex()` - IsDate 的别名方法
+- `IsTimeByRegex()` - IsTime 的别名方法
+- `IsDateTimeByRegex()` - IsDateTime 的别名方法
+- `IsLetterByRegex()` - IsLetter 的别名方法
+- `IsNumByRegex()` - IsNumeric 的别名方法
+- `ExtractNumByRegex()` - ExtractDigits 的别名方法
+- `IsFloatByRegex()` - IsFloat 的别名方法
+- `IsEmailByRegex()` - IsEmail 的别名方法
+- `IsTelByRegex()` - IsTel 的别名方法
+- `IsMobileByRegex()` - IsMobile 的别名方法
 
-提供字符串到各种类型的转换功能。
-
-**主要方法：**
+### 5. 类型转换方法
 - `ToInt(int defaultValue = 0)` - 字符串转 int，失败返回默认值
+- `ToIntOrNull()` - 字符串转可空 int，失败返回 null
 - `ToLong(long defaultValue = 0)` - 字符串转 long，失败返回默认值
+- `ToLongOrNull()` - 字符串转可空 long，失败返回 null
+- `ToShort(short defaultValue = 0)` - 字符串转 short，失败返回默认值
+- `ToShortOrNull()` - 字符串转可空 short，失败返回 null
 - `ToFloat(float defaultValue = 0)` - 字符串转 float，失败返回默认值
+- `ToFloatOrNull()` - 字符串转可空 float，失败返回 null
+- `ToFloatRound(int digits = 2, float defaultValue = 0)` - 字符串转 float 并四舍五入
+- `ToFloatTruncate(int digits = 2, float defaultValue = 0)` - 字符串转 float 并截断
 - `ToDouble(double defaultValue = 0)` - 字符串转 double，失败返回默认值
+- `ToDoubleOrNull()` - 字符串转可空 double，失败返回 null
+- `ToDoubleRound(int digits = 2, double defaultValue = 0)` - 字符串转 double 并四舍五入
+- `ToDoubleTruncate(int digits = 2, double defaultValue = 0)` - 字符串转 double 并截断
 - `ToDecimal(decimal defaultValue = 0)` - 字符串转 decimal，失败返回默认值
+- `ToDecimalOrNull()` - 字符串转可空 decimal，失败返回 null
+- `ToDecimalRound(int digits = 2, decimal defaultValue = 0)` - 字符串转 decimal 并四舍五入
 - `ToBool(bool defaultValue = false)` - 字符串转 bool，失败返回默认值
-- `ToGuid(Guid? defaultValue = null)` - 字符串转 Guid，失败返回默认值
-- `ToDateTime(DateTime? defaultValue = null)` - 字符串转 DateTime，失败返回默认值
-
-#### 数值约束转换方法
-- `ToDoubleRound(int decimals)` - 字符串转 double 并保留指定小数位数（四舍五入）
-- `ToDoubleTruncate(int decimals)` - 字符串转 double 并保留指定小数位数（截取）
-- `ToFloatRound(int decimals)` - 字符串转 float 并保留指定小数位数（四舍五入）
-- `ToFloatTruncate(int decimals)` - 字符串转 float 并保留指定小数位数（截取）
-- `KeepDecimal(int decimals)` - 保留数值字符串的小数位数
-
-### 5. 字符串操作方法
-
-提供字符串处理和转换功能。
-
-**主要方法：**
-- `TrimSafe()` - 安全去除字符串首尾空白字符
-- `RemoveWhiteSpace()` - 移除字符串中的所有空白字符
-- `SubstringSafe(int startIndex, int length)` - 安全截取字符串
-- `Left(int length)` - 获取字符串左部指定长度的子串
-- `Right(int length)` - 获取字符串右部指定长度的子串
-- `Reverse()` - 反转字符串
-- `RemoveSpecialChars()` - 移除字符串中的特殊字符
-- `ToCamelCase()` - 转为 camelCase（首字母小写）
-- `ToPascalCase()` - 转为 PascalCase（首字母大写）
-- `Repeat(int count)` - 重复字符串指定次数
-- `ReplaceIgnoreCase(string oldValue, string newValue)` - 忽略大小写替换字符串中的指定内容
-- `ContainsIgnoreCase(string value)` - 判断字符串是否包含指定子串（忽略大小写）
-- `SplitSafe(string separator)` - 将字符串按分隔符分割为字符串数组
+- `ToBoolOrNull()` - 字符串转可空 bool，失败返回 null
+- `ToBoolExtended(string[] trueValues, bool defaultValue = false)` - 字符串转 bool（支持多种格式）
+- `ToGuid(Guid defaultValue = default)` - 字符串转 Guid，失败返回默认值
+- `ToGuidOrNull()` - 字符串转可空 Guid，失败返回 null
+- `ToDateTime(DateTime defaultValue = default)` - 字符串转 DateTime，失败返回默认值
+- `ToDateTimeOrNull()` - 字符串转可空 DateTime，失败返回 null
+- `ToDateTimeExact(string format, DateTime defaultValue = default)` - 按指定格式转 DateTime
+- `ToEnum<TEnum>(TEnum defaultValue, bool ignoreCase = true)` - 字符串转枚举
+- `ToBytes(Encoding encoding = null)` - 字符串转字节数组
+- `To<T>(T defaultValue = default)` - 字符串转指定类型
 
 ### 6. 编码解码方法
-
-提供字符串编码解码功能。
-
-**主要方法：**
-- `ToBase64()` - 将字符串编码为 Base64
-- `FromBase64()` - 将 Base64 字符串解码
+- `ToBase64(Encoding encoding = null)` - 将字符串编码为 Base64
+- `FromBase64(Encoding encoding = null)` - 将 Base64 字符串解码
 - `UrlEncode()` - URL 编码
 - `UrlDecode()` - URL 解码
 - `HtmlEncode()` - HTML 编码
 - `HtmlDecode()` - HTML 解码
 
 ### 7. 哈希计算方法
+- `ToMd5(Encoding encoding = null)` - 获取字符串的 MD5 值（32位小写）
+- `ToSha256(Encoding encoding = null)` - 获取字符串的 SHA256 值
+- `ToSha1(Encoding encoding = null)` - 获取字符串的 SHA1 值
+- `ToHmacSha256(string key, Encoding encoding = null)` - 获取字符串的 HMAC-SHA256 值
 
-提供字符串哈希值计算功能。
+### 8. 字符串操作方法
+- `TrimSafe()` - 安全去除字符串首尾空白字符
+- `RemoveWhiteSpace()` - 移除字符串中的所有空白字符
+- `SubstringSafe(int startIndex, int length)` - 安全截取字符串
+- `Left(int length)` - 获取字符串左部指定长度的子串
+- `Right(int length)` - 获取字符串右部指定长度的子串
+- `ReverseSafe()` - 反转字符串
+- `RemoveSpecialChars()` - 移除字符串中的特殊字符
+- `RemoveDigits()` - 移除字符串中的数字
+- `RemoveLetters()` - 移除字符串中的字母
+- `ExtractDigits()` - 提取字符串中的数字部分
+- `ExtractLetters()` - 提取字符串中的字母部分
+- `Truncate(int maxLength, string suffix = "...")` - 截断字符串到指定长度
+- `Repeat(int count)` - 重复字符串指定次数
+- `Capitalize()` - 将字符串首字母大写
+- `Uncapitalize()` - 将字符串首字母小写
+- `EqualsIgnoreCase(string compare)` - 忽略大小写判断字符串是否相等
+- `ContainsIgnoreCase(string substring)` - 忽略大小写判断是否包含子串
+- `StartsWithIgnoreCase(string prefix)` - 忽略大小写判断是否以指定前缀开头
+- `EndsWithIgnoreCase(string suffix)` - 忽略大小写判断是否以指定后缀结尾
+- `ReplaceIgnoreCase(string oldValue, string newValue)` - 忽略大小写替换字符串
+- `KeepDecimal(int digits = 2)` - 保留字符串中的小数位数
 
-**主要方法：**
-- `ToMd5()` - 获取字符串的 MD5 值（32位小写）
-- `ToSha256()` - 获取字符串的 SHA256 值
-- `ToSha1()` - 获取字符串的 SHA1 值
+### 9. 掩码与脱敏方法
+- `Mask(int startLength = 3, int endLength = 4, char maskChar = '*')` - 对字符串进行掩码处理
+- `MaskMobile()` - 对手机号码进行脱敏
+- `MaskEmail()` - 对邮箱地址进行脱敏
+- `MaskIdCard()` - 对身份证号码进行脱敏
+- `MaskBankCard()` - 对银行卡号进行脱敏
+- `MaskName()` - 对姓名进行脱敏
 
-### 8. 掩码和脱敏方法
+### 10. 格式转换方法
+- `ToCamelCase()` - 转为 camelCase（驼峰命名）
+- `ToPascalCase()` - 转为 PascalCase（帕斯卡命名）
+- `ToSnakeCase()` - 转为 snake_case（蛇形命名）
+- `ToKebabCase()` - 转为 kebab-case（短横线命名）
+- `ToConstantCase()` - 转为 UPPER_SNAKE_CASE（常量命名）
 
-提供字符串掩码和脱敏功能。
+### 11. 分割与连接方法
+- `SplitSafe(string separator = ",", StringSplitOptions options = None)` - 按字符串分隔符分割
+- `SplitSafe(char separator, StringSplitOptions options = None)` - 按字符分隔符分割
+- `SplitToIntArray(string separator = ",")` - 分割并转换为整数数组
+- `SplitToArray<T>(string separator = ",")` - 分割并转换为泛型数组
+- `JoinString(IEnumerable<string> values, string separator = ",")` - 连接字符串集合
+- `JoinString<T>(IEnumerable<T> values, string separator = ",")` - 连接对象集合
 
-**主要方法：**
-- `Mask(int start, int length, char maskChar = '*')` - 对字符串指定位置进行掩码
-- `MaskEmail()` - 对邮箱地址进行掩码
-- `MaskMobile()` - 对手机号码进行掩码
-- `MaskIdCard()` - 对身份证号码进行掩码
-- `MaskBankCard()` - 对银行卡号进行掩码
+### 12. 其他实用方法
+- `IfNullOrEmpty(string defaultValue)` - 为空时返回默认值
+- `IfNullOrWhiteSpace(string defaultValue)` - 为空白时返回默认值
+- `GetByteLength(Encoding encoding = null)` - 获取字符串的字节长度
+- `IsLike(string pattern)` - 判断是否匹配通配符模式
+- `ToSafeFileName(char replacement = '_')` - 转换为安全的文件名
+- `ToSafeUrlPath(char replacement = '-')` - 转换为安全的 URL 路径
 
 ---
 
@@ -141,18 +168,17 @@ description: "为 string 类型提供了丰富的扩展方法，包括空值判�
 
 ### 空值判断
 
-#### IsNullOrEmpty
+#### IsNullOrEmptySafe
 判断字符串是否为 null 或空字符串。
 
 ```csharp
-public static bool IsNullOrEmpty(this string value)
+public static bool IsNullOrEmptySafe(this string value)
 ```
 
 **参数：**
 - `value`: 待判断的字符串
 
-**返回值：**
-- 如果字符串为 null 或空字符串，返回 true；否则返回 false
+**返回值：** 如果字符串为 null 或空字符串，返回 true；否则返回 false
 
 **示例：**
 ```csharp
@@ -160,9 +186,74 @@ string str1 = null;
 string str2 = "";
 string str3 = "hello";
 
-bool result1 = str1.IsNullOrEmpty(); // true
-bool result2 = str2.IsNullOrEmpty(); // true
-bool result3 = str3.IsNullOrEmpty(); // false
+bool result1 = str1.IsNullOrEmptySafe(); // true
+bool result2 = str2.IsNullOrEmptySafe(); // true
+bool result3 = str3.IsNullOrEmptySafe(); // false
+```
+
+#### IsNullOrWhiteSpaceSafe
+判断字符串是否为 null 或仅包含空白字符。
+
+```csharp
+public static bool IsNullOrWhiteSpaceSafe(this string value)
+```
+
+**参数：**
+- `value`: 待判断的字符串
+
+**返回值：** 如果字符串为 null 或仅包含空白字符，返回 true；否则返回 false
+
+**示例：**
+```csharp
+string str1 = null;
+string str2 = "   ";
+string str3 = "hello";
+
+bool result1 = str1.IsNullOrWhiteSpaceSafe(); // true
+bool result2 = str2.IsNullOrWhiteSpaceSafe(); // true
+bool result3 = str3.IsNullOrWhiteSpaceSafe(); // false
+```
+
+#### IsNotNullOrEmptySafe
+判断字符串是否不为空（非 null 且非空字符串）。
+
+```csharp
+public static bool IsNotNullOrEmptySafe(this string value)
+```
+
+**参数：**
+- `value`: 待判断的字符串
+
+**返回值：** 如果字符串不为 null 且不为空字符串，返回 true；否则返回 false
+
+**示例：**
+```csharp
+string str1 = null;
+string str2 = "hello";
+
+bool result1 = str1.IsNotNullOrEmptySafe(); // false
+bool result2 = str2.IsNotNullOrEmptySafe(); // true
+```
+
+#### IsNotNullOrWhiteSpaceSafe
+判断字符串是否不为空白（非 null 且包含非空白字符）。
+
+```csharp
+public static bool IsNotNullOrWhiteSpaceSafe(this string value)
+```
+
+**参数：**
+- `value`: 待判断的字符串
+
+**返回值：** 如果字符串不为 null 且包含非空白字符，返回 true；否则返回 false
+
+**示例：**
+```csharp
+string str1 = "   ";
+string str2 = "hello";
+
+bool result1 = str1.IsNotNullOrWhiteSpaceSafe(); // false
+bool result2 = str2.IsNotNullOrWhiteSpaceSafe(); // true
 ```
 
 #### IsNull
@@ -177,8 +268,7 @@ public static bool IsNull(this string value, string nullStrings = "null|{}|[]", 
 - `nullStrings`: 自定义空字符串，使用 "|" 分隔，默认为 "null|{}|[]"
 - `isTrim`: 是否移除首尾空白字符后再判断，默认为 false
 
-**返回值：**
-- 如果字符串为空或匹配自定义空字符串，返回 true；否则返回 false
+**返回值：** 如果字符串为空或匹配自定义空字符串，返回 true；否则返回 false
 
 **示例：**
 ```csharp
@@ -189,12 +279,16 @@ string str3 = "hello";
 bool result1 = str1.IsNull(); // true
 bool result2 = str2.IsNull(); // true
 bool result3 = str3.IsNull(); // false
+
+bool result4 = "  null  ".IsNull(isTrim: true); // true
 ```
+
+---
 
 ### 类型判断
 
 #### IsNumeric
-判断字符串是否为数字。
+判断字符串是否为数字（可解析为 double）。
 
 ```csharp
 public static bool IsNumeric(this string value)
@@ -203,8 +297,7 @@ public static bool IsNumeric(this string value)
 **参数：**
 - `value`: 待判断的字符串
 
-**返回值：**
-- 如果字符串可以解析为 double，返回 true；否则返回 false
+**返回值：** 如果字符串可以解析为 double，返回 true；否则返回 false
 
 **示例：**
 ```csharp
@@ -215,6 +308,142 @@ bool result1 = str1.IsNumeric(); // true
 bool result2 = str2.IsNumeric(); // false
 ```
 
+#### IsInt
+判断字符串是否为整数。
+
+```csharp
+public static bool IsInt(this string value)
+```
+
+**参数：**
+- `value`: 待判断的字符串
+
+**返回值：** 如果字符串可以解析为 int，返回 true；否则返回 false
+
+**示例：**
+```csharp
+"123".IsInt();    // true
+"123.45".IsInt(); // false
+```
+
+#### IsLong
+判断字符串是否为长整数。
+
+```csharp
+public static bool IsLong(this string value)
+```
+
+**示例：**
+```csharp
+"123456789012".IsLong(); // true
+"abc".IsLong();          // false
+```
+
+#### IsFloat
+判断字符串是否为浮点数（float）。
+
+```csharp
+public static bool IsFloat(this string value)
+```
+
+**示例：**
+```csharp
+"123.45".IsFloat(); // true
+"abc".IsFloat();    // false
+```
+
+#### IsDouble
+判断字符串是否为双精度浮点数（double）。
+
+```csharp
+public static bool IsDouble(this string value)
+```
+
+**示例：**
+```csharp
+"123.45".IsDouble(); // true
+"abc".IsDouble();    // false
+```
+
+#### IsDecimal
+判断字符串是否为十进制数（decimal）。
+
+```csharp
+public static bool IsDecimal(this string value)
+```
+
+**示例：**
+```csharp
+"123.45".IsDecimal(); // true
+"abc".IsDecimal();    // false
+```
+
+#### IsGuid
+判断字符串是否为 Guid。
+
+```csharp
+public static bool IsGuid(this string value)
+```
+
+**示例：**
+```csharp
+"d3b07384-d9a6-4e0b-9d7e-5b5a5b5a5b5a".IsGuid(); // true
+"not-a-guid".IsGuid();                            // false
+```
+
+#### IsBool
+判断字符串是否为布尔值。
+
+```csharp
+public static bool IsBool(this string value)
+```
+
+**示例：**
+```csharp
+"true".IsBool();  // true
+"false".IsBool(); // true
+"yes".IsBool();   // false
+```
+
+#### IsDateTime
+判断字符串是否为日期时间。
+
+```csharp
+public static bool IsDateTime(this string value)
+```
+
+**示例：**
+```csharp
+"2024-01-01".IsDateTime(); // true
+"not-a-date".IsDateTime(); // false
+```
+
+#### IsLetter
+判断字符串是否仅包含字母（a-z、A-Z）。
+
+```csharp
+public static bool IsLetter(this string value)
+```
+
+**示例：**
+```csharp
+"Hello".IsLetter();   // true
+"Hello1".IsLetter();  // false
+```
+
+#### IsLetterOrDigit
+判断字符串是否仅包含字母或数字。
+
+```csharp
+public static bool IsLetterOrDigit(this string value)
+```
+
+**示例：**
+```csharp
+"Hello123".IsLetterOrDigit(); // true
+"Hello 123".IsLetterOrDigit(); // false（包含空格）
+```
+
 #### IsChinese
 判断字符串是否为中文字符。
 
@@ -222,20 +451,52 @@ bool result2 = str2.IsNumeric(); // false
 public static bool IsChinese(this string value)
 ```
 
-**参数：**
-- `value`: 待判断的字符串
+**示例：**
+```csharp
+"你好世界".IsChinese(); // true
+"Hello".IsChinese();    // false
+```
 
-**返回值：**
-- 如果字符串仅包含中文和中文标点，返回 true；否则返回 false
+#### HasChinese
+判断字符串中是否包含中文。
+
+```csharp
+public static bool HasChinese(this string value)
+```
 
 **示例：**
 ```csharp
-string str1 = "你好世界";
-string str2 = "Hello";
-
-bool result1 = str1.IsChinese(); // true
-bool result2 = str2.IsChinese(); // false
+"Hello你好".HasChinese(); // true
+"Hello".HasChinese();     // false
 ```
+
+#### IsDigits
+判断字符串是否为纯数字字符串（仅包含 0-9）。
+
+```csharp
+public static bool IsDigits(this string value)
+```
+
+**示例：**
+```csharp
+"12345".IsDigits();  // true
+"123.45".IsDigits(); // false（包含小数点）
+```
+
+#### IsHex
+判断字符串是否为十六进制字符串。
+
+```csharp
+public static bool IsHex(this string value)
+```
+
+**示例：**
+```csharp
+"1A2B3C".IsHex(); // true
+"1G2H".IsHex();   // false
+```
+
+---
 
 ### 正则表达式验证
 
@@ -246,19 +507,10 @@ bool result2 = str2.IsChinese(); // false
 public static bool IsEmail(this string value)
 ```
 
-**参数：**
-- `value`: 待验证的字符串
-
-**返回值：**
-- 如果字符串为有效的电子邮件地址，返回 true；否则返回 false
-
 **示例：**
 ```csharp
-string str1 = "test@example.com";
-string str2 = "invalid-email";
-
-bool result1 = str1.IsEmail(); // true
-bool result2 = str2.IsEmail(); // false
+"test@example.com".IsEmail();       // true
+"invalid-email".IsEmail();          // false
 ```
 
 #### IsMobile
@@ -268,47 +520,260 @@ bool result2 = str2.IsEmail(); // false
 public static bool IsMobile(this string value)
 ```
 
-**参数：**
-- `value`: 待验证的字符串
+**示例：**
+```csharp
+"13812345678".IsMobile(); // true
+"12345678901".IsMobile(); // false
+```
 
-**返回值：**
-- 如果字符串为有效的手机号码，返回 true；否则返回 false
+#### IsTel
+验证字符串是否为有效的固定电话号码。
+
+```csharp
+public static bool IsTel(this string value)
+```
 
 **示例：**
 ```csharp
-string str1 = "13812345678";
-string str2 = "12345678901";
+"010-12345678".IsTel();  // true
+"0755-87654321".IsTel(); // true
+"12345".IsTel();         // false
+```
 
-bool result1 = str1.IsMobile(); // true
-bool result2 = str2.IsMobile(); // false
+#### IsUrl
+验证字符串是否为有效的 URL。
+
+```csharp
+public static bool IsUrl(this string value)
+```
+
+**示例：**
+```csharp
+"https://www.example.com".IsUrl(); // true
+"ftp://invalid".IsUrl();           // false
 ```
 
 #### IsIdCard
-验证字符串是否为有效的身份证号码（中国大陆）。
+验证字符串是否为有效的身份证号码（中国大陆，支持 15 位和 18 位）。
 
 ```csharp
 public static bool IsIdCard(this string value)
 ```
 
-**参数：**
-- `value`: 待验证的字符串
+**示例：**
+```csharp
+"11010519900307233X".IsIdCard(); // true
+"123456789012345".IsIdCard();    // false
+```
 
-**返回值：**
-- 如果字符串为有效的身份证号码，返回 true；否则返回 false
+#### IsIpAddress
+验证字符串是否为有效的 IP 地址（IPv4 或 IPv6）。
+
+```csharp
+public static bool IsIpAddress(this string value)
+```
 
 **示例：**
 ```csharp
-string str1 = "11010519900307233X";
-string str2 = "123456789012345";
-
-bool result1 = str1.IsIdCard(); // true
-bool result2 = str2.IsIdCard(); // false
+"192.168.1.1".IsIpAddress();          // true
+"2001:0db8:85a3::8a2e:0370:7334".IsIpAddress(); // true
+"invalid".IsIpAddress();              // false
 ```
+
+#### IsIPv4
+验证字符串是否为有效的 IPv4 地址。
+
+```csharp
+public static bool IsIPv4(this string value)
+```
+
+**示例：**
+```csharp
+"192.168.1.1".IsIPv4(); // true
+"::1".IsIPv4();         // false
+```
+
+#### IsIPv6
+验证字符串是否为有效的 IPv6 地址。
+
+```csharp
+public static bool IsIPv6(this string value)
+```
+
+**示例：**
+```csharp
+"::1".IsIPv6();         // true
+"192.168.1.1".IsIPv6(); // false
+```
+
+#### IsZipCode
+验证字符串是否为有效的邮政编码（中国大陆，6 位数字）。
+
+```csharp
+public static bool IsZipCode(this string value)
+```
+
+**示例：**
+```csharp
+"100000".IsZipCode(); // true
+"12345".IsZipCode();  // false
+```
+
+#### IsBankCard
+验证字符串是否为有效的银行卡号（使用 Luhn 算法）。
+
+```csharp
+public static bool IsBankCard(this string value)
+```
+
+**示例：**
+```csharp
+"6222021234567890123".IsBankCard(); // 视具体卡号而定
+"123456".IsBankCard();              // false（长度不足）
+```
+
+#### IsJson
+验证字符串是否为有效的 JSON 格式。
+
+```csharp
+public static bool IsJson(this string value)
+```
+
+**示例：**
+```csharp
+"{\"name\":\"test\"}".IsJson(); // true
+"[1,2,3]".IsJson();             // true
+"not json".IsJson();            // false
+```
+
+#### IsXml
+验证字符串是否为有效的 XML 格式。
+
+```csharp
+public static bool IsXml(this string value)
+```
+
+**示例：**
+```csharp
+"<root><item>test</item></root>".IsXml(); // true
+"not xml".IsXml();                         // false
+```
+
+#### IsDate
+验证字符串是否为有效的日期格式。
+
+```csharp
+public static bool IsDate(this string value)
+```
+
+**示例：**
+```csharp
+"2024-01-01".IsDate(); // true
+"not-a-date".IsDate(); // false
+```
+
+#### IsTime
+验证字符串是否为有效的时间格式（HH:mm:ss）。
+
+```csharp
+public static bool IsTime(this string value)
+```
+
+**示例：**
+```csharp
+"14:30:00".IsTime(); // true
+"25:00:00".IsTime(); // false
+```
+
+---
+
+### 正则别名方法
+
+以下方法是对应验证方法的别名，内部直接调用对应方法，用于兼容旧版 API。
+
+#### IsUrlByRegex
+IsUrl 的别名方法。
+
+```csharp
+public static bool IsUrlByRegex(this string value)
+```
+
+#### IsDateByRegex
+IsDate 的别名方法。
+
+```csharp
+public static bool IsDateByRegex(this string value)
+```
+
+#### IsTimeByRegex
+IsTime 的别名方法。
+
+```csharp
+public static bool IsTimeByRegex(this string value)
+```
+
+#### IsDateTimeByRegex
+IsDateTime 的别名方法。
+
+```csharp
+public static bool IsDateTimeByRegex(this string value)
+```
+
+#### IsLetterByRegex
+IsLetter 的别名方法。
+
+```csharp
+public static bool IsLetterByRegex(this string value)
+```
+
+#### IsNumByRegex
+IsNumeric 的别名方法。
+
+```csharp
+public static bool IsNumByRegex(this string value)
+```
+
+#### ExtractNumByRegex
+ExtractDigits 的别名方法。
+
+```csharp
+public static string ExtractNumByRegex(this string value)
+```
+
+#### IsFloatByRegex
+IsFloat 的别名方法。
+
+```csharp
+public static bool IsFloatByRegex(this string value)
+```
+
+#### IsEmailByRegex
+IsEmail 的别名方法。
+
+```csharp
+public static bool IsEmailByRegex(this string value)
+```
+
+#### IsTelByRegex
+IsTel 的别名方法。
+
+```csharp
+public static bool IsTelByRegex(this string value)
+```
+
+#### IsMobileByRegex
+IsMobile 的别名方法。
+
+```csharp
+public static bool IsMobileByRegex(this string value)
+```
+
+---
 
 ### 类型转换
 
 #### ToInt
-将字符串转换为 int。
+将字符串转换为整数，转换失败返回默认值。
 
 ```csharp
 public static int ToInt(this string value, int defaultValue = 0)
@@ -318,46 +783,593 @@ public static int ToInt(this string value, int defaultValue = 0)
 - `value`: 待转换的字符串
 - `defaultValue`: 转换失败时的默认值，默认为 0
 
-**返回值：**
-- 转换后的 int 值，失败时返回默认值
+**返回值：** 转换后的 int 值，失败时返回默认值
 
 **示例：**
 ```csharp
-string str1 = "123";
-string str2 = "abc";
+"123".ToInt();       // 123
+"abc".ToInt();       // 0
+"abc".ToInt(-1);     // -1
+```
 
-int result1 = str1.ToInt(); // 123
-int result2 = str2.ToInt(); // 0
-int result3 = str2.ToInt(-1); // -1
+#### ToIntOrNull
+将字符串转换为可空整数，转换失败返回 null。
+
+```csharp
+public static int? ToIntOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"123".ToIntOrNull(); // 123
+"abc".ToIntOrNull(); // null
+```
+
+#### ToLong
+将字符串转换为长整数，转换失败返回默认值。
+
+```csharp
+public static long ToLong(this string value, long defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123456789012".ToLong(); // 123456789012
+"abc".ToLong();          // 0
+```
+
+#### ToLongOrNull
+将字符串转换为可空长整数，转换失败返回 null。
+
+```csharp
+public static long? ToLongOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"123456789012".ToLongOrNull(); // 123456789012
+"abc".ToLongOrNull();          // null
+```
+
+#### ToShort
+将字符串转换为短整数，转换失败返回默认值。
+
+```csharp
+public static short ToShort(this string value, short defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123".ToShort(); // 123
+"abc".ToShort(); // 0
+```
+
+#### ToShortOrNull
+将字符串转换为可空短整数，转换失败返回 null。
+
+```csharp
+public static short? ToShortOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"123".ToShortOrNull(); // 123
+"abc".ToShortOrNull(); // null
+```
+
+#### ToFloat
+将字符串转换为单精度浮点数，转换失败返回默认值。
+
+```csharp
+public static float ToFloat(this string value, float defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123.45".ToFloat(); // 123.45f
+"abc".ToFloat();    // 0f
+```
+
+#### ToFloatOrNull
+将字符串转换为可空单精度浮点数，转换失败返回 null。
+
+```csharp
+public static float? ToFloatOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"123.45".ToFloatOrNull(); // 123.45f
+"abc".ToFloatOrNull();    // null
+```
+
+#### ToFloatRound
+将字符串转换为单精度浮点数并保留指定小数位（四舍五入）。
+
+```csharp
+public static float ToFloatRound(this string value, int digits = 2, float defaultValue = 0)
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `digits`: 保留的小数位数，默认为 2
+- `defaultValue`: 转换失败时的默认值
+
+**示例：**
+```csharp
+"123.4567".ToFloatRound(2); // 123.46f
+"123.4567".ToFloatRound(0); // 123f
+```
+
+#### ToFloatTruncate
+将字符串转换为单精度浮点数并截断到指定小数位。
+
+```csharp
+public static float ToFloatTruncate(this string value, int digits = 2, float defaultValue = 0)
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `digits`: 保留的小数位数，默认为 2
+- `defaultValue`: 转换失败时的默认值
+
+**示例：**
+```csharp
+"123.4567".ToFloatTruncate(2); // 123.45f
+"123.4567".ToFloatTruncate(0); // 123f
 ```
 
 #### ToDouble
-将字符串转换为 double。
+将字符串转换为双精度浮点数，转换失败返回默认值。
 
 ```csharp
 public static double ToDouble(this string value, double defaultValue = 0)
 ```
 
-**参数：**
-- `value`: 待转换的字符串
-- `defaultValue`: 转换失败时的默认值，默认为 0
+**示例：**
+```csharp
+"123.45".ToDouble(); // 123.45
+"abc".ToDouble();    // 0
+```
 
-**返回值：**
-- 转换后的 double 值，失败时返回默认值
+#### ToDoubleOrNull
+将字符串转换为可空双精度浮点数，转换失败返回 null。
+
+```csharp
+public static double? ToDoubleOrNull(this string value)
+```
 
 **示例：**
 ```csharp
-string str1 = "123.45";
-string str2 = "abc";
-
-double result1 = str1.ToDouble(); // 123.45
-double result2 = str2.ToDouble(); // 0
+"123.45".ToDoubleOrNull(); // 123.45
+"abc".ToDoubleOrNull();    // null
 ```
+
+#### ToDoubleRound
+将字符串转换为双精度浮点数并保留指定小数位（四舍五入）。
+
+```csharp
+public static double ToDoubleRound(this string value, int digits = 2, double defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123.4567".ToDoubleRound(2); // 123.46
+"123.4567".ToDoubleRound(0); // 123
+```
+
+#### ToDoubleTruncate
+将字符串转换为双精度浮点数并截断到指定小数位。
+
+```csharp
+public static double ToDoubleTruncate(this string value, int digits = 2, double defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123.4567".ToDoubleTruncate(2); // 123.45
+"123.4567".ToDoubleTruncate(0); // 123
+```
+
+#### ToDecimal
+将字符串转换为十进制数，转换失败返回默认值。
+
+```csharp
+public static decimal ToDecimal(this string value, decimal defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123.45".ToDecimal(); // 123.45m
+"abc".ToDecimal();    // 0m
+```
+
+#### ToDecimalOrNull
+将字符串转换为可空十进制数，转换失败返回 null。
+
+```csharp
+public static decimal? ToDecimalOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"123.45".ToDecimalOrNull(); // 123.45m
+"abc".ToDecimalOrNull();    // null
+```
+
+#### ToDecimalRound
+将字符串转换为十进制数并保留指定小数位（四舍五入）。
+
+```csharp
+public static decimal ToDecimalRound(this string value, int digits = 2, decimal defaultValue = 0)
+```
+
+**示例：**
+```csharp
+"123.4567".ToDecimalRound(2); // 123.46m
+"123.4567".ToDecimalRound(0); // 123m
+```
+
+#### ToBool
+将字符串转换为布尔值，转换失败返回默认值。
+
+```csharp
+public static bool ToBool(this string value, bool defaultValue = false)
+```
+
+**示例：**
+```csharp
+"true".ToBool();  // true
+"false".ToBool(); // false
+"yes".ToBool();   // false（标准 bool 解析不支持 yes）
+```
+
+#### ToBoolOrNull
+将字符串转换为可空布尔值，转换失败返回 null。
+
+```csharp
+public static bool? ToBoolOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"true".ToBoolOrNull();  // true
+"yes".ToBoolOrNull();   // null
+```
+
+#### ToBoolExtended
+将字符串转换为布尔值（支持多种格式）。
+
+```csharp
+public static bool ToBoolExtended(this string value, string[] trueValues = null, bool defaultValue = false)
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `trueValues`: 被视为 true 的字符串数组，默认包含 "true", "1", "yes", "on", "y", "是", "真", "开启"
+- `defaultValue`: 转换失败时的默认值
+
+**示例：**
+```csharp
+"yes".ToBoolExtended();   // true
+"1".ToBoolExtended();     // true
+"是".ToBoolExtended();    // true
+"no".ToBoolExtended();    // false
+```
+
+#### ToGuid
+将字符串转换为 Guid，转换失败返回默认值。
+
+```csharp
+public static Guid ToGuid(this string value, Guid defaultValue = default)
+```
+
+**示例：**
+```csharp
+"d3b07384-d9a6-4e0b-9d7e-5b5a5b5a5b5a".ToGuid(); // 对应的 Guid
+"invalid".ToGuid();                                // Guid.Empty
+```
+
+#### ToGuidOrNull
+将字符串转换为可空 Guid，转换失败返回 null。
+
+```csharp
+public static Guid? ToGuidOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"d3b07384-d9a6-4e0b-9d7e-5b5a5b5a5b5a".ToGuidOrNull(); // 对应的 Guid
+"invalid".ToGuidOrNull();                                // null
+```
+
+#### ToDateTime
+将字符串转换为日期时间，转换失败返回默认值。
+
+```csharp
+public static DateTime ToDateTime(this string value, DateTime defaultValue = default)
+```
+
+**示例：**
+```csharp
+"2024-01-01".ToDateTime();          // 2024-01-01 00:00:00
+"invalid".ToDateTime();             // DateTime.MinValue
+"invalid".ToDateTime(DateTime.Now); // DateTime.Now
+```
+
+#### ToDateTimeOrNull
+将字符串转换为可空日期时间，转换失败返回 null。
+
+```csharp
+public static DateTime? ToDateTimeOrNull(this string value)
+```
+
+**示例：**
+```csharp
+"2024-01-01".ToDateTimeOrNull(); // 2024-01-01 00:00:00
+"invalid".ToDateTimeOrNull();    // null
+```
+
+#### ToDateTimeExact
+将字符串按指定格式转换为日期时间。
+
+```csharp
+public static DateTime ToDateTimeExact(this string value, string format, DateTime defaultValue = default)
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `format`: 日期时间格式字符串
+- `defaultValue`: 转换失败时的默认值
+
+**示例：**
+```csharp
+"20240101".ToDateTimeExact("yyyyMMdd");          // 2024-01-01 00:00:00
+"2024-01-01".ToDateTimeExact("yyyyMMdd");        // DateTime.MinValue（格式不匹配）
+```
+
+#### ToEnum\<TEnum\>
+将字符串转换为枚举类型，转换失败返回默认值。
+
+```csharp
+public static TEnum ToEnum<TEnum>(this string value, TEnum defaultValue = default, bool ignoreCase = true) where TEnum : struct, Enum
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `defaultValue`: 转换失败时的默认值
+- `ignoreCase`: 是否忽略大小写，默认为 true
+
+**示例：**
+```csharp
+enum Status { Active, Inactive }
+
+"Active".ToEnum<Status>();   // Status.Active
+"active".ToEnum<Status>();   // Status.Active（忽略大小写）
+"invalid".ToEnum<Status>();  // Status.Active（默认值）
+```
+
+#### ToBytes
+将字符串转换为字节数组。
+
+```csharp
+public static byte[] ToBytes(this string value, Encoding encoding = null)
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `encoding`: 编码方式，默认为 UTF-8
+
+**示例：**
+```csharp
+"Hello".ToBytes();                          // UTF-8 字节数组
+"Hello".ToBytes(Encoding.ASCII);            // ASCII 字节数组
+```
+
+#### To\<T\>
+将字符串转换为指定类型的对象。
+
+```csharp
+public static T To<T>(this string value, T defaultValue = default)
+```
+
+**参数：**
+- `value`: 待转换的字符串
+- `defaultValue`: 转换失败时的默认值
+
+**示例：**
+```csharp
+"123".To<int>();            // 123
+"123.45".To<double>();      // 123.45
+"true".To<bool>();          // true
+"invalid".To<int>(-1);      // -1
+```
+
+---
+
+### 编码解码
+
+#### ToBase64
+将字符串编码为 Base64 字符串。
+
+```csharp
+public static string ToBase64(this string value, Encoding encoding = null)
+```
+
+**参数：**
+- `value`: 待编码的字符串
+- `encoding`: 编码方式，默认为 UTF-8
+
+**示例：**
+```csharp
+"Hello World".ToBase64(); // "SGVsbG8gV29ybGQ="
+```
+
+#### FromBase64
+将 Base64 字符串解码为原始字符串。
+
+```csharp
+public static string FromBase64(this string value, Encoding encoding = null)
+```
+
+**参数：**
+- `value`: Base64 编码的字符串
+- `encoding`: 编码方式，默认为 UTF-8
+
+**示例：**
+```csharp
+"SGVsbG8gV29ybGQ=".FromBase64(); // "Hello World"
+```
+
+#### UrlEncode
+将字符串进行 URL 编码。
+
+```csharp
+public static string UrlEncode(this string value)
+```
+
+**示例：**
+```csharp
+"Hello World".UrlEncode(); // "Hello+World"
+```
+
+#### UrlDecode
+将 URL 编码的字符串解码。
+
+```csharp
+public static string UrlDecode(this string value)
+```
+
+**示例：**
+```csharp
+"Hello+World".UrlDecode(); // "Hello World"
+```
+
+#### HtmlEncode
+将字符串进行 HTML 编码。
+
+```csharp
+public static string HtmlEncode(this string value)
+```
+
+**示例：**
+```csharp
+"<div>Test</div>".HtmlEncode(); // "&lt;div&gt;Test&lt;/div&gt;"
+```
+
+#### HtmlDecode
+将 HTML 编码的字符串解码。
+
+```csharp
+public static string HtmlDecode(this string value)
+```
+
+**示例：**
+```csharp
+"&lt;div&gt;Test&lt;/div&gt;".HtmlDecode(); // "<div>Test</div>"
+```
+
+---
+
+### 哈希计算
+
+#### ToMd5
+计算字符串的 MD5 哈希值。
+
+```csharp
+public static string ToMd5(this string value, Encoding encoding = null)
+```
+
+**参数：**
+- `value`: 待计算的字符串
+- `encoding`: 编码方式，默认为 UTF-8
+
+**返回值：** MD5 哈希值（32位小写十六进制字符串）
+
+**示例：**
+```csharp
+"Hello World".ToMd5(); // "ed076283755c9dbb52404a7f7f8c9a0b"
+```
+
+#### ToSha256
+计算字符串的 SHA256 哈希值。
+
+```csharp
+public static string ToSha256(this string value, Encoding encoding = null)
+```
+
+**返回值：** SHA256 哈希值（64位小写十六进制字符串）
+
+**示例：**
+```csharp
+"Hello World".ToSha256(); // "a591a6d40bf420404a011733cfb0b43e..."
+```
+
+#### ToSha1
+计算字符串的 SHA1 哈希值。
+
+```csharp
+public static string ToSha1(this string value, Encoding encoding = null)
+```
+
+**返回值：** SHA1 哈希值（40位小写十六进制字符串）
+
+**示例：**
+```csharp
+"Hello World".ToSha1(); // "2aae6c35c94fc8849305f59..."
+```
+
+#### ToHmacSha256
+计算字符串的 HMAC-SHA256 哈希值。
+
+```csharp
+public static string ToHmacSha256(this string value, string key, Encoding encoding = null)
+```
+
+**参数：**
+- `value`: 待计算的字符串
+- `key`: 密钥
+- `encoding`: 编码方式，默认为 UTF-8
+
+**返回值：** HMAC-SHA256 哈希值（小写十六进制字符串）
+
+**示例：**
+```csharp
+"Hello World".ToHmacSha256("secret-key"); // HMAC-SHA256 哈希值
+```
+
+---
 
 ### 字符串操作
 
+#### TrimSafe
+安全去除字符串首尾空白字符，null 返回空字符串。
+
+```csharp
+public static string TrimSafe(this string value)
+```
+
+**示例：**
+```csharp
+"  Hello  ".TrimSafe(); // "Hello"
+string str = null;
+str.TrimSafe();          // ""
+```
+
+#### RemoveWhiteSpace
+移除字符串中的所有空白字符。
+
+```csharp
+public static string RemoveWhiteSpace(this string value)
+```
+
+**示例：**
+```csharp
+"Hello World 123".RemoveWhiteSpace(); // "HelloWorld123"
+```
+
 #### SubstringSafe
-安全截取字符串。
+安全截取字符串，超出范围返回空字符串或部分字符串。
 
 ```csharp
 public static string SubstringSafe(this string value, int startIndex, int length)
@@ -365,182 +1377,593 @@ public static string SubstringSafe(this string value, int startIndex, int length
 
 **参数：**
 - `value`: 源字符串
-- `startIndex`: 起始位置
+- `startIndex`: 起始索引
 - `length`: 截取长度
-
-**返回值：**
-- 截取的子串，如果越界则返回尽可能多的字符
 
 **示例：**
 ```csharp
-string str = "Hello World";
-
-string result1 = str.SubstringSafe(0, 5); // "Hello"
-string result2 = str.SubstringSafe(6, 100); // "World"
+"Hello World".SubstringSafe(0, 5);   // "Hello"
+"Hello World".SubstringSafe(6, 100); // "World"
+"Hello".SubstringSafe(10, 5);        // ""
 ```
 
 #### Left
-获取字符串左部指定长度的子串。
+获取字符串左侧指定长度的子串。
 
 ```csharp
 public static string Left(this string value, int length)
 ```
 
-**参数：**
-- `value`: 源字符串
-- `length`: 要获取的长度
+**示例：**
+```csharp
+"Hello World".Left(5); // "Hello"
+"Hi".Left(10);         // "Hi"
+```
 
-**返回值：**
-- 左部子串
+#### Right
+获取字符串右侧指定长度的子串。
+
+```csharp
+public static string Right(this string value, int length)
+```
 
 **示例：**
 ```csharp
-string str = "Hello World";
-
-string result = str.Left(5); // "Hello"
+"Hello World".Right(5); // "World"
+"Hi".Right(10);         // "Hi"
 ```
 
-#### Reverse
+#### ReverseSafe
 反转字符串。
 
 ```csharp
-public static string Reverse(this string value)
+public static string ReverseSafe(this string value)
+```
+
+**示例：**
+```csharp
+"Hello".ReverseSafe(); // "olleH"
+```
+
+#### RemoveSpecialChars
+移除字符串中的特殊字符，仅保留字母、数字和空白。
+
+```csharp
+public static string RemoveSpecialChars(this string value)
+```
+
+**示例：**
+```csharp
+"Hello, World! 123".RemoveSpecialChars(); // "Hello World 123"
+```
+
+#### RemoveDigits
+移除字符串中的数字。
+
+```csharp
+public static string RemoveDigits(this string value)
+```
+
+**示例：**
+```csharp
+"Hello123World456".RemoveDigits(); // "HelloWorld"
+```
+
+#### RemoveLetters
+移除字符串中的字母。
+
+```csharp
+public static string RemoveLetters(this string value)
+```
+
+**示例：**
+```csharp
+"Hello123World456".RemoveLetters(); // "123456"
+```
+
+#### ExtractDigits
+提取字符串中的数字部分。
+
+```csharp
+public static string ExtractDigits(this string value)
+```
+
+**示例：**
+```csharp
+"Price: $123.45".ExtractDigits(); // "12345"
+```
+
+#### ExtractLetters
+提取字符串中的字母部分。
+
+```csharp
+public static string ExtractLetters(this string value)
+```
+
+**示例：**
+```csharp
+"Hello123World".ExtractLetters(); // "HelloWorld"
+```
+
+#### Truncate
+截断字符串到指定长度，超出部分用后缀替代。
+
+```csharp
+public static string Truncate(this string value, int maxLength, string suffix = "...")
 ```
 
 **参数：**
 - `value`: 源字符串
-
-**返回值：**
-- 反转后的字符串
-
-**示例：**
-```csharp
-string str = "Hello";
-
-string result = str.Reverse(); // "olleH"
-```
-
-### 编码解码
-
-#### ToBase64
-将字符串编码为 Base64。
-
-```csharp
-public static string ToBase64(this string value)
-```
-
-**参数：**
-- `value`: 源字符串
-
-**返回值：**
-- Base64 编码后的字符串
+- `maxLength`: 最大长度
+- `suffix`: 后缀字符串，默认为 "..."
 
 **示例：**
 ```csharp
-string str = "Hello World";
-
-string result = str.ToBase64(); // "SGVsbG8gV29ybGQ="
+"Hello World".Truncate(8);       // "Hello..."
+"Hello".Truncate(10);            // "Hello"
+"Hello World".Truncate(8, "!");  // "Hello W!"
 ```
 
-#### FromBase64
-将 Base64 字符串解码。
+#### Repeat
+重复字符串指定次数。
 
 ```csharp
-public static string FromBase64(this string value)
+public static string Repeat(this string value, int count)
 ```
-
-**参数：**
-- `value`: Base64 编码的字符串
-
-**返回值：**
-- 解码后的字符串
 
 **示例：**
 ```csharp
-string str = "SGVsbG8gV29ybGQ=";
-
-string result = str.FromBase64(); // "Hello World"
+"Abc".Repeat(3); // "AbcAbcAbc"
+"Hi".Repeat(0);  // ""
 ```
 
-### 哈希计算
-
-#### ToMd5
-获取字符串的 MD5 值。
+#### Capitalize
+将字符串首字母大写。
 
 ```csharp
-public static string ToMd5(this string value)
+public static string Capitalize(this string value)
 ```
-
-**参数：**
-- `value`: 源字符串
-
-**返回值：**
-- MD5 哈希值（32位小写）
 
 **示例：**
 ```csharp
-string str = "Hello World";
-
-string result = str.ToMd5(); // "b10a8db164e0754105b7a99be72e3fe5"
+"hello".Capitalize(); // "Hello"
+"HELLO".Capitalize(); // "HELLO"
 ```
 
-### 掩码脱敏
+#### Uncapitalize
+将字符串首字母小写。
+
+```csharp
+public static string Uncapitalize(this string value)
+```
+
+**示例：**
+```csharp
+"Hello".Uncapitalize(); // "hello"
+"HELLO".Uncapitalize(); // "hELLO"
+```
+
+#### EqualsIgnoreCase
+忽略大小写判断字符串是否相等。
+
+```csharp
+public static bool EqualsIgnoreCase(this string value, string compare)
+```
+
+**示例：**
+```csharp
+"Hello".EqualsIgnoreCase("hello"); // true
+"Hello".EqualsIgnoreCase("HELLO"); // true
+"Hello".EqualsIgnoreCase("World"); // false
+```
+
+#### ContainsIgnoreCase
+忽略大小写判断字符串是否包含指定子串。
+
+```csharp
+public static bool ContainsIgnoreCase(this string value, string substring)
+```
+
+**示例：**
+```csharp
+"Hello World".ContainsIgnoreCase("HELLO"); // true
+"Hello World".ContainsIgnoreCase("WORLD"); // true
+```
+
+#### StartsWithIgnoreCase
+忽略大小写判断字符串是否以指定前缀开头。
+
+```csharp
+public static bool StartsWithIgnoreCase(this string value, string prefix)
+```
+
+**示例：**
+```csharp
+"Hello World".StartsWithIgnoreCase("hello"); // true
+"Hello World".StartsWithIgnoreCase("HELLO"); // true
+```
+
+#### EndsWithIgnoreCase
+忽略大小写判断字符串是否以指定后缀结尾。
+
+```csharp
+public static bool EndsWithIgnoreCase(this string value, string suffix)
+```
+
+**示例：**
+```csharp
+"Hello World".EndsWithIgnoreCase("world"); // true
+"Hello World".EndsWithIgnoreCase("WORLD"); // true
+```
+
+#### ReplaceIgnoreCase
+忽略大小写替换字符串中的所有匹配项。
+
+```csharp
+public static string ReplaceIgnoreCase(this string value, string oldValue, string newValue)
+```
+
+**示例：**
+```csharp
+"Hello World Hello".ReplaceIgnoreCase("hello", "Hi"); // "Hi World Hi"
+```
+
+#### KeepDecimal
+保留字符串中的小数位数（格式化）。
+
+```csharp
+public static string KeepDecimal(this string value, int digits = 2)
+```
+
+**示例：**
+```csharp
+"123.4567".KeepDecimal(2); // "123.46"
+"123".KeepDecimal(2);      // "123.00"
+"abc".KeepDecimal(2);      // "abc"（非数字原样返回）
+```
+
+---
+
+### 掩码与脱敏
 
 #### Mask
-对字符串指定位置进行掩码。
+对字符串进行掩码处理（保留首尾，中间用指定字符替换）。
 
 ```csharp
-public static string Mask(this string value, int start, int length, char maskChar = '*')
+public static string Mask(this string value, int startLength = 3, int endLength = 4, char maskChar = '*')
 ```
 
 **参数：**
 - `value`: 源字符串
-- `start`: 掩码起始位置
-- `length`: 掩码长度
+- `startLength`: 保留开头的字符数，默认为 3
+- `endLength`: 保留结尾的字符数，默认为 4
 - `maskChar`: 掩码字符，默认为 '*'
-
-**返回值：**
-- 掩码后的字符串
 
 **示例：**
 ```csharp
-string str = "13812345678";
-
-string result = str.Mask(3, 4); // "138****5678"
+"13812345678".Mask(3, 4);      // "138****5678"
+"13812345678".Mask(3, 4, '#'); // "138####5678"
 ```
 
 #### MaskMobile
-对手机号码进行掩码。
+对手机号码进行脱敏处理。
 
 ```csharp
 public static string MaskMobile(this string value)
 ```
 
-**参数：**
-- `value`: 手机号码
+**示例：**
+```csharp
+"13812345678".MaskMobile(); // "138****5678"
+```
 
-**返回值：**
-- 掩码后的手机号码
+#### MaskEmail
+对邮箱地址进行脱敏处理。
+
+```csharp
+public static string MaskEmail(this string value)
+```
 
 **示例：**
 ```csharp
-string str = "13812345678";
+"testuser@example.com".MaskEmail(); // "te***@example.com"
+"ab@example.com".MaskEmail();       // "a***@example.com"
+```
 
-string result = str.MaskMobile(); // "138****5678"
+#### MaskIdCard
+对身份证号码进行脱敏处理。
+
+```csharp
+public static string MaskIdCard(this string value)
+```
+
+**示例：**
+```csharp
+"11010519900307233X".MaskIdCard(); // "110***********233X"
+```
+
+#### MaskBankCard
+对银行卡号进行脱敏处理。
+
+```csharp
+public static string MaskBankCard(this string value)
+```
+
+**示例：**
+```csharp
+"6222021234567890123".MaskBankCard(); // "6222************0123"
+```
+
+#### MaskName
+对姓名进行脱敏处理。
+
+```csharp
+public static string MaskName(this string value)
+```
+
+**示例：**
+```csharp
+"张三".MaskName();     // "张*"
+"李四五".MaskName();   // "李**"
+"王".MaskName();       // "王"
+```
+
+---
+
+### 格式转换
+
+#### ToCamelCase
+将字符串转换为 camelCase（驼峰命名）。
+
+```csharp
+public static string ToCamelCase(this string value)
+```
+
+**示例：**
+```csharp
+"HelloWorld".ToCamelCase();     // "helloWorld"
+"hello_world".ToCamelCase();    // "helloWorld"
+"hello-world".ToCamelCase();    // "helloWorld"
+"Hello World".ToCamelCase();    // "helloWorld"
+```
+
+#### ToPascalCase
+将字符串转换为 PascalCase（帕斯卡命名）。
+
+```csharp
+public static string ToPascalCase(this string value)
+```
+
+**示例：**
+```csharp
+"helloWorld".ToPascalCase();    // "HelloWorld"
+"hello_world".ToPascalCase();   // "HelloWorld"
+"hello-world".ToPascalCase();   // "HelloWorld"
+```
+
+#### ToSnakeCase
+将字符串转换为 snake_case（蛇形命名）。
+
+```csharp
+public static string ToSnakeCase(this string value)
+```
+
+**示例：**
+```csharp
+"HelloWorld".ToSnakeCase();     // "hello_world"
+"hello-world".ToSnakeCase();    // "hello_world"
+"Hello World".ToSnakeCase();    // "hello_world"
+```
+
+#### ToKebabCase
+将字符串转换为 kebab-case（短横线命名）。
+
+```csharp
+public static string ToKebabCase(this string value)
+```
+
+**示例：**
+```csharp
+"HelloWorld".ToKebabCase();     // "hello-world"
+"hello_world".ToKebabCase();    // "hello-world"
+"Hello World".ToKebabCase();    // "hello-world"
+```
+
+#### ToConstantCase
+将字符串转换为常量命名（UPPER_SNAKE_CASE）。
+
+```csharp
+public static string ToConstantCase(this string value)
+```
+
+**示例：**
+```csharp
+"HelloWorld".ToConstantCase();     // "HELLO_WORLD"
+"hello-world".ToConstantCase();    // "HELLO_WORLD"
+```
+
+---
+
+### 分割与连接
+
+#### SplitSafe
+将字符串按指定分隔符分割为数组。
+
+```csharp
+public static string[] SplitSafe(this string value, string separator = ",", StringSplitOptions options = StringSplitOptions.None)
+public static string[] SplitSafe(this string value, char separator, StringSplitOptions options = StringSplitOptions.None)
+```
+
+**参数：**
+- `value`: 待分割的字符串
+- `separator`: 分隔符，默认为逗号
+- `options`: 分割选项
+
+**示例：**
+```csharp
+"a,b,c".SplitSafe(",");                    // ["a", "b", "c"]
+"a,,c".SplitSafe(",", StringSplitOptions.RemoveEmptyEntries); // ["a", "c"]
+"1|2|3".SplitSafe('|');                    // ["1", "2", "3"]
+```
+
+#### SplitToIntArray
+将字符串按指定分隔符分割并转换为整数数组。
+
+```csharp
+public static int[] SplitToIntArray(this string value, string separator = ",")
+```
+
+**示例：**
+```csharp
+"1,2,3".SplitToIntArray();    // [1, 2, 3]
+"1|2|3".SplitToIntArray("|"); // [1, 2, 3]
+```
+
+#### SplitToArray\<T\>
+将字符串按指定分隔符分割并转换为泛型数组。
+
+```csharp
+public static T[] SplitToArray<T>(this string value, string separator = ",") where T : IConvertible
+```
+
+**示例：**
+```csharp
+"1.1,2.2,3.3".SplitToArray<double>();    // [1.1, 2.2, 3.3]
+"true,false,true".SplitToArray<bool>();  // [true, false, true]
+```
+
+#### JoinString
+使用指定分隔符连接字符串集合。
+
+```csharp
+public static string JoinString(this IEnumerable<string> values, string separator = ",")
+public static string JoinString<T>(this IEnumerable<T> values, string separator = ",")
+```
+
+**示例：**
+```csharp
+new[] { "a", "b", "c" }.JoinString(",");  // "a,b,c"
+new[] { 1, 2, 3 }.JoinString("-");         // "1-2-3"
+```
+
+---
+
+### 其他实用方法
+
+#### IfNullOrEmpty
+如果字符串为 null 或空，返回指定默认值。
+
+```csharp
+public static string IfNullOrEmpty(this string value, string defaultValue)
+```
+
+**示例：**
+```csharp
+string str = null;
+str.IfNullOrEmpty("N/A");  // "N/A"
+"hello".IfNullOrEmpty("N/A"); // "hello"
+```
+
+#### IfNullOrWhiteSpace
+如果字符串为 null 或空白，返回指定默认值。
+
+```csharp
+public static string IfNullOrWhiteSpace(this string value, string defaultValue)
+```
+
+**示例：**
+```csharp
+"   ".IfNullOrWhiteSpace("N/A");  // "N/A"
+"hello".IfNullOrWhiteSpace("N/A"); // "hello"
+```
+
+#### GetByteLength
+获取字符串的字节长度（按指定编码计算）。
+
+```csharp
+public static int GetByteLength(this string value, Encoding encoding = null)
+```
+
+**参数：**
+- `value`: 待计算的字符串
+- `encoding`: 编码方式，默认为 UTF-8
+
+**示例：**
+```csharp
+"Hello".GetByteLength();                    // 5（UTF-8）
+"你好".GetByteLength();                      // 6（UTF-8，每个中文字符3字节）
+"你好".GetByteLength(Encoding.Unicode);      // 4（Unicode，每个中文字符2字节）
+```
+
+#### IsLike
+判断字符串是否匹配指定通配符模式。
+
+```csharp
+public static bool IsLike(this string value, string pattern)
+```
+
+**参数：**
+- `value`: 待判断的字符串
+- `pattern`: 通配符模式（`*` 表示任意多个字符，`?` 表示单个字符）
+
+**示例：**
+```csharp
+"Hello World".IsLike("Hello*");   // true
+"Hello World".IsLike("H?llo*");   // true
+"Hello World".IsLike("*World");   // true
+"Hello World".IsLike("Hi*");      // false
+```
+
+#### ToSafeFileName
+将字符串转换为安全的文件名（移除无效字符）。
+
+```csharp
+public static string ToSafeFileName(this string value, char replacement = '_')
+```
+
+**参数：**
+- `value`: 待处理的字符串
+- `replacement`: 替换字符，默认为下划线
+
+**示例：**
+```csharp
+"My File: Test<1>.txt".ToSafeFileName(); // "My File_ Test_1_.txt"
+"My/File".ToSafeFileName('-');           // "My-File"
+```
+
+#### ToSafeUrlPath
+将字符串转换为安全的 URL 路径（移除无效字符）。
+
+```csharp
+public static string ToSafeUrlPath(this string value, char replacement = '-')
+```
+
+**参数：**
+- `value`: 待处理的字符串
+- `replacement`: 替换字符，默认为短横线
+
+**示例：**
+```csharp
+"Hello World!".ToSafeUrlPath();    // "hello-world"
+"My Blog Post".ToSafeUrlPath();    // "my-blog-post"
 ```
 
 ---
 
 ## 使用场景
 
-1. **表单验证** - 验证用户输入的格式是否正确（如邮箱、手机号、地址等）
+1. **表单验证** - 验证用户输入的格式是否正确（如邮箱、手机号、身份证等）
 2. **数据转换** - 安全地将字符串转换为各种数值类型
-3. **字符串处理** - 字符串截取、拼接、格式化等操作
+3. **字符串处理** - 截取、拼接、格式化等操作
 4. **数据清洗** - 移除特殊字符、空白字符等预处理
 5. **格式验证** - 验证数据是否符合特定格式要求
 6. **文本分析** - 判断文本内容类型（中文、数字、字母等）
 7. **安全处理** - 避免 null 异常的安全字符串操作
 8. **编码转换** - 字符串与各种编码格式之间的相互转换
+9. **数据脱敏** - 对敏感信息（手机号、身份证、银行卡等）进行掩码处理
+10. **命名转换** - 在不同命名规范（驼峰、蛇形、短横线等）之间转换
+11. **数据分割连接** - 将字符串分割为数组或将集合连接为字符串
+12. **安全路径** - 生成安全的文件名和 URL 路径
 
 ---
 
@@ -552,7 +1975,10 @@ string result = str.MaskMobile(); // "138****5678"
 4. 正则表达式验证方法使用预编译的正则模式进行格式验证
 5. 数值约束方法支持四舍五入和截取两种小数处理方式
 6. 字符串操作方法支持边界检查，避免越界异常
-7. 哈希计算方法使用 UTF-8 编码进行字节转换
+7. 哈希计算方法默认使用 UTF-8 编码进行字节转换
 8. 中文判断方法对 Unicode 字符范围进行识别
 9. 自定义空字符串判断支持多空值配置
 10. 所有方法都进行了空值有效性检查
+11. 正则别名方法（ByRegex 后缀）是对应方法的别名，内部直接调用对应方法
+12. 掩码脱敏方法默认使用 `*` 作为掩码字符
+13. 格式转换方法支持多种分隔符（下划线、短横线、空格、大小写）的自动识别
