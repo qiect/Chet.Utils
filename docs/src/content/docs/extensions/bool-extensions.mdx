@@ -73,11 +73,11 @@ description: "为 bool 类型提供了丰富的扩展方法，包括基础判断
 **主要方法：**
 
 - `ToCustomString(string trueString, string falseString)` - 转换为自定义字符串
-- `ToValue&lt;T&gt;(T trueValue, T falseValue)` - 转换为指定类型的值
+- `ToValue<T>(T trueValue, T falseValue)` - 转换为指定类型的值
 - `ToEnum&lt;TEnum&gt;(TEnum trueEnum, TEnum falseEnum)` - 转换为枚举值
 - `ToNullable(bool nullable = false)` - 转换为可空布尔值
-- `Match&lt;T&gt;(T trueValue, T falseValue)` - 根据布尔值返回对应的值
-- `Match&lt;T&gt;(Func&lt;T&gt; trueFunc, Func&lt;T&gt; falseFunc)` - 根据布尔值执行对应函数并返回结果
+- `Match<T>(T trueValue, T falseValue)` - 根据布尔值返回对应的值
+- `Match<T>(Func<T> trueFunc, Func<T> falseFunc)` - 根据布尔值执行对应函数并返回结果
 
 ### 6. 条件执行方法
 
@@ -650,5 +650,5 @@ value.IfElse(
 3. 字符串转换方法提供了多种常用格式，也可通过自定义方法指定特定格式
 4. 逻辑运算方法提供了函数式链式调用的便捷方式
 5. `ToNullable()` 方法默认返回原值，只有当 `nullable` 参数为 true 时才返回 null
-6. `ToValue&lt;T&gt;()` 方法支持将布尔值映射到任意类型
+6. `ToValue<T>()` 方法支持将布尔值映射到任意类型
 7. 反向转换方法提供与常规则转换相反的结果

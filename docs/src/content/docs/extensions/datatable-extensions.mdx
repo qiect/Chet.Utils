@@ -212,7 +212,7 @@ int count = dt.GetColumnCount(); // 2
 
 提供 DataTable 与其他数据结构之间的转换功能。
 
-#### ToList&lt;T&gt; (使用转换器)
+#### ToList<T> (使用转换器)
 
 将 DataTable 转换为泛型集合。
 
@@ -245,7 +245,7 @@ var list = dt.ToList(row => new Person
 });
 ```
 
-#### ToList&lt;T&gt; (自动映射)
+#### ToList<T> (自动映射)
 
 将 DataTable 转换为泛型集合（自动映射）。
 
@@ -1111,7 +1111,7 @@ dt.Rows.Add("张三");
 object value = dt.GetValue(0, "Name"); // "张三"
 ```
 
-#### GetValue&lt;T&gt;
+#### GetValue<T>
 
 获取指定单元格的值并转换为指定类型。
 
@@ -1448,7 +1448,7 @@ var paged = dt.GetPagedData(1, 10);
 
 提供 DataTable 与实体之间的转换功能。
 
-#### ToEntity&lt;T&gt;
+#### ToEntity<T>
 
 将 DataTable 的第一行转换为实体。
 
@@ -1476,7 +1476,7 @@ Person person = dt.ToEntity<Person>();
 // person.Name = "张三", person.Age = 25
 ```
 
-#### ToEntityList&lt;T&gt;
+#### ToEntityList<T>
 
 将 DataTable 转换为实体列表。
 
@@ -1504,7 +1504,7 @@ dt.Rows.Add("李四", 30);
 List<Person> list = dt.ToEntityList<Person>();
 ```
 
-#### FromEntityList&lt;T&gt;
+#### FromEntityList<T>
 
 从实体列表创建 DataTable。
 
@@ -1564,7 +1564,7 @@ DataTable dt = persons.FromEntityList("Persons");
 
 1. 所有方法都是扩展方法，需要通过 `DataTable` 实例调用
 2. 大部分方法对 null 值进行了安全处理，不会抛出异常
-3. `ToList&lt;T&gt;()` 自动映射方法要求实体属性名与 DataTable 列名一致
+3. `ToList<T>()` 自动映射方法要求实体属性名与 DataTable 列名一致
 4. `Filter()` 和 `Sort()` 方法使用 DataTable 原生的 Select 语法，支持标准的表达式语法
 5. `AsEnumerableDictionary()` 方法返回延迟执行的枚举，适合大数据量处理
 6. `AddRow()` 方法参数顺序需要与列顺序匹配
