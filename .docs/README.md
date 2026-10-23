@@ -127,6 +127,13 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 ## 版本更新
 
+### v1.6.0 (当前版本)
+
+**新功能**
+
+- ✨ 优化 DataTableHelper 类，添加更多方法
+- 🔧 优化 DataTableExtensions、EnumExtensions、EnumerableExtensions、StreamExtensions 等扩展类
+
 ### v1.5.0 (当前版本)
 
 **新功能**
@@ -193,5 +200,4 @@ await wsClient.SendMessageAsync("Hello, World!");
 如有问题或建议，请通过以下方式联系：
 
 - 提交 [GitHub Issue](https://github.com/qiect/Chet.Utils/issues)
-- 发送邮件至：<support@example.com>
 
