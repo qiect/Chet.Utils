@@ -63,7 +63,7 @@ dotnet add package Chet.Utils
 ### PackageReference
 
 ```xml
-<PackageReference Include="Chet.Utils" Version="1.5.0" />
+<PackageReference Include="Chet.Utils" Version="1.6.0" />
 ```
 
 ## 快速开始
@@ -122,8 +122,8 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 ## 系统要求
 
-- .NET 8.0 或更高版本
-- .NET Standard 2.0（部分功能）
+- .NET 8.0 或更高版本（推荐）
+- .NET Standard 2.1（完整功能，含 polyfill 兼容层）
 
 ## 版本更新
 
@@ -133,8 +133,13 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 - ✨ 优化 DataTableHelper 类，添加更多方法
 - 🔧 优化 DataTableExtensions、EnumExtensions、EnumerableExtensions、StreamExtensions 等扩展类
+- 🌐 新增 `netstandard2.1` + `net8.0` 双目标框架支持，旧框架消费方可直接升级
+- 📦 引入 Polyfills 模块（`ThrowHelper`、`ParallelHelper`、`HttpContent` / `HashAlgorithm` 扩展方法），统一不同目标下的 API 行为
+- 🔧 修复多目标构建中暴露的 .NET 6+/7+ API 依赖（`ArgumentException.ThrowIfNullOrEmpty`、`Convert.ToHexString`、`TimeSpan.TotalMicroseconds/TotalNanoseconds`、`Stopwatch.GetElapsedTime`、`Environment.ProcessId/TickCount64`、`GC.GetGCMemoryInfo`、`Parallel.ForEachAsync/ForAsync`、`ValueTask.FromResult`、`StringSplitOptions.TrimEntries` 等）
+- 🔧 `StreamReader` 构造器统一使用 5 参数形式，跨目标兼容
+- 🔧 `ApplicationHelper.GetAvailableMemory` 在 netstandard2.1 上回退至 `GC.GetTotalMemory`
 
-### v1.5.0 (当前版本)
+### v1.5.0
 
 **新功能**
 
