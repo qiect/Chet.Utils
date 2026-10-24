@@ -39,7 +39,7 @@ public static class StopwatchHelper
     /// </example>
     public static long Time(Action action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         action();
@@ -57,7 +57,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
     public static long Time(Action action, int iterations)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -90,7 +90,7 @@ public static class StopwatchHelper
     /// </example>
     public static async Task<long> TimeAsync(Func<Task> action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         await action();
@@ -108,7 +108,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
     public static async Task<long> TimeAsync(Func<Task> action, int iterations)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -142,7 +142,7 @@ public static class StopwatchHelper
     /// </example>
     public static TimeSpan TimeDetailed(Action action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         action();
@@ -158,7 +158,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
     public static async Task<TimeSpan> TimeDetailedAsync(Func<Task> action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         await action();
@@ -181,7 +181,7 @@ public static class StopwatchHelper
     /// </example>
     public static (T Result, long ElapsedMilliseconds) Time<T>(Func<T> func)
     {
-        ArgumentNullException.ThrowIfNull(func);
+        ThrowHelper.ThrowIfNull(func);
 
         var stopwatch = Stopwatch.StartNew();
         var result = func();
@@ -198,7 +198,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">func 为 null 时抛出。</exception>
     public static async Task<(T Result, long ElapsedMilliseconds)> TimeAsync<T>(Func<Task<T>> func)
     {
-        ArgumentNullException.ThrowIfNull(func);
+        ThrowHelper.ThrowIfNull(func);
 
         var stopwatch = Stopwatch.StartNew();
         var result = await func();
@@ -231,7 +231,7 @@ public static class StopwatchHelper
     /// </example>
     public static TimingStatistics TimeStatistics(Action action, int iterations)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -256,7 +256,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
     public static async Task<TimingStatistics> TimeStatisticsAsync(Func<Task> action, int iterations)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -281,7 +281,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
     public static List<long> TimeEach(Action action, int iterations)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -306,7 +306,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentException">iterations 小于等于 0 时抛出。</exception>
     public static async Task<List<long>> TimeEachAsync(Func<Task> action, int iterations)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -329,7 +329,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">times 为 null 时抛出。</exception>
     public static TimingStatistics CalculateStatistics(IEnumerable<long> times)
     {
-        ArgumentNullException.ThrowIfNull(times);
+        ThrowHelper.ThrowIfNull(times);
 
         var timesList = times.ToList();
 
@@ -413,7 +413,7 @@ public static class StopwatchHelper
     /// </example>
     public static long TimeHighPrecision(Action action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         action();
@@ -429,7 +429,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
     public static double TimeNanoseconds(Action action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         action();
@@ -446,7 +446,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
     public static double TimeMicroseconds(Action action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = Stopwatch.StartNew();
         action();
@@ -490,7 +490,13 @@ public static class StopwatchHelper
     /// <returns>时间间隔。</returns>
     public static TimeSpan GetElapsedTime(long startTimestamp, long endTimestamp)
     {
+#if NETSTANDARD2_1
+        long elapsedTicks = endTimestamp - startTimestamp;
+        long timeSpanTicks = (long)((double)elapsedTicks * TimeSpan.TicksPerSecond / Stopwatch.Frequency);
+        return new TimeSpan(timeSpanTicks);
+#else
         return Stopwatch.GetElapsedTime(startTimestamp, endTimestamp);
+#endif
     }
 
     /// <summary>
@@ -500,7 +506,13 @@ public static class StopwatchHelper
     /// <returns>时间间隔。</returns>
     public static TimeSpan GetElapsedTime(long startTimestamp)
     {
+#if NETSTANDARD2_1
+        long elapsedTicks = Stopwatch.GetTimestamp() - startTimestamp;
+        long timeSpanTicks = (long)((double)elapsedTicks * TimeSpan.TicksPerSecond / Stopwatch.Frequency);
+        return new TimeSpan(timeSpanTicks);
+#else
         return Stopwatch.GetElapsedTime(startTimestamp);
+#endif
     }
 
     #endregion
@@ -526,7 +538,7 @@ public static class StopwatchHelper
     /// </example>
     public static long TimeIf(bool condition, Action action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (!condition) return -1;
         return Time(action);
@@ -541,7 +553,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">action 为 null 时抛出。</exception>
     public static async Task<long> TimeIfAsync(bool condition, Func<Task> action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (!condition) return -1;
         return await TimeAsync(action);
@@ -557,7 +569,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">func 为 null 时抛出。</exception>
     public static (T? Result, long ElapsedMilliseconds)? TimeWithTimeout<T>(Func<T> func, long timeoutMilliseconds)
     {
-        ArgumentNullException.ThrowIfNull(func);
+        ThrowHelper.ThrowIfNull(func);
 
         if (timeoutMilliseconds <= 0)
             throw new ArgumentException("超时时间必须大于0", nameof(timeoutMilliseconds));
@@ -587,7 +599,7 @@ public static class StopwatchHelper
         int maxRetries = 3,
         int retryDelayMilliseconds = 100)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         if (maxRetries < 0)
             throw new ArgumentException("最大重试次数不能为负数", nameof(maxRetries));
@@ -645,7 +657,7 @@ public static class StopwatchHelper
     /// </example>
     public static ScopeTimer StartScope(Action<TimeSpan> action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
         return new ScopeTimer(action);
     }
 
@@ -665,7 +677,7 @@ public static class StopwatchHelper
     /// </example>
     public static ScopeTimer StartScope(string label)
     {
-        ArgumentException.ThrowIfNullOrEmpty(label);
+        ThrowHelper.ThrowIfNullOrEmpty(label);
 
         return new ScopeTimer(elapsed =>
         {
@@ -721,8 +733,8 @@ public static class StopwatchHelper
         int iterations = 1000,
         int warmupIterations = 10)
     {
-        ArgumentException.ThrowIfNullOrEmpty(name);
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -764,8 +776,8 @@ public static class StopwatchHelper
         int iterations = 1000,
         int warmupIterations = 10)
     {
-        ArgumentException.ThrowIfNullOrEmpty(name);
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowHelper.ThrowIfNull(action);
 
         if (iterations <= 0)
             throw new ArgumentException("迭代次数必须大于0", nameof(iterations));
@@ -827,10 +839,10 @@ public static class StopwatchHelper
         Action action2,
         int iterations = 1000)
     {
-        ArgumentException.ThrowIfNullOrEmpty(name1);
-        ArgumentException.ThrowIfNullOrEmpty(name2);
-        ArgumentNullException.ThrowIfNull(action1);
-        ArgumentNullException.ThrowIfNull(action2);
+        ThrowHelper.ThrowIfNullOrEmpty(name1);
+        ThrowHelper.ThrowIfNullOrEmpty(name2);
+        ThrowHelper.ThrowIfNull(action1);
+        ThrowHelper.ThrowIfNull(action2);
 
         var result1 = Benchmark(name1, action1, iterations);
         var result2 = Benchmark(name2, action2, iterations);
@@ -863,11 +875,14 @@ public static class StopwatchHelper
         {
             if (elapsed.TotalMilliseconds < 1)
             {
-                if (elapsed.TotalMicroseconds < 1)
+                // 1 tick = 100ns = 0.1us; polyfill for TimeSpan.TotalMicroseconds/TotalNanoseconds (.NET 7+)
+                double totalMicroseconds = elapsed.Ticks / 10.0;
+                if (totalMicroseconds < 1)
                 {
-                    return $"{elapsed.TotalNanoseconds:F2} 纳秒";
+                    double totalNanoseconds = elapsed.Ticks * 100.0;
+                    return $"{totalNanoseconds:F2} 纳秒";
                 }
-                return $"{elapsed.TotalMicroseconds:F2} 微秒";
+                return $"{totalMicroseconds:F2} 微秒";
             }
             return $"{elapsed.TotalMilliseconds:F2} 毫秒";
         }
@@ -913,7 +928,7 @@ public static class StopwatchHelper
     /// <exception cref="ArgumentNullException">stats 为 null 时抛出。</exception>
     public static string FormatStatistics(TimingStatistics stats)
     {
-        ArgumentNullException.ThrowIfNull(stats);
+        ThrowHelper.ThrowIfNull(stats);
 
         if (stats.Count == 0)
         {

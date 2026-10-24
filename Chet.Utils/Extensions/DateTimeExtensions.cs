@@ -834,6 +834,7 @@ public static class DateTimeExtensions
 
     #region .NET 6+ 类型转换
 
+#if NET8_0
     /// <summary>
     /// 将 DateTime 转换为 DateOnly。
     /// </summary>
@@ -847,6 +848,7 @@ public static class DateTimeExtensions
     /// <param name="dt">待转换的 DateTime。</param>
     /// <returns>TimeOnly 对象。</returns>
     public static TimeOnly ToTimeOnly(this DateTime dt) => TimeOnly.FromDateTime(dt);
+#endif
 
     #endregion
 }

@@ -43,7 +43,7 @@ public static class ReflectHelper
     /// </example>
     public static PropertyInfo[] GetPublicProperties(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -60,7 +60,7 @@ public static class ReflectHelper
     /// </example>
     public static PropertyInfo[] GetAllProperties(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
     }
 
@@ -82,8 +82,8 @@ public static class ReflectHelper
     /// </example>
     public static PropertyInfo? GetProperty(Type type, string propertyName)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNullOrEmpty(propertyName);
         return type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
     }
 
@@ -104,7 +104,7 @@ public static class ReflectHelper
     /// </example>
     public static MethodInfo[] GetPublicMethods(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -116,7 +116,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static MethodInfo[] GetAllMethods(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
     }
 
@@ -135,8 +135,8 @@ public static class ReflectHelper
     /// </example>
     public static MethodInfo? GetMethod(Type type, string methodName, params Type[] parameterTypes)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentException.ThrowIfNullOrEmpty(methodName);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNullOrEmpty(methodName);
 
         if (parameterTypes == null || parameterTypes.Length == 0)
         {
@@ -154,7 +154,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static FieldInfo[] GetPublicFields(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetFields(BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -166,7 +166,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static FieldInfo[] GetAllFields(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
     }
 
@@ -179,8 +179,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 或 fieldName 为 null 时抛出。</exception>
     public static FieldInfo? GetField(Type type, string fieldName)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentException.ThrowIfNullOrEmpty(fieldName);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNullOrEmpty(fieldName);
         return type.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
     }
 
@@ -203,7 +203,7 @@ public static class ReflectHelper
     /// </example>
     public static T? GetCustomAttribute<T>(Type type, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetCustomAttribute<T>(inherit);
     }
 
@@ -216,7 +216,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static Attribute[] GetCustomAttributes(Type type, bool inherit = true)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return Attribute.GetCustomAttributes(type, inherit);
     }
 
@@ -230,7 +230,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool HasCustomAttribute<T>(Type type, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsDefined(typeof(T), inherit);
     }
 
@@ -242,7 +242,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static Type[] GetInterfaces(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetInterfaces();
     }
 
@@ -263,8 +263,8 @@ public static class ReflectHelper
     /// </example>
     public static bool ImplementsInterface(Type type, Type interfaceType)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentNullException.ThrowIfNull(interfaceType);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(interfaceType);
         return interfaceType.IsAssignableFrom(type);
     }
 
@@ -288,7 +288,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static Type? GetBaseType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.BaseType;
     }
 
@@ -301,8 +301,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 或 baseType 为 null 时抛出。</exception>
     public static bool IsSubclassOf(Type type, Type baseType)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentNullException.ThrowIfNull(baseType);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(baseType);
         return type.IsSubclassOf(baseType);
     }
 
@@ -314,7 +314,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsValueType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsValueType;
     }
 
@@ -326,7 +326,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsReferenceType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return !type.IsValueType;
     }
 
@@ -338,7 +338,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsAbstract(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsAbstract;
     }
 
@@ -350,7 +350,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsInterface(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsInterface;
     }
 
@@ -362,7 +362,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsGenericType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsGenericType;
     }
 
@@ -374,7 +374,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsGenericTypeDefinition(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsGenericTypeDefinition;
     }
 
@@ -386,7 +386,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static Type[] GetGenericArguments(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetGenericArguments();
     }
 
@@ -411,8 +411,8 @@ public static class ReflectHelper
     /// </example>
     public static object? GetPropertyValue(object obj, string propertyName)
     {
-        ArgumentNullException.ThrowIfNull(obj);
-        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+        ThrowHelper.ThrowIfNull(obj);
+        ThrowHelper.ThrowIfNullOrEmpty(propertyName);
 
         var property = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
         if (property == null)
@@ -454,8 +454,8 @@ public static class ReflectHelper
     /// </example>
     public static void SetPropertyValue(object obj, string propertyName, object? value)
     {
-        ArgumentNullException.ThrowIfNull(obj);
-        ArgumentException.ThrowIfNullOrEmpty(propertyName);
+        ThrowHelper.ThrowIfNull(obj);
+        ThrowHelper.ThrowIfNullOrEmpty(propertyName);
 
         var property = obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
         if (property == null)
@@ -497,7 +497,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">property 为 null 时抛出。</exception>
     public static T? GetCustomAttribute<T>(PropertyInfo property, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
         return property.GetCustomAttribute<T>(inherit);
     }
 
@@ -511,7 +511,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">property 为 null 时抛出。</exception>
     public static bool HasCustomAttribute<T>(PropertyInfo property, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
         return property.IsDefined(typeof(T), inherit);
     }
 
@@ -530,7 +530,7 @@ public static class ReflectHelper
     /// </example>
     public static string GetPropertyDisplayName(PropertyInfo property)
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
 
         var displayAttribute = GetCustomAttribute<DisplayAttribute>(property);
         if (displayAttribute != null && !string.IsNullOrEmpty(displayAttribute.Name))
@@ -551,7 +551,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">property 为 null 时抛出。</exception>
     public static string GetPropertyDescription(PropertyInfo property)
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
 
         var displayAttribute = GetCustomAttribute<DisplayAttribute>(property);
         if (displayAttribute != null && !string.IsNullOrEmpty(displayAttribute.Description))
@@ -620,7 +620,7 @@ public static class ReflectHelper
     /// </example>
     public static void SetPropertyValues(object obj, Dictionary<string, object?> propertyValues)
     {
-        ArgumentNullException.ThrowIfNull(obj);
+        ThrowHelper.ThrowIfNull(obj);
         if (propertyValues == null || propertyValues.Count == 0) return;
 
         var properties = GetPublicProperties(obj.GetType())
@@ -652,7 +652,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">property 为 null 时抛出。</exception>
     public static bool CanRead(PropertyInfo property)
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
         return property.CanRead;
     }
 
@@ -664,7 +664,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">property 为 null 时抛出。</exception>
     public static bool CanWrite(PropertyInfo property)
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
         return property.CanWrite;
     }
 
@@ -676,7 +676,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">property 为 null 时抛出。</exception>
     public static Type GetPropertyType(PropertyInfo property)
     {
-        ArgumentNullException.ThrowIfNull(property);
+        ThrowHelper.ThrowIfNull(property);
         return property.PropertyType;
     }
 
@@ -702,8 +702,8 @@ public static class ReflectHelper
     /// </example>
     public static object? InvokeMethod(object obj, string methodName, params object?[] parameters)
     {
-        ArgumentNullException.ThrowIfNull(obj);
-        ArgumentException.ThrowIfNullOrEmpty(methodName);
+        ThrowHelper.ThrowIfNull(obj);
+        ThrowHelper.ThrowIfNullOrEmpty(methodName);
 
         var method = obj.GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         if (method == null)
@@ -746,8 +746,8 @@ public static class ReflectHelper
     /// </example>
     public static object? InvokeStaticMethod(Type type, string methodName, params object?[] parameters)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentException.ThrowIfNullOrEmpty(methodName);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNullOrEmpty(methodName);
 
         var method = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         if (method == null)
@@ -780,7 +780,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static T? GetCustomAttribute<T>(MethodInfo method, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
         return method.GetCustomAttribute<T>(inherit);
     }
 
@@ -794,7 +794,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static bool HasCustomAttribute<T>(MethodInfo method, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
         return method.IsDefined(typeof(T), inherit);
     }
 
@@ -806,7 +806,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static ParameterInfo[] GetMethodParameters(MethodInfo method)
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
         return method.GetParameters();
     }
 
@@ -818,7 +818,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static Type GetMethodReturnType(MethodInfo method)
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
         return method.ReturnType;
     }
 
@@ -830,7 +830,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static bool IsAsyncMethod(MethodInfo method)
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
 
         var returnType = method.ReturnType;
         if (returnType == typeof(void))
@@ -859,7 +859,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static bool IsStaticMethod(MethodInfo method)
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
         return method.IsStatic;
     }
 
@@ -871,7 +871,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static bool IsPublicMethod(MethodInfo method)
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
         return method.IsPublic;
     }
 
@@ -889,8 +889,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentException">fieldName 为空或字段不存在时抛出。</exception>
     public static object? GetFieldValue(object obj, string fieldName)
     {
-        ArgumentNullException.ThrowIfNull(obj);
-        ArgumentException.ThrowIfNullOrEmpty(fieldName);
+        ThrowHelper.ThrowIfNull(obj);
+        ThrowHelper.ThrowIfNullOrEmpty(fieldName);
 
         var field = obj.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
         if (field == null)
@@ -922,8 +922,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentException">fieldName 为空或字段不存在时抛出。</exception>
     public static void SetFieldValue(object obj, string fieldName, object? value)
     {
-        ArgumentNullException.ThrowIfNull(obj);
-        ArgumentException.ThrowIfNullOrEmpty(fieldName);
+        ThrowHelper.ThrowIfNull(obj);
+        ThrowHelper.ThrowIfNullOrEmpty(fieldName);
 
         var field = obj.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
         if (field == null)
@@ -942,7 +942,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">field 为 null 时抛出。</exception>
     public static T? GetCustomAttribute<T>(FieldInfo field, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(field);
+        ThrowHelper.ThrowIfNull(field);
         return field.GetCustomAttribute<T>(inherit);
     }
 
@@ -956,7 +956,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">field 为 null 时抛出。</exception>
     public static bool HasCustomAttribute<T>(FieldInfo field, bool inherit = true) where T : Attribute
     {
-        ArgumentNullException.ThrowIfNull(field);
+        ThrowHelper.ThrowIfNull(field);
         return field.IsDefined(typeof(T), inherit);
     }
 
@@ -968,7 +968,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">field 为 null 时抛出。</exception>
     public static bool IsStaticField(FieldInfo field)
     {
-        ArgumentNullException.ThrowIfNull(field);
+        ThrowHelper.ThrowIfNull(field);
         return field.IsStatic;
     }
 
@@ -980,7 +980,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">field 为 null 时抛出。</exception>
     public static bool IsPublicField(FieldInfo field)
     {
-        ArgumentNullException.ThrowIfNull(field);
+        ThrowHelper.ThrowIfNull(field);
         return field.IsPublic;
     }
 
@@ -1017,7 +1017,7 @@ public static class ReflectHelper
     /// </example>
     public static object? CreateInstance(Type type, params object?[] args)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return Activator.CreateInstance(type, args);
     }
 
@@ -1078,7 +1078,7 @@ public static class ReflectHelper
     /// </example>
     public static object? GetDefaultValue(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         if (type.IsValueType)
         {
@@ -1106,7 +1106,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsInstantiable(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return !type.IsAbstract && !type.IsInterface && !type.ContainsGenericParameters;
     }
 
@@ -1118,7 +1118,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static ConstructorInfo[] GetConstructors(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -1130,7 +1130,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static ConstructorInfo[] GetAllConstructors(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
@@ -1142,7 +1142,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool HasParameterlessConstructor(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetConstructor(Type.EmptyTypes) != null;
     }
 
@@ -1167,7 +1167,7 @@ public static class ReflectHelper
     /// </example>
     public static string GetPropertyName<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
     {
-        ArgumentNullException.ThrowIfNull(propertyExpression);
+        ThrowHelper.ThrowIfNull(propertyExpression);
 
         if (propertyExpression.Body is MemberExpression memberExpression)
         {
@@ -1205,7 +1205,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">propertyExpression 为 null 时抛出。</exception>
     public static Func<T, TProperty> CreatePropertyGetter<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
     {
-        ArgumentNullException.ThrowIfNull(propertyExpression);
+        ThrowHelper.ThrowIfNull(propertyExpression);
         return propertyExpression.Compile();
     }
 
@@ -1220,7 +1220,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentException">表达式不是有效的属性表达式时抛出。</exception>
     public static Action<T, TProperty> CreatePropertySetter<T, TProperty>(Expression<Func<T, TProperty>> propertyExpression)
     {
-        ArgumentNullException.ThrowIfNull(propertyExpression);
+        ThrowHelper.ThrowIfNull(propertyExpression);
 
         var memberExpression = propertyExpression.Body as MemberExpression;
         if (memberExpression == null && propertyExpression.Body is UnaryExpression unaryExpression)
@@ -1252,7 +1252,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">method 为 null 时抛出。</exception>
     public static Func<object?[], object?> CreateMethodInvoker(MethodInfo method)
     {
-        ArgumentNullException.ThrowIfNull(method);
+        ThrowHelper.ThrowIfNull(method);
 
         return parameters =>
         {
@@ -1290,7 +1290,7 @@ public static class ReflectHelper
     /// </example>
     public static bool IsNumericType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
@@ -1315,7 +1315,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsIntegerType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
@@ -1337,7 +1337,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsFloatingPointType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
@@ -1354,7 +1354,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsBooleanType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
         return underlyingType == typeof(bool);
@@ -1368,7 +1368,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsStringType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type == typeof(string);
     }
 
@@ -1380,13 +1380,18 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsDateTimeType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
+#if NET8_0
         return underlyingType == typeof(DateTime) ||
                underlyingType == typeof(DateTimeOffset) ||
                underlyingType == typeof(DateOnly) ||
                underlyingType == typeof(TimeOnly);
+#else
+        return underlyingType == typeof(DateTime) ||
+               underlyingType == typeof(DateTimeOffset);
+#endif
     }
 
     /// <summary>
@@ -1397,7 +1402,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsCollectionType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         return type.IsArray ||
                (type.IsGenericType && typeof(System.Collections.IEnumerable).IsAssignableFrom(type)) ||
@@ -1412,7 +1417,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsDictionaryType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         if (!type.IsGenericType)
             return false;
@@ -1432,7 +1437,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsNullableType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 
@@ -1444,7 +1449,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static Type GetNullableUnderlyingType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return Nullable.GetUnderlyingType(type) ?? type;
     }
 
@@ -1456,7 +1461,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsEnumType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
         return underlyingType.IsEnum;
@@ -1471,7 +1476,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentException">类型不是枚举类型时抛出。</exception>
     public static Array GetEnumValues(Type enumType)
     {
-        ArgumentNullException.ThrowIfNull(enumType);
+        ThrowHelper.ThrowIfNull(enumType);
 
         var underlyingType = Nullable.GetUnderlyingType(enumType) ?? enumType;
         if (!underlyingType.IsEnum)
@@ -1489,7 +1494,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentException">类型不是枚举类型时抛出。</exception>
     public static string[] GetEnumNames(Type enumType)
     {
-        ArgumentNullException.ThrowIfNull(enumType);
+        ThrowHelper.ThrowIfNull(enumType);
 
         var underlyingType = Nullable.GetUnderlyingType(enumType) ?? enumType;
         if (!underlyingType.IsEnum)
@@ -1536,8 +1541,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">fromType 或 toType 为 null 时抛出。</exception>
     public static bool IsCompatibleType(Type fromType, Type toType)
     {
-        ArgumentNullException.ThrowIfNull(fromType);
-        ArgumentNullException.ThrowIfNull(toType);
+        ThrowHelper.ThrowIfNull(fromType);
+        ThrowHelper.ThrowIfNull(toType);
 
         if (fromType == toType) return true;
 
@@ -1563,8 +1568,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 或 assembly 为 null 时抛出。</exception>
     public static MethodInfo[] GetExtensionMethods(Type type, Assembly assembly)
     {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentNullException.ThrowIfNull(assembly);
+        ThrowHelper.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(assembly);
 
         var query = from typeInfo in assembly.DefinedTypes
                     where typeInfo.IsSealed && !typeInfo.IsGenericType && !typeInfo.IsNested
@@ -1585,7 +1590,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">assembly 为 null 时抛出。</exception>
     public static Type[] GetTypes(Assembly assembly)
     {
-        ArgumentNullException.ThrowIfNull(assembly);
+        ThrowHelper.ThrowIfNull(assembly);
         return assembly.GetTypes();
     }
 
@@ -1598,8 +1603,8 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">assembly 为 null 时抛出。</exception>
     public static Type[] GetTypes(Assembly assembly, Func<Type, bool> predicate)
     {
-        ArgumentNullException.ThrowIfNull(assembly);
-        ArgumentNullException.ThrowIfNull(predicate);
+        ThrowHelper.ThrowIfNull(assembly);
+        ThrowHelper.ThrowIfNull(predicate);
 
         return assembly.GetTypes().Where(predicate).ToArray();
     }
@@ -1622,7 +1627,7 @@ public static class ReflectHelper
     /// <exception cref="FileNotFoundException">程序集未找到时抛出。</exception>
     public static Assembly LoadAssembly(string assemblyName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(assemblyName);
+        ThrowHelper.ThrowIfNullOrEmpty(assemblyName);
         return Assembly.Load(assemblyName);
     }
 
@@ -1635,7 +1640,7 @@ public static class ReflectHelper
     /// <exception cref="FileNotFoundException">文件未找到时抛出。</exception>
     public static Assembly LoadAssemblyFromFile(string assemblyFile)
     {
-        ArgumentException.ThrowIfNullOrEmpty(assemblyFile);
+        ThrowHelper.ThrowIfNullOrEmpty(assemblyFile);
         return Assembly.LoadFrom(assemblyFile);
     }
 
@@ -1647,7 +1652,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static bool IsAnonymousType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         return type.Name.StartsWith("<>f__AnonymousType") ||
                type.Name.StartsWith("VB$AnonymousType");
@@ -1661,7 +1666,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static Type[] GetNestedTypes(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic);
     }
 
@@ -1673,7 +1678,7 @@ public static class ReflectHelper
     /// <exception cref="ArgumentNullException">type 为 null 时抛出。</exception>
     public static EventInfo[] GetEvents(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
         return type.GetEvents(BindingFlags.Public | BindingFlags.Instance);
     }
 
@@ -1693,7 +1698,7 @@ public static class ReflectHelper
     /// </example>
     public static TypeDetailedInfo GetDetailedTypeInfo(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        ThrowHelper.ThrowIfNull(type);
 
         return new TypeDetailedInfo
         {

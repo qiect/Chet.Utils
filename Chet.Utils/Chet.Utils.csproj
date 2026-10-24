@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
+    <ImplicitUsings Condition="'$(TargetFramework)' == 'net8.0'">enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
     <Title>a c# utility library. C#工具包。</Title>
     <Authors>Chet</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -15,8 +16,15 @@
 		<Description>a c# utility library. C#工具包。提供丰富的扩展方法和帮助类，扩展类包含Bool、String、Int、Float、Double、Decimal、Enum、DataTable、DateTime、File、Stream、Enumerable等，帮助类包含HttpClientHelper、FileHelper、WebSocketHelper、RegexHelper、TaskHelper、UnitHelper、StopwatchHelper、ReflectHelper、ApplicationHelper、DataTableHelper等。</Description>
 		<Version>1.6.0</Version>
 		<Product />
-		
 	</PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <DefineConstants>NETSTANDARD2_1</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <DefineConstants>NET8_0</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\.docs\README.md">
@@ -26,7 +34,17 @@
     <None Include="..\.docs\logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Threading.Channels" Version="8.0.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>

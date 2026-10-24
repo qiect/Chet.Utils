@@ -701,7 +701,7 @@ public static class EnumerableExtensions
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForEachAsync(source, options, async (item, ct) =>
+        await ParallelHelper.ForEachAsync(source, options, async (item, ct) =>
         {
             await action(item);
         });

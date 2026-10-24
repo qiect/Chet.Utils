@@ -187,7 +187,7 @@ public static partial class RegexHelper
     /// </example>
     public static bool IsMatch(string? input, string pattern, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
         if (string.IsNullOrEmpty(input)) return false;
         return Regex.IsMatch(input, pattern, options);
     }
@@ -649,7 +649,7 @@ public static partial class RegexHelper
     /// </example>
     public static Match? Match(string? input, string pattern, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
         if (string.IsNullOrEmpty(input)) return null;
 
         var match = Regex.Match(input, pattern, options);
@@ -675,7 +675,7 @@ public static partial class RegexHelper
     /// </example>
     public static MatchCollection Matches(string? input, string pattern, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
         if (string.IsNullOrEmpty(input)) return Regex.Matches(string.Empty, pattern, options);
 
         return Regex.Matches(input, pattern, options);
@@ -727,8 +727,8 @@ public static partial class RegexHelper
     /// </example>
     public static string? GetGroupValue(string? input, string pattern, string groupName, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
-        ArgumentException.ThrowIfNullOrEmpty(groupName);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNullOrEmpty(groupName);
 
         var match = Match(input, pattern, options);
         if (match == null) return null;
@@ -812,8 +812,8 @@ public static partial class RegexHelper
     /// </example>
     public static string Replace(string? input, string pattern, string replacement, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
-        ArgumentNullException.ThrowIfNull(replacement);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNull(replacement);
 
         if (string.IsNullOrEmpty(input)) return input ?? string.Empty;
 
@@ -840,8 +840,8 @@ public static partial class RegexHelper
     /// </example>
     public static string Replace(string? input, string pattern, MatchEvaluator evaluator, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
-        ArgumentNullException.ThrowIfNull(evaluator);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNull(evaluator);
 
         if (string.IsNullOrEmpty(input)) return input ?? string.Empty;
 
@@ -1330,7 +1330,7 @@ public static partial class RegexHelper
     /// </example>
     public static string[] Split(string? input, string pattern, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
 
         if (string.IsNullOrEmpty(input)) return Array.Empty<string>();
 
@@ -1354,7 +1354,7 @@ public static partial class RegexHelper
     /// </example>
     public static RegexTestResult Test(string? input, string pattern, RegexOptions options = RegexOptions.None)
     {
-        ArgumentException.ThrowIfNullOrEmpty(pattern);
+        ThrowHelper.ThrowIfNullOrEmpty(pattern);
 
         var result = new RegexTestResult
         {

@@ -174,7 +174,11 @@ public static partial class ApplicationHelper
     /// </example>
     public static int GetProcessId()
     {
+#if NETSTANDARD2_1
+        return System.Diagnostics.Process.GetCurrentProcess().Id;
+#else
         return Environment.ProcessId;
+#endif
     }
 
     /// <summary>
@@ -514,7 +518,11 @@ public static partial class ApplicationHelper
     /// </example>
     public static long GetTickCount()
     {
+#if NETSTANDARD2_1
+        return (long)(uint)Environment.TickCount;
+#else
         return Environment.TickCount64;
+#endif
     }
 
     #endregion
@@ -572,8 +580,15 @@ public static partial class ApplicationHelper
     /// </example>
     public static long GetAvailableMemory()
     {
+#if NETSTANDARD2_1
+        // Best-effort polyfill: GC.GetGCMemoryInfo() (.NET 5+) exposes total available
+        // memory bytes; on netstandard2.1 the closest available API is GetTotalMemory,
+        // which reports the current managed heap size instead.
+        return GC.GetTotalMemory(false);
+#else
         var gcInfo = GC.GetGCMemoryInfo();
         return gcInfo.TotalAvailableMemoryBytes;
+#endif
     }
 
     /// <summary>

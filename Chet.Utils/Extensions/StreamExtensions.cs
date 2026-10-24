@@ -207,7 +207,7 @@ public static class StreamExtensions
     public static string ReadLine(this Stream stream, Encoding encoding = null)
     {
         encoding ??= Encoding.UTF8;
-        using var reader = new StreamReader(stream, encoding, leaveOpen: true);
+        using var reader = new StreamReader(stream, encoding, true, 1024, true);
         return reader.ReadLine();
     }
 
@@ -221,7 +221,7 @@ public static class StreamExtensions
     {
         encoding ??= Encoding.UTF8;
         var lines = new List<string>();
-        using var reader = new StreamReader(stream, encoding, leaveOpen: true);
+        using var reader = new StreamReader(stream, encoding, true, 1024, true);
         while (!reader.EndOfStream)
         {
             var line = reader.ReadLine();
@@ -331,7 +331,7 @@ public static class StreamExtensions
     public static async Task<string> ReadLineAsync(this Stream stream, Encoding encoding = null, CancellationToken cancellationToken = default)
     {
         encoding ??= Encoding.UTF8;
-        using var reader = new StreamReader(stream, encoding, leaveOpen: true);
+        using var reader = new StreamReader(stream, encoding, true, 1024, true);
         return await reader.ReadLineAsync();
     }
 
@@ -346,7 +346,7 @@ public static class StreamExtensions
     {
         encoding ??= Encoding.UTF8;
         var lines = new List<string>();
-        using var reader = new StreamReader(stream, encoding, leaveOpen: true);
+        using var reader = new StreamReader(stream, encoding, true, 1024, true);
         while (!reader.EndOfStream)
         {
             var line = await reader.ReadLineAsync();

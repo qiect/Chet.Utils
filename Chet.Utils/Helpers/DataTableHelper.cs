@@ -50,7 +50,7 @@ public static partial class DataTableHelper
     /// </example>
     public static List<dynamic> ToDynamicList(DataTable dataTable)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var result = new List<dynamic>();
 
@@ -195,8 +195,8 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable MapColumns(DataTable dataTable, Dictionary<string, string> columnMappings)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(columnMappings);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(columnMappings);
 
         var result = dataTable.Copy();
 
@@ -227,7 +227,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable ToDataTableFromObjects<T>(IEnumerable<T> objects, string tableName = null)
     {
-        ArgumentNullException.ThrowIfNull(objects);
+        ThrowHelper.ThrowIfNull(objects);
 
         var dataTable = new DataTable(tableName ?? typeof(T).Name);
         var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
@@ -281,8 +281,8 @@ public static partial class DataTableHelper
     /// </example>
     public static List<T> MapToEntityList<T>(DataTable dataTable, Dictionary<string, string> fieldMapping) where T : new()
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(fieldMapping);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(fieldMapping);
 
         if (dataTable.Rows.Count == 0)
             return new List<T>();
@@ -366,7 +366,7 @@ public static partial class DataTableHelper
         string dataField,
         Func<IEnumerable<object>, object> aggregateFunction = null)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(rowField))
             throw new ArgumentException($"列 '{rowField}' 不存在", nameof(rowField));
@@ -451,10 +451,10 @@ public static partial class DataTableHelper
         string[] columnFields,
         Dictionary<string, Func<IEnumerable<object>, object>> dataFields)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(rowFields);
-        ArgumentNullException.ThrowIfNull(columnFields);
-        ArgumentNullException.ThrowIfNull(dataFields);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(rowFields);
+        ThrowHelper.ThrowIfNull(columnFields);
+        ThrowHelper.ThrowIfNull(dataFields);
 
         foreach (var field in rowFields.Concat(columnFields).Concat(dataFields.Keys))
         {
@@ -570,9 +570,9 @@ public static partial class DataTableHelper
         string[] groupByColumns,
         Dictionary<string, Func<IEnumerable<object>, object>> aggregateColumns)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(groupByColumns);
-        ArgumentNullException.ThrowIfNull(aggregateColumns);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(groupByColumns);
+        ThrowHelper.ThrowIfNull(aggregateColumns);
 
         var result = new DataTable();
 
@@ -633,7 +633,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataStatistics CalculateStatistics(DataTable dataTable, string columnName)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(columnName))
             throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
@@ -689,7 +689,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataDistribution AnalyzeDistribution(DataTable dataTable, string columnName, int binCount = 10)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(columnName))
             throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
@@ -761,7 +761,7 @@ public static partial class DataTableHelper
     /// </example>
     public static double CalculateCorrelation(DataTable dataTable, string column1, string column2)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(column1))
             throw new ArgumentException($"列 '{column1}' 不存在", nameof(column1));
@@ -816,7 +816,7 @@ public static partial class DataTableHelper
         bool includeIndex = false,
         string tableId = null)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var html = new StringBuilder();
         var idAttr = string.IsNullOrEmpty(tableId) ? "" : $" id=\"{tableId}\"";
@@ -867,7 +867,7 @@ public static partial class DataTableHelper
     /// </example>
     public static string ExportToExcelXml(DataTable dataTable, string sheetName = "Sheet1")
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var xml = new StringBuilder();
         xml.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -917,7 +917,7 @@ public static partial class DataTableHelper
     /// </example>
     public static string ExportToMarkdown(DataTable dataTable, bool includeIndex = false)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var md = new StringBuilder();
 
@@ -977,8 +977,8 @@ public static partial class DataTableHelper
         DataTable dataTable,
         Dictionary<string, Func<object, bool>> validationRules)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(validationRules);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(validationRules);
 
         var results = new List<DataValidationResult>();
 
@@ -1045,8 +1045,8 @@ public static partial class DataTableHelper
         DataTable dataTable,
         Dictionary<string, Func<object, object>> cleaningRules)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(cleaningRules);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(cleaningRules);
 
         var result = dataTable.Copy();
 
@@ -1096,7 +1096,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable FillMissingValues(DataTable dataTable)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var result = dataTable.Copy();
 
@@ -1173,8 +1173,8 @@ public static partial class DataTableHelper
         DataTable dataTable,
         Dictionary<string, Func<DataTable, int, object>> fillingRules)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
-        ArgumentNullException.ThrowIfNull(fillingRules);
+        ThrowHelper.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(fillingRules);
 
         var result = dataTable.Copy();
 
@@ -1219,7 +1219,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable FillMissingValues(DataTable dataTable, string columnName, object fillValue)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(columnName))
             throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
@@ -1256,7 +1256,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable FillMissingValues(DataTable dataTable, string columnName, FillMethod fillMethod)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(columnName))
             throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
@@ -1311,7 +1311,7 @@ public static partial class DataTableHelper
         OutlierDetectionMethod method = OutlierDetectionMethod.IQR,
         double threshold = 1.5)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(columnName))
             throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));
@@ -1382,7 +1382,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable RemoveDuplicates(DataTable dataTable, string[] keyColumns = null)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var result = dataTable.Clone();
 
@@ -1447,10 +1447,10 @@ public static partial class DataTableHelper
         string[] leftKeys,
         string[] rightKeys)
     {
-        ArgumentNullException.ThrowIfNull(leftTable);
-        ArgumentNullException.ThrowIfNull(rightTable);
-        ArgumentNullException.ThrowIfNull(leftKeys);
-        ArgumentNullException.ThrowIfNull(rightKeys);
+        ThrowHelper.ThrowIfNull(leftTable);
+        ThrowHelper.ThrowIfNull(rightTable);
+        ThrowHelper.ThrowIfNull(leftKeys);
+        ThrowHelper.ThrowIfNull(rightKeys);
 
         var result = CreateJoinResultTable(leftTable, rightTable);
 
@@ -1524,10 +1524,10 @@ public static partial class DataTableHelper
         string[] leftKeys,
         string[] rightKeys)
     {
-        ArgumentNullException.ThrowIfNull(leftTable);
-        ArgumentNullException.ThrowIfNull(rightTable);
-        ArgumentNullException.ThrowIfNull(leftKeys);
-        ArgumentNullException.ThrowIfNull(rightKeys);
+        ThrowHelper.ThrowIfNull(leftTable);
+        ThrowHelper.ThrowIfNull(rightTable);
+        ThrowHelper.ThrowIfNull(leftKeys);
+        ThrowHelper.ThrowIfNull(rightKeys);
 
         var result = CreateJoinResultTable(leftTable, rightTable);
 
@@ -1600,10 +1600,10 @@ public static partial class DataTableHelper
         string[] leftKeys,
         string[] rightKeys)
     {
-        ArgumentNullException.ThrowIfNull(leftTable);
-        ArgumentNullException.ThrowIfNull(rightTable);
-        ArgumentNullException.ThrowIfNull(leftKeys);
-        ArgumentNullException.ThrowIfNull(rightKeys);
+        ThrowHelper.ThrowIfNull(leftTable);
+        ThrowHelper.ThrowIfNull(rightTable);
+        ThrowHelper.ThrowIfNull(leftKeys);
+        ThrowHelper.ThrowIfNull(rightKeys);
 
         var result = CreateJoinResultTable(leftTable, rightTable);
 
@@ -1668,8 +1668,8 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable CrossJoin(DataTable leftTable, DataTable rightTable)
     {
-        ArgumentNullException.ThrowIfNull(leftTable);
-        ArgumentNullException.ThrowIfNull(rightTable);
+        ThrowHelper.ThrowIfNull(leftTable);
+        ThrowHelper.ThrowIfNull(rightTable);
 
         var result = CreateJoinResultTable(leftTable, rightTable);
 
@@ -1698,7 +1698,7 @@ public static partial class DataTableHelper
     /// </example>
     public static DataTable UnionAll(params DataTable[] tables)
     {
-        ArgumentNullException.ThrowIfNull(tables);
+        ThrowHelper.ThrowIfNull(tables);
 
         if (tables.Length == 0)
             return new DataTable();
@@ -1740,8 +1740,8 @@ public static partial class DataTableHelper
         DataTable rightTable,
         string joinColumn = null)
     {
-        ArgumentNullException.ThrowIfNull(leftTable);
-        ArgumentNullException.ThrowIfNull(rightTable);
+        ThrowHelper.ThrowIfNull(leftTable);
+        ThrowHelper.ThrowIfNull(rightTable);
 
         var result = new DataTable();
 
@@ -1832,7 +1832,7 @@ public static partial class DataTableHelper
         string orderByClause = null,
         string[] selectColumns = null)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         var result = dataTable.Clone();
 
@@ -1892,7 +1892,7 @@ public static partial class DataTableHelper
         string[] searchColumns = null,
         bool caseSensitive = false)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (string.IsNullOrEmpty(searchText))
             return dataTable.Clone();
@@ -1942,7 +1942,7 @@ public static partial class DataTableHelper
         string pattern,
         RegexOptions options = RegexOptions.None)
     {
-        ArgumentNullException.ThrowIfNull(dataTable);
+        ThrowHelper.ThrowIfNull(dataTable);
 
         if (!dataTable.Columns.Contains(columnName))
             throw new ArgumentException($"列 '{columnName}' 不存在", nameof(columnName));

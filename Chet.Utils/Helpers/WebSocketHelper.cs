@@ -192,7 +192,7 @@ public class WebSocketHelper : IDisposable
     /// <exception cref="InvalidOperationException">已经在连接中时抛出。</exception>
     public async Task ConnectAsync(Uri uri, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(uri);
+        ThrowHelper.ThrowIfNull(uri);
 
         if (_webSocket != null && _webSocket.State == WebSocketState.Open)
         {
@@ -356,7 +356,7 @@ public class WebSocketHelper : IDisposable
     /// <exception cref="InvalidOperationException">未连接时抛出。</exception>
     public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(message);
+        ThrowHelper.ThrowIfNull(message);
 
         if (!IsConnected)
         {
@@ -396,7 +396,7 @@ public class WebSocketHelper : IDisposable
     /// <exception cref="InvalidOperationException">未连接时抛出。</exception>
     public async Task SendBinaryAsync(byte[] data, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(data);
+        ThrowHelper.ThrowIfNull(data);
 
         if (!IsConnected)
         {
@@ -429,7 +429,7 @@ public class WebSocketHelper : IDisposable
     /// <exception cref="ArgumentNullException">messages为null时抛出。</exception>
     public async Task SendMessagesAsync(IEnumerable<string> messages, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(messages);
+        ThrowHelper.ThrowIfNull(messages);
 
         foreach (var message in messages)
         {
@@ -963,8 +963,8 @@ public class WebSocketServerHelper : IDisposable
     /// <exception cref="InvalidOperationException">客户端连接状态异常时抛出。</exception>
     public async Task SendMessageToClientAsync(string clientId, string message, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
-        ArgumentException.ThrowIfNullOrEmpty(message);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNullOrEmpty(message);
 
         if (!_connectedClients.TryGetValue(clientId, out var webSocket))
         {
@@ -1004,8 +1004,8 @@ public class WebSocketServerHelper : IDisposable
     /// <returns>发送任务。</returns>
     public async Task SendBinaryToClientAsync(string clientId, byte[] data, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
-        ArgumentNullException.ThrowIfNull(data);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNull(data);
 
         if (!_connectedClients.TryGetValue(clientId, out var webSocket))
         {
@@ -1078,7 +1078,7 @@ public class WebSocketServerHelper : IDisposable
     /// <returns>广播任务。</returns>
     public async Task BroadcastToGroupAsync(string groupName, string message, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(groupName);
+        ThrowHelper.ThrowIfNullOrEmpty(groupName);
 
         if (!_groups.TryGetValue(groupName, out var clientIds))
         {
@@ -1114,7 +1114,7 @@ public class WebSocketServerHelper : IDisposable
         WebSocketCloseStatus closeStatus = WebSocketCloseStatus.NormalClosure,
         string statusDescription = "Normal closure")
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
 
         if (!_connectedClients.TryRemove(clientId, out var webSocket))
         {
@@ -1154,7 +1154,7 @@ public class WebSocketServerHelper : IDisposable
     /// <returns>客户端信息，如果客户端不存在则返回null。</returns>
     public ClientInfo GetClientInfo(string clientId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
         _clientInfos.TryGetValue(clientId, out var clientInfo);
         return clientInfo;
     }
@@ -1166,7 +1166,7 @@ public class WebSocketServerHelper : IDisposable
     /// <param name="customInfo">自定义信息。</param>
     public void SetClientCustomInfo(string clientId, object customInfo)
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
 
         if (_clientInfos.TryGetValue(clientId, out var clientInfo))
         {
@@ -1181,8 +1181,8 @@ public class WebSocketServerHelper : IDisposable
     /// <param name="groupName">组名称。</param>
     public void AddClientToGroup(string clientId, string groupName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
-        ArgumentException.ThrowIfNullOrEmpty(groupName);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNullOrEmpty(groupName);
 
         if (!_connectedClients.ContainsKey(clientId))
         {
@@ -1203,8 +1203,8 @@ public class WebSocketServerHelper : IDisposable
     /// <param name="groupName">组名称。</param>
     public void RemoveClientFromGroup(string clientId, string groupName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(clientId);
-        ArgumentException.ThrowIfNullOrEmpty(groupName);
+        ThrowHelper.ThrowIfNullOrEmpty(clientId);
+        ThrowHelper.ThrowIfNullOrEmpty(groupName);
 
         if (_groups.TryGetValue(groupName, out var group))
         {
@@ -1222,7 +1222,7 @@ public class WebSocketServerHelper : IDisposable
     /// <returns>客户端ID列表。</returns>
     public IEnumerable<string> GetClientsInGroup(string groupName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(groupName);
+        ThrowHelper.ThrowIfNullOrEmpty(groupName);
 
         if (_groups.TryGetValue(groupName, out var group))
         {

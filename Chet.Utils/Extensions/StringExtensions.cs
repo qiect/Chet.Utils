@@ -895,7 +895,7 @@ public static class StringExtensions
         encoding ??= Encoding.UTF8;
         using var md5 = MD5.Create();
         var bytes = md5.ComputeHash(encoding.GetBytes(value));
-        return Convert.ToHexString(bytes).ToLowerInvariant();
+        return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
@@ -910,7 +910,7 @@ public static class StringExtensions
         encoding ??= Encoding.UTF8;
         using var sha256 = SHA256.Create();
         var bytes = sha256.ComputeHash(encoding.GetBytes(value));
-        return Convert.ToHexString(bytes).ToLowerInvariant();
+        return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
@@ -925,7 +925,7 @@ public static class StringExtensions
         encoding ??= Encoding.UTF8;
         using var sha1 = SHA1.Create();
         var bytes = sha1.ComputeHash(encoding.GetBytes(value));
-        return Convert.ToHexString(bytes).ToLowerInvariant();
+        return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
@@ -941,7 +941,7 @@ public static class StringExtensions
         encoding ??= Encoding.UTF8;
         using var hmac = new HMACSHA256(encoding.GetBytes(key));
         var bytes = hmac.ComputeHash(encoding.GetBytes(value));
-        return Convert.ToHexString(bytes).ToLowerInvariant();
+        return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
     }
 
     #endregion

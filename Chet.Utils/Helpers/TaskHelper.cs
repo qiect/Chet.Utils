@@ -46,7 +46,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task Run(Action action, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
         return Task.Run(action, cancellationToken);
     }
 
@@ -65,7 +65,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<T> Run<T>(Func<T> function, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(function);
+        ThrowHelper.ThrowIfNull(function);
         return Task.Run(function, cancellationToken);
     }
 
@@ -83,7 +83,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task RunAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(asyncAction);
+        ThrowHelper.ThrowIfNull(asyncAction);
         return Task.Run(asyncAction, cancellationToken);
     }
 
@@ -102,7 +102,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<T> RunAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(asyncFunction);
+        ThrowHelper.ThrowIfNull(asyncFunction);
         return Task.Run(asyncFunction, cancellationToken);
     }
 
@@ -183,7 +183,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task FromException(Exception exception)
     {
-        ArgumentNullException.ThrowIfNull(exception);
+        ThrowHelper.ThrowIfNull(exception);
         return Task.FromException(exception);
     }
 
@@ -201,7 +201,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<T> FromException<T>(Exception exception)
     {
-        ArgumentNullException.ThrowIfNull(exception);
+        ThrowHelper.ThrowIfNull(exception);
         return Task.FromException<T>(exception);
     }
 
@@ -251,7 +251,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task WhenAll(params Task[] tasks)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
         return Task.WhenAll(tasks);
     }
 
@@ -269,7 +269,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<T[]> WhenAll<T>(params Task<T>[] tasks)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
         return Task.WhenAll(tasks);
     }
 
@@ -288,7 +288,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<T[]> WhenAll<T>(IEnumerable<Task<T>> tasks)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
         return Task.WhenAll(tasks);
     }
 
@@ -305,7 +305,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<Task> WhenAny(params Task[] tasks)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
         return Task.WhenAny(tasks);
     }
 
@@ -323,7 +323,7 @@ public static partial class TaskHelper
     /// </example>
     public static Task<Task<T>> WhenAny<T>(params Task<T>[] tasks)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
         return Task.WhenAny(tasks);
     }
 
@@ -345,7 +345,7 @@ public static partial class TaskHelper
     /// </example>
     public static bool Wait(Task task, TimeSpan? timeout = null)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         if (timeout.HasValue)
         {
@@ -373,7 +373,7 @@ public static partial class TaskHelper
     /// </example>
     public static bool WaitAll(Task[] tasks, TimeSpan? timeout = null)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
 
         if (timeout.HasValue)
         {
@@ -401,7 +401,7 @@ public static partial class TaskHelper
     /// </example>
     public static int WaitAny(Task[] tasks, TimeSpan? timeout = null)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
 
         if (timeout.HasValue)
         {
@@ -441,7 +441,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task WithTimeout(Task task, TimeSpan timeout)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         using var cts = new CancellationTokenSource(timeout);
         var completedTask = await Task.WhenAny(task, Task.Delay(timeout, cts.Token)).ConfigureAwait(false);
@@ -477,7 +477,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<T> WithTimeout<T>(Task<T> task, TimeSpan timeout)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         using var cts = new CancellationTokenSource(timeout);
         var completedTask = await Task.WhenAny(task, Task.Delay(timeout, cts.Token)).ConfigureAwait(false);
@@ -517,7 +517,7 @@ public static partial class TaskHelper
         TimeSpan timeout,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         linkedCts.CancelAfter(timeout);
@@ -555,7 +555,7 @@ public static partial class TaskHelper
         TimeSpan timeout,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         linkedCts.CancelAfter(timeout);
@@ -591,7 +591,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<bool> TryWithTimeout(Task task, TimeSpan timeout)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         using var cts = new CancellationTokenSource(timeout);
         var completedTask = await Task.WhenAny(task, Task.Delay(timeout, cts.Token)).ConfigureAwait(false);
@@ -624,7 +624,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<(bool Success, T? Result)> TryWithTimeout<T>(Task<T> task, TimeSpan timeout)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         using var cts = new CancellationTokenSource(timeout);
         var completedTask = await Task.WhenAny(task, Task.Delay(timeout, cts.Token)).ConfigureAwait(false);
@@ -663,8 +663,8 @@ public static partial class TaskHelper
         TimeSpan delay,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         List<Exception>? exceptions = null;
 
@@ -719,8 +719,8 @@ public static partial class TaskHelper
         TimeSpan delay,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         List<Exception>? exceptions = null;
 
@@ -783,8 +783,8 @@ public static partial class TaskHelper
         TimeSpan? maxDelay = null,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         var max = maxDelay ?? TimeSpan.FromMinutes(5);
         List<Exception>? exceptions = null;
@@ -847,8 +847,8 @@ public static partial class TaskHelper
         TimeSpan? maxDelay = null,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         var max = maxDelay ?? TimeSpan.FromMinutes(5);
         List<Exception>? exceptions = null;
@@ -909,9 +909,9 @@ public static partial class TaskHelper
         TimeSpan delay,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentNullException.ThrowIfNull(shouldRetry);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(shouldRetry);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         for (int i = 0; i <= maxRetries; i++)
         {
@@ -959,9 +959,9 @@ public static partial class TaskHelper
         TimeSpan delay,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentNullException.ThrowIfNull(shouldRetry);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(shouldRetry);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         for (int i = 0; i <= maxRetries; i++)
         {
@@ -1008,8 +1008,8 @@ public static partial class TaskHelper
         TimeSpan delay,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         List<Exception>? exceptions = null;
 
@@ -1070,8 +1070,8 @@ public static partial class TaskHelper
         TimeSpan delay,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
-        ArgumentOutOfRangeException.ThrowIfNegative(maxRetries);
+        ThrowHelper.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNegative(maxRetries);
 
         List<Exception>? exceptions = null;
 
@@ -1137,8 +1137,8 @@ public static partial class TaskHelper
         int successThreshold = 3,
         TimeSpan? resetTimeout = null)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(failureThreshold, 0);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(successThreshold, 0);
+        ThrowHelper.ThrowIfLessThanOrEqual(failureThreshold, 0);
+        ThrowHelper.ThrowIfLessThanOrEqual(successThreshold, 0);
 
         return new CircuitBreaker(failureThreshold, successThreshold, resetTimeout ?? TimeSpan.FromSeconds(30));
     }
@@ -1163,8 +1163,8 @@ public static partial class TaskHelper
         Func<Task> taskFactory,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(circuitBreaker);
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(circuitBreaker);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         await circuitBreaker.ExecuteAsync(taskFactory, cancellationToken).ConfigureAwait(false);
     }
@@ -1190,8 +1190,8 @@ public static partial class TaskHelper
         Func<Task<T>> taskFactory,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(circuitBreaker);
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(circuitBreaker);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         return await circuitBreaker.ExecuteAsync(taskFactory, cancellationToken).ConfigureAwait(false);
     }
@@ -1224,7 +1224,7 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(actions);
+        ThrowHelper.ThrowIfNull(actions);
 
         var options = new ParallelOptions
         {
@@ -1232,7 +1232,7 @@ public static partial class TaskHelper
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForEachAsync(actions, options, async (action, ct) =>
+        await ParallelHelper.ForEachAsync(actions, options, async (action, ct) =>
         {
             await action().ConfigureAwait(false);
         }).ConfigureAwait(false);
@@ -1260,8 +1260,8 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(body);
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(body);
 
         var options = new ParallelOptions
         {
@@ -1269,7 +1269,7 @@ public static partial class TaskHelper
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForEachAsync(source, options, async (item, ct) =>
+        await ParallelHelper.ForEachAsync(source, options, async (item, ct) =>
         {
             await body(item).ConfigureAwait(false);
         }).ConfigureAwait(false);
@@ -1301,8 +1301,8 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(body);
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(body);
 
         var indexedSource = source.Select((item, index) => (item, index));
         var options = new ParallelOptions
@@ -1311,7 +1311,7 @@ public static partial class TaskHelper
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForEachAsync(indexedSource, options, async (x, ct) =>
+        await ParallelHelper.ForEachAsync(indexedSource, options, async (x, ct) =>
         {
             await body(x.item, x.index).ConfigureAwait(false);
         }).ConfigureAwait(false);
@@ -1340,8 +1340,8 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(selector);
 
         var items = source.ToList();
         var results = new TResult[items.Count];
@@ -1351,7 +1351,7 @@ public static partial class TaskHelper
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForAsync(0, items.Count, options, async (i, ct) =>
+        await ParallelHelper.ForAsync(0, items.Count, options, async (i, ct) =>
         {
             results[i] = await selector(items[i]).ConfigureAwait(false);
         }).ConfigureAwait(false);
@@ -1385,8 +1385,8 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(selector);
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(selector);
 
         var items = source.ToList();
         var results = new TResult[items.Count];
@@ -1396,7 +1396,7 @@ public static partial class TaskHelper
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForAsync(0, items.Count, options, async (i, ct) =>
+        await ParallelHelper.ForAsync(0, items.Count, options, async (i, ct) =>
         {
             results[i] = await selector(items[i], i).ConfigureAwait(false);
         }).ConfigureAwait(false);
@@ -1426,8 +1426,8 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(predicate);
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(predicate);
 
         var items = source.ToList();
         var result = default(T);
@@ -1440,7 +1440,7 @@ public static partial class TaskHelper
             CancellationToken = cancellationToken
         };
 
-        await Parallel.ForEachAsync(items, options, async (item, ct) =>
+        await ParallelHelper.ForEachAsync(items, options, async (item, ct) =>
         {
             if (found) return;
 
@@ -1482,7 +1482,7 @@ public static partial class TaskHelper
         TimeSpan interval,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
         await action().ConfigureAwait(false);
@@ -1506,7 +1506,7 @@ public static partial class TaskHelper
         TimeSpan interval,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
         await action().ConfigureAwait(false);
@@ -1538,9 +1538,9 @@ public static partial class TaskHelper
         Func<List<T>, Task> processor,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(processor);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(batchSize, 0);
+        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(processor);
+        ThrowHelper.ThrowIfLessThanOrEqual(batchSize, 0);
 
         var batch = new List<T>(batchSize);
 
@@ -1584,8 +1584,8 @@ public static partial class TaskHelper
         Func<Task<T>> taskFactory,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(semaphore);
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(semaphore);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -1617,8 +1617,8 @@ public static partial class TaskHelper
         Func<Task> taskFactory,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(semaphore);
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(semaphore);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
@@ -1656,7 +1656,7 @@ public static partial class TaskHelper
         IEnumerable<Func<Task>> tasks,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(tasks);
+        ThrowHelper.ThrowIfNull(tasks);
 
         foreach (var task in tasks)
         {
@@ -1691,7 +1691,7 @@ public static partial class TaskHelper
         IEnumerable<Func<T, Task<T>>> steps,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(steps);
+        ThrowHelper.ThrowIfNull(steps);
 
         var current = initialState;
 
@@ -1757,8 +1757,8 @@ public static partial class TaskHelper
         Func<TIntermediate, Task<TOutput>> secondTransform,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(firstTransform);
-        ArgumentNullException.ThrowIfNull(secondTransform);
+        ThrowHelper.ThrowIfNull(firstTransform);
+        ThrowHelper.ThrowIfNull(secondTransform);
 
         cancellationToken.ThrowIfCancellationRequested();
         var intermediate = await firstTransform(input).ConfigureAwait(false);
@@ -1797,13 +1797,14 @@ public static partial class TaskHelper
         int maxDegreeOfParallelism = 1,
         int capacity = 1000)
     {
-        ArgumentNullException.ThrowIfNull(processor);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxDegreeOfParallelism, 0);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(capacity, 0);
+        ThrowHelper.ThrowIfNull(processor);
+        ThrowHelper.ThrowIfLessThanOrEqual(maxDegreeOfParallelism, 0);
+        ThrowHelper.ThrowIfLessThanOrEqual(capacity, 0);
 
         return new TaskQueue<T>(processor, maxDegreeOfParallelism, capacity);
     }
 
+#if NET8_0
     /// <summary>
     /// 创建优先级任务队列。
     /// </summary>
@@ -1828,12 +1829,13 @@ public static partial class TaskHelper
         IComparer<T> comparer,
         int maxDegreeOfParallelism = 1)
     {
-        ArgumentNullException.ThrowIfNull(processor);
-        ArgumentNullException.ThrowIfNull(comparer);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxDegreeOfParallelism, 0);
+        ThrowHelper.ThrowIfNull(processor);
+        ThrowHelper.ThrowIfNull(comparer);
+        ThrowHelper.ThrowIfLessThanOrEqual(maxDegreeOfParallelism, 0);
 
         return new PriorityTaskQueue<T>(processor, comparer, maxDegreeOfParallelism);
     }
+#endif
 
     /// <summary>
     /// 创建生产者-消费者队列。
@@ -1860,8 +1862,8 @@ public static partial class TaskHelper
         Func<T, Task> consumer,
         int boundedCapacity = 1000)
     {
-        ArgumentNullException.ThrowIfNull(consumer);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(boundedCapacity, 0);
+        ThrowHelper.ThrowIfNull(consumer);
+        ThrowHelper.ThrowIfLessThanOrEqual(boundedCapacity, 0);
 
         return new ProducerConsumerQueue<T>(consumer, boundedCapacity);
     }
@@ -1894,8 +1896,8 @@ public static partial class TaskHelper
         Func<T, Task<TResult>> processor,
         int maxDegreeOfParallelism = 10)
     {
-        ArgumentNullException.ThrowIfNull(processor);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxDegreeOfParallelism, 0);
+        ThrowHelper.ThrowIfNull(processor);
+        ThrowHelper.ThrowIfLessThanOrEqual(maxDegreeOfParallelism, 0);
 
         return new TaskPool<T, TResult>(processor, maxDegreeOfParallelism);
     }
@@ -1930,8 +1932,8 @@ public static partial class TaskHelper
         Func<T> factory,
         int maxPoolSize = 10) where T : class
     {
-        ArgumentNullException.ThrowIfNull(factory);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxPoolSize, 0);
+        ThrowHelper.ThrowIfNull(factory);
+        ThrowHelper.ThrowIfLessThanOrEqual(maxPoolSize, 0);
 
         return new ResourcePool<T>(factory, maxPoolSize);
     }
@@ -1955,7 +1957,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<TaskPerformanceInfo> MonitorAsync(Task task, string taskName = "Unnamed")
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         var info = new TaskPerformanceInfo
         {
@@ -2002,7 +2004,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<TaskPerformanceInfo<T>> MonitorAsync<T>(Task<T> task, string taskName = "Unnamed")
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         var info = new TaskPerformanceInfo<T>
         {
@@ -2047,7 +2049,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<TimeSpan> MeasureAsync(Func<Task> action)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         await action().ConfigureAwait(false);
@@ -2071,7 +2073,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<(TimeSpan Duration, T Result)> MeasureAsync<T>(Func<Task<T>> function)
     {
-        ArgumentNullException.ThrowIfNull(function);
+        ThrowHelper.ThrowIfNull(function);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var result = await function().ConfigureAwait(false);
@@ -2101,7 +2103,7 @@ public static partial class TaskHelper
         TimeSpan? delay = null,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
 
         Exception? lastException = null;
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -2157,7 +2159,7 @@ public static partial class TaskHelper
         Action<CancellationToken> action,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(action);
+        ThrowHelper.ThrowIfNull(action);
         return Task.Run(() => action(cancellationToken), cancellationToken);
     }
 
@@ -2178,7 +2180,7 @@ public static partial class TaskHelper
         Func<CancellationToken, Task> asyncAction,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(asyncAction);
+        ThrowHelper.ThrowIfNull(asyncAction);
         await asyncAction(cancellationToken).ConfigureAwait(false);
     }
 
@@ -2199,7 +2201,7 @@ public static partial class TaskHelper
         Func<CancellationToken, T> function,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(function);
+        ThrowHelper.ThrowIfNull(function);
         return Task.Run(() => function(cancellationToken), cancellationToken);
     }
 
@@ -2220,7 +2222,7 @@ public static partial class TaskHelper
         Func<CancellationToken, Task<T>> asyncFunction,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(asyncFunction);
+        ThrowHelper.ThrowIfNull(asyncFunction);
         return await asyncFunction(cancellationToken).ConfigureAwait(false);
     }
 
@@ -2250,7 +2252,7 @@ public static partial class TaskHelper
         Action<T>? onSuccess = null,
         Action<Exception>? onFailure = null)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         try
         {
@@ -2279,7 +2281,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<T> GetResultOrDefaultAsync<T>(Task<T> task, T defaultValue = default!)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         try
         {
@@ -2306,8 +2308,8 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<T> GetResultOrDefaultAsync<T>(Task<T> task, Func<T> defaultFactory)
     {
-        ArgumentNullException.ThrowIfNull(task);
-        ArgumentNullException.ThrowIfNull(defaultFactory);
+        ThrowHelper.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(defaultFactory);
 
         try
         {
@@ -2340,7 +2342,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<Exception?> SafeExecuteAsync(Task task)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         try
         {
@@ -2372,7 +2374,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task<(T Result, Exception? Exception)> SafeExecuteAsync<T>(Task<T> task, T defaultValue = default!)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         try
         {
@@ -2397,7 +2399,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task IgnoreExceptionAsync(Task task)
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         try
         {
@@ -2422,7 +2424,7 @@ public static partial class TaskHelper
     /// </example>
     public static async Task IgnoreExceptionAsync<TException>(Task task) where TException : Exception
     {
-        ArgumentNullException.ThrowIfNull(task);
+        ThrowHelper.ThrowIfNull(task);
 
         try
         {
@@ -2450,7 +2452,7 @@ public static partial class TaskHelper
     /// </example>
     public static Barrier CreateBarrier(int participantCount)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(participantCount, 0);
+        ThrowHelper.ThrowIfLessThanOrEqual(participantCount, 0);
         return new Barrier(participantCount);
     }
 
@@ -2468,9 +2470,9 @@ public static partial class TaskHelper
     /// </example>
     public static SemaphoreSlim CreateSemaphore(int initialCount, int maxCount)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(initialCount);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxCount, 0);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(initialCount, maxCount);
+        ThrowHelper.ThrowIfNegative(initialCount);
+        ThrowHelper.ThrowIfLessThanOrEqual(maxCount, 0);
+        ThrowHelper.ThrowIfGreaterThan(initialCount, maxCount);
         return new SemaphoreSlim(initialCount, maxCount);
     }
 
@@ -2741,7 +2743,7 @@ public class CircuitBreaker
     /// <returns>任务实例。</returns>
     public async Task ExecuteAsync(Func<Task> taskFactory, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         if (!CanExecute())
         {
@@ -2769,7 +2771,7 @@ public class CircuitBreaker
     /// <returns>任务返回值。</returns>
     public async Task<T> ExecuteAsync<T>(Func<Task<T>> taskFactory, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(taskFactory);
+        ThrowHelper.ThrowIfNull(taskFactory);
 
         if (!CanExecute())
         {
@@ -2983,6 +2985,7 @@ public class TaskQueue<T> : IDisposable
     }
 }
 
+#if NET8_0
 /// <summary>
 /// 优先级任务队列。
 /// </summary>
@@ -3090,6 +3093,7 @@ public class PriorityTaskQueue<T> : IDisposable
         }
     }
 }
+#endif
 
 /// <summary>
 /// 生产者-消费者队列。
@@ -3257,7 +3261,7 @@ public class ResourcePool<T> : IDisposable where T : class
     /// <returns>资源实例。</returns>
     public ValueTask<T> RentAsync()
     {
-        return ValueTask.FromResult(Rent());
+        return new ValueTask<T>(Rent());
     }
 
     /// <summary>
@@ -3292,6 +3296,7 @@ public class ResourcePool<T> : IDisposable where T : class
     }
 }
 
+#if NET8_0
 /// <summary>
 /// 优先级通道。
 /// </summary>
@@ -3386,5 +3391,6 @@ internal class PriorityChannel<T>
         }
     }
 }
+#endif
 
 #endregion

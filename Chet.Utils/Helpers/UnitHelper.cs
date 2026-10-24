@@ -531,7 +531,7 @@ public static partial class UnitHelper
     /// </example>
     public static string ConvertBase(string value, NumberBase fromBase, NumberBase toBase)
     {
-        ArgumentException.ThrowIfNullOrEmpty(value);
+        ThrowHelper.ThrowIfNullOrEmpty(value);
 
         if (fromBase == toBase) return value.ToUpper();
 
@@ -571,7 +571,7 @@ public static partial class UnitHelper
     /// </example>
     public static long ConvertToDecimal(string value, NumberBase fromBase)
     {
-        ArgumentException.ThrowIfNullOrEmpty(value);
+        ThrowHelper.ThrowIfNullOrEmpty(value);
         return Convert.ToInt64(value, (int)fromBase);
     }
 

@@ -1014,7 +1014,9 @@ public static class FileHelper
         if (!Directory.Exists(directoryPath))
             yield break;
 
-        var patterns = searchPattern.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var patterns = searchPattern.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(p => p.Trim())
+            .Where(p => !string.IsNullOrEmpty(p));
 
         foreach (var pattern in patterns)
         {
