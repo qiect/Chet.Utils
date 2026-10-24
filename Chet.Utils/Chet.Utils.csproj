@@ -5,7 +5,7 @@
     <ImplicitUsings Condition="'$(TargetFramework)' == 'net8.0'">enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Title>a c# utility library. C#工具包。</Title>
+    <Title>Chet.Utils — A comprehensive C# utility library | C# 综合工具类库</Title>
     <Authors>Chet</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/qiect/Chet.Utils</RepositoryUrl>
     <PackageProjectUrl>https://qiect.github.io/Chet.Utils</PackageProjectUrl>
     <PackageIcon>logo.png</PackageIcon>
-		<Description>a c# utility library. C#工具包。提供丰富的扩展方法和帮助类，扩展类包含Bool、String、Int、Float、Double、Decimal、Enum、DataTable、DateTime、File、Stream、Enumerable等，帮助类包含HttpClientHelper、FileHelper、WebSocketHelper、RegexHelper、TaskHelper、UnitHelper、StopwatchHelper、ReflectHelper、ApplicationHelper、DataTableHelper等。</Description>
+		<Description>A comprehensive C# utility library that simplifies daily .NET development with rich extension methods and helper classes. Extensions: Bool, String, Int, Float, Double, Decimal, Enum, DataTable, DateTime, File, Stream, Enumerable, and more. Helpers: HttpClientHelper, FileHelper, WebSocketHelper, RegexHelper, TaskHelper, UnitHelper, StopwatchHelper, ReflectHelper, ApplicationHelper, DataTableHelper, and more. Targets .NET Standard 2.1 and .NET 8.0+. C# 综合工具类库，提供丰富的扩展方法与帮助类，简化日常 .NET 开发。</Description>
 		<Version>1.6.0</Version>
 		<Product />
 	</PropertyGroup>
@@ -27,11 +27,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\.docs\README.md">
+    <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\.docs\logo.png" Pack="true" PackagePath="\" />
+    <None Include="..\logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
@@ -48,12 +48,5 @@
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
-
-  <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
 
 </Project>

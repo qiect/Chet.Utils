@@ -18,33 +18,33 @@ Chet.Utils 是一个为 .NET 开发提供全面辅助工具的类库。该项目
 
 | 扩展类                      | 说明                                              | 详细文档                                       |
 | ------------------------ | ----------------------------------------------- | ------------------------------------------ |
-| **BoolExtensions**       | Bool 扩展方法，提供基础判断、逻辑运算、类型转换、条件执行等功能              | [查看详情](.docs/Extensions/BoolExtensions.md)       |
-| **DataTableExtensions**  | DataTable 扩展方法，提供数据转换、查询、操作、序列化等功能              | [查看详情](.docs/Extensions/DataTableExtensions.md)  |
-| **DateTimeExtensions**   | DateTime 扩展方法，提供日期判断、格式化、计算、转换等功能               | [查看详情](.docs/Extensions/DateTimeExtensions.md)   |
-| **DecimalExtensions**    | decimal 扩展方法，提供数值判断、数学运算、格式化、类型转换等功能            | [查看详情](.docs/Extensions/DecimalExtensions.md)    |
-| **DoubleExtensions**     | double 扩展方法，提供数值判断、数学运算、格式化、类型转换等功能             | [查看详情](.docs/Extensions/DoubleExtensions.md)     |
-| **EnumExtensions**       | Enum 扩展方法，提供枚举判断、转换、描述获取、标志操作等功能                | [查看详情](.docs/Extensions/EnumExtensions.md)       |
-| **EnumerableExtensions** | IEnumerable/ICollection 扩展方法，提供集合判断、转换、分页、统计等功能 | [查看详情](.docs/Extensions/EnumerableExtensions.md) |
-| **FileExtensions**       | 文件扩展方法，提供文件读写、判断、信息获取、哈希计算等功能                   | [查看详情](.docs/Extensions/FileExtensions.md)       |
-| **FloatExtensions**      | float 扩展方法，提供数值判断、数学运算、格式化、类型转换等功能              | [查看详情](.docs/Extensions/FloatExtensions.md)      |
-| **IntExtensions**        | int 扩展方法，提供数值判断、数学运算、格式化、中文转换等功能                | [查看详情](.docs/Extensions/IntExtensions.md)        |
-| **StreamExtensions**     | Stream 扩展方法，提供流读写、转换、压缩、哈希计算等功能                 | [查看详情](.docs/Extensions/StreamExtensions.md)     |
-| **StringExtensions**     | string 扩展方法，提供空值判断、正则验证、类型转换、编码解码等功能            | [查看详情](.docs/Extensions/StringExtensions.md)     |
+| **BoolExtensions**       | Bool 扩展方法，提供基础判断、逻辑运算、类型转换、条件执行等功能              | [查看详情](https://qiect.github.io/Chet.Utils/extensions/bool-extensions)       |
+| **DataTableExtensions**  | DataTable 扩展方法，提供数据转换、查询、操作、序列化等功能              | [查看详情](https://qiect.github.io/Chet.Utils/extensions/datatable-extensions)  |
+| **DateTimeExtensions**   | DateTime 扩展方法，提供日期判断、格式化、计算、转换等功能               | [查看详情](https://qiect.github.io/Chet.Utils/extensions/datetime-extensions)   |
+| **DecimalExtensions**    | decimal 扩展方法，提供数值判断、数学运算、格式化、类型转换等功能            | [查看详情](https://qiect.github.io/Chet.Utils/extensions/decimal-extensions)    |
+| **DoubleExtensions**     | double 扩展方法，提供数值判断、数学运算、格式化、类型转换等功能             | [查看详情](https://qiect.github.io/Chet.Utils/extensions/double-extensions)     |
+| **EnumExtensions**       | Enum 扩展方法，提供枚举判断、转换、描述获取、标志操作等功能                | [查看详情](https://qiect.github.io/Chet.Utils/extensions/enum-extensions)       |
+| **EnumerableExtensions** | IEnumerable/ICollection 扩展方法，提供集合判断、转换、分页、统计等功能 | [查看详情](https://qiect.github.io/Chet.Utils/extensions/enumerable-extensions) |
+| **FileExtensions**       | 文件扩展方法，提供文件读写、判断、信息获取、哈希计算等功能                   | [查看详情](https://qiect.github.io/Chet.Utils/extensions/file-extensions)       |
+| **FloatExtensions**      | float 扩展方法，提供数值判断、数学运算、格式化、类型转换等功能              | [查看详情](https://qiect.github.io/Chet.Utils/extensions/float-extensions)      |
+| **IntExtensions**        | int 扩展方法，提供数值判断、数学运算、格式化、中文转换等功能                | [查看详情](https://qiect.github.io/Chet.Utils/extensions/int-extensions)        |
+| **StreamExtensions**     | Stream 扩展方法，提供流读写、转换、压缩、哈希计算等功能                 | [查看详情](https://qiect.github.io/Chet.Utils/extensions/stream-extensions)     |
+| **StringExtensions**     | string 扩展方法，提供空值判断、正则验证、类型转换、编码解码等功能            | [查看详情](https://qiect.github.io/Chet.Utils/extensions/string-extensions)     |
 
 ### 帮助类
 
 | 帮助类                   | 说明                                       | 详细文档                                 |
 | --------------------- | ---------------------------------------- | ------------------------------------ |
-| **ApplicationHelper** | 应用程序帮助类，提供进程管理、内存优化、系统信息获取等功能            | [查看详情](.docs/Helpers/ApplicationHelper.md) |
-| **DataTableHelper**   | 数据表帮助类，提供数据透视、数据分析、数据清洗等高级功能             | [查看详情](.docs/Helpers/DataTableHelper.md)   |
-| **FileHelper**        | 文件帮助类，提供文件监控、临时文件管理、文件比较等高级功能            | [查看详情](.docs/Helpers/FileHelper.md)        |
-| **HttpClientHelper**  | HTTP 客户端帮助类，提供重试机制、超时控制、认证管理等功能          | [查看详情](.docs/Helpers/HttpClientHelper.md)  |
-| **ReflectHelper**     | 反射帮助类，提供类型检查、属性操作、方法调用、表达式树等功能           | [查看详情](.docs/Helpers/ReflectHelper.md)     |
-| **RegexHelper**       | 正则表达式帮助类，提供常用验证、匹配、替换、提取等功能              | [查看详情](.docs/Helpers/RegexHelper.md)       |
-| **StopwatchHelper**   | 计时帮助类，提供高精度计时、性能统计、基准测试等功能               | [查看详情](.docs/Helpers/StopwatchHelper.md)   |
-| **TaskHelper**        | 任务帮助类，提供超时控制、重试机制、并行处理、任务调度等功能           | [查看详情](.docs/Helpers/TaskHelper.md)        |
-| **UnitHelper**        | 单位帮助类，提供长度、货币、质量、角度等多种单位转换功能             | [查看详情](.docs/Helpers/UnitHelper.md)        |
-| **WebSocketHelper**   | WebSocket 帮助类，提供客户端/服务端连接管理、消息收发、心跳检测等功能 | [查看详情](.docs/Helpers/WebSocketHelper.md)   |
+| **ApplicationHelper** | 应用程序帮助类，提供进程管理、内存优化、系统信息获取等功能            | [查看详情](https://qiect.github.io/Chet.Utils/helpers/application-helper) |
+| **DataTableHelper**   | 数据表帮助类，提供数据透视、数据分析、数据清洗等高级功能             | [查看详情](https://qiect.github.io/Chet.Utils/helpers/datatable-helper)   |
+| **FileHelper**        | 文件帮助类，提供文件监控、临时文件管理、文件比较等高级功能            | [查看详情](https://qiect.github.io/Chet.Utils/helpers/file-helper)        |
+| **HttpClientHelper**  | HTTP 客户端帮助类，提供重试机制、超时控制、认证管理等功能          | [查看详情](https://qiect.github.io/Chet.Utils/helpers/httpclient-helper)  |
+| **ReflectHelper**     | 反射帮助类，提供类型检查、属性操作、方法调用、表达式树等功能           | [查看详情](https://qiect.github.io/Chet.Utils/helpers/reflect-helper)     |
+| **RegexHelper**       | 正则表达式帮助类，提供常用验证、匹配、替换、提取等功能              | [查看详情](https://qiect.github.io/Chet.Utils/helpers/regex-helper)       |
+| **StopwatchHelper**   | 计时帮助类，提供高精度计时、性能统计、基准测试等功能               | [查看详情](https://qiect.github.io/Chet.Utils/helpers/stopwatch-helper)   |
+| **TaskHelper**        | 任务帮助类，提供超时控制、重试机制、并行处理、任务调度等功能           | [查看详情](https://qiect.github.io/Chet.Utils/helpers/task-helper)        |
+| **UnitHelper**        | 单位帮助类，提供长度、货币、质量、角度等多种单位转换功能             | [查看详情](https://qiect.github.io/Chet.Utils/helpers/unit-helper)        |
+| **WebSocketHelper**   | WebSocket 帮助类，提供客户端/服务端连接管理、消息收发、心跳检测等功能 | [查看详情](https://qiect.github.io/Chet.Utils/helpers/websocket-helper)   |
 
 ## 安装
 
@@ -63,7 +63,7 @@ dotnet add package Chet.Utils
 ### PackageReference
 
 ```xml
-<PackageReference Include="Chet.Utils" Version="1.5.0" />
+<PackageReference Include="Chet.Utils" Version="1.6.0" />
 ```
 
 ## 快速开始
@@ -122,8 +122,8 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 ## 系统要求
 
-- .NET 8.0 或更高版本
-- .NET Standard 2.0（部分功能）
+- .NET 8.0 或更高版本（推荐）
+- .NET Standard 2.1（完整功能，含 polyfill 兼容层）
 
 ## 版本更新
 
@@ -133,6 +133,11 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 - ✨ 优化 DataTableHelper 类，添加更多功能
 - 🔧 优化 DataTableExtensions、EnumExtensions、EnumerableExtensions、StreamExtensions 等扩展类
+- 🌐 新增 `netstandard2.1` + `net8.0` 双目标框架支持，旧框架消费方可直接升级
+- 📦 引入 Polyfills 模块（`ThrowHelper`、`ParallelHelper`、`HttpContent` / `HashAlgorithm` 扩展方法），统一不同目标下的 API 行为
+- 🔧 修复多目标构建中暴露的 .NET 6+/7+ API 依赖（`ArgumentException.ThrowIfNullOrEmpty`、`Convert.ToHexString`、`TimeSpan.TotalMicroseconds/TotalNanoseconds`、`Stopwatch.GetElapsedTime`、`Environment.ProcessId/TickCount64`、`GC.GetGCMemoryInfo`、`Parallel.ForEachAsync/ForAsync`、`ValueTask.FromResult`、`StringSplitOptions.TrimEntries` 等）
+- 🔧 `StreamReader` 构造器统一使用 5 参数形式，跨目标兼容
+- 🔧 `ApplicationHelper.GetAvailableMemory` 在 netstandard2.1 上回退至 `GC.GetTotalMemory`
 
 ### v1.5.0
 
@@ -193,7 +198,7 @@ await wsClient.SendMessageAsync("Hello, World!");
 
 ## 许可证
 
-本项目采用 MIT 许可证。详见 [LICENSE](../LICENSE) 文件。
+本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
 
 ## 联系方式
 
